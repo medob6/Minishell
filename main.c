@@ -89,8 +89,7 @@ int	main(void)
 		if (!cmd_line)
 			break ;
 		// q = tokenize(cmd_line);
-		char **s = lexer(cmd_line);
-		print_lexer(s);
+		print_token(create_tokens(lexer(cmd_line)));
 			//printf("line from prompt line is : %s\n", cmd_line);
 		rl_on_new_line();
 		free(cmd_line);

@@ -54,6 +54,6 @@ typedef struct s_token
 }			t_token;
 
 void	ft_putstr(char *s, int fd);
-t_token	**tokenize(char *cmd_line);
+t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);
 #endif
