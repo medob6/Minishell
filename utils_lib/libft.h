@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 15:28:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/03/01 12:36:47 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:29:30 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ void	ft_putendl_fd(char *s, int fd);
 char	**split_tabs_spaces(char *str);
 char	*fill_word(const char *src, int start, int end);
 void	free_all(char **p);
+char    *ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif

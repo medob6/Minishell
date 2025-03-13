@@ -1,5 +1,10 @@
 #include "minishell.h"
 
+void    ft_putstr(char *s, int fd)
+{
+    write(fd, s, ft_strlen(s));
+}
+
 const char	*costruct_prompt(void)
 {
 	char	*cwd;
@@ -23,9 +28,7 @@ const char	*costruct_prompt(void)
 		free(tmp);
 	}
 	else
-	{
 		prompt = ft_strdup(cwd);
-	}
 	free(cwd);
 	return (prompt);
 }
@@ -48,6 +51,30 @@ const char	*costruct_prompt(void)
 // 	}
 // 	rl_clear_history();
 // }
+void	print_token(t_token **q)
+{
+	int	i;
+
+	i = 0;
+	while (q && q[i])
+	{
+		printf("%s %u\n", q[i]->value, q[i]->type);
+		i++;
+		q = &q[i]->next;
+	}
+}
+
+void	print_lexer(char **s)
+{
+	int i = 0;
+	while (s && s[i])
+	{
+		printf("token[%d]: [%s]\n", i, s[i]);
+		free(s[i]);
+		i++;
+	}
+	free(s);
+}
 int	main(void)
 {
 	char		*cmd_line;
@@ -59,13 +86,14 @@ int	main(void)
 	while (1)
 	{
 		cmd_line = readline(prompt);
-		if (!cmd_line) // Check if user pressed Ctrl+D (EOF)
+		if (!cmd_line)
 			break ;
+		// q = tokenize(cmd_line);
+		char **s = lexer(cmd_line);
+		print_lexer(s);
+			//printf("line from prompt line is : %s\n", cmd_line);
 		rl_on_new_line();
-		printf("line from prompt line is : %s\n", cmd_line);
-		// here instead of printing input we should run it
-		tokenize(cmd_line);
-		free(cmd_line); // Free allocated memory
+		free(cmd_line);
 	}
 	// free_trash();
 	rl_clear_history();
