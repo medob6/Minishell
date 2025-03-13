@@ -13,28 +13,30 @@
 # include <unistd.h>
 
 /* Structures */
-typedef struct s_cmd
-{
-	char	*path;
-	char	**args;
-	pid_t	pid;
-	int		exit_status;
-}			t_cmd;
+// typedef struct s_cmd
+// {
+// 	char	*path;
+// 	char	**args;
+// 	pid_t	pid;
+// 	int		exit_status;
+// }			t_cmd;
 
-typedef struct s_data
-{
-	int		old_fd;
-	int		out_fd;
-	int		fd[2];
-	t_cmd	*lst_cmd;
-	int		cmd_nbr;
-	char	**envp;
-	int		ac;
-}			t_data;
+// typedef struct s_data
+// {
+// 	int		old_fd;
+// 	int		out_fd;
+// 	int		fd[2];
+// 	t_cmd	*lst_cmd;
+// 	int		cmd_nbr;
+// 	char	**envp;
+// 	int		ac;
+// }			t_data;
 
 typedef enum e_token_type
 {
 	TOKEN_WORD,
+	TOKEN_END,
+	TOKEN_OR,
 	TOKEN_PIPE,         // |
 	TOKEN_REDIRECT_IN,  // <
 	TOKEN_REDIRECT_OUT, // >
@@ -51,4 +53,7 @@ typedef struct s_token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
+void	ft_putstr(char *s, int fd);
+t_token	**tokenize(char *cmd_line);
+char **lexer(char *cmd_line);
 #endif
