@@ -51,18 +51,15 @@ const char	*costruct_prompt(void)
 // 	}
 // 	rl_clear_history();
 // }
-void	print_token(t_token **q)
+void print_token(t_token *head)
 {
-	int	i;
-
-	i = 0;
-	while (q && q[i])
-	{
-		printf("%s %u\n", q[i]->value, q[i]->type);
-		i++;
-		q = &q[i]->next;
-	}
+    while (head)
+    {
+        printf("%s %u\n", head->value, head->type);
+        head = head->next;
+    }
 }
+
 
 void	print_lexer(char **s)
 {
@@ -79,6 +76,7 @@ int	main(void)
 {
 	char		*cmd_line;
 	const char	*prompt;
+	t_token		**h;
 
 	cmd_line = NULL;
 	cmd_line = malloc(100);
@@ -89,7 +87,9 @@ int	main(void)
 		if (!cmd_line)
 			break ;
 		// q = tokenize(cmd_line);
-		print_token(create_tokens(lexer(cmd_line)));
+		h = create_tokens(lexer(cmd_line));
+		if (h)
+			print_token(*h);
 			//printf("line from prompt line is : %s\n", cmd_line);
 		rl_on_new_line();
 		free(cmd_line);
