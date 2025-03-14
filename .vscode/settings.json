@@ -58,6 +58,7 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "unistd.h": "c",
-    "libft.h": "c"
+    "libft.h": "c",
+    "minishell.h": "c"
   }
 }
