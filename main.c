@@ -64,7 +64,7 @@ int	main(void)
 		rl_on_new_line();
 		printf("line from prompt line is : %s\n", cmd_line);
 		// here instead of printing input we should run it
-		tokenize(cmd_line);
+		// tokenize(cmd_line);
 		free(cmd_line); // Free allocated memory
 	}
 	// free_trash();
