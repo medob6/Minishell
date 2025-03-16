@@ -67,10 +67,8 @@ void	print_lexer(char **s)
 	while (s && s[i])
 	{
 		printf("token[%d]: [%s]\n", i, s[i]);
-		free(s[i]);
 		i++;
 	}
-	free(s);
 }
 int	main(void)
 {
@@ -86,10 +84,10 @@ int	main(void)
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
-		// q = tokenize(cmd_line);
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 			print_token(*h);
+		//print_lexer(lexer(cmd_line));
 			//printf("line from prompt line is : %s\n", cmd_line);
 		rl_on_new_line();
 		free(cmd_line);
