@@ -30,24 +30,7 @@ const char	*costruct_prompt(void)
 	return (prompt);
 }
 
-// void	free_trash(void)
-// {
-// 	HIST_ENTRY	**history_list;
-// 	int			i;
 
-// 	history_list = history_list();
-// 	if (history_list)
-// 	{
-// 		i = 0;
-// 		while (history_list[i])
-// 		{
-// 			free(history_list[i]->line);
-// 			free(history_list[i]);
-// 			i++;
-// 		}
-// 	}
-// 	rl_clear_history();
-// }
 int	main(void)
 {
 	char		*cmd_line;
