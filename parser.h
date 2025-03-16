@@ -1,6 +1,7 @@
-#ifndef AST_H
-#define AST_H 
+#ifndef PARSER_H
+#define PARSER_H
 
+// we shouldent have a header file called minishell , it dosnt make sense , soo for better readability we gona improve nameing 
 #include "minishell.h"
 
 typedef enum e_ast_type {
