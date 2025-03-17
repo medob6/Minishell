@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/03/14 15:15:31 by salahian         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:46:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,6 +290,7 @@ t_token *create_token(char *value, t_token_type type)
     new->value = strdup(value);
     new->type = type;
     new->next = NULL;
+    new->prev = NULL;
     return new;
 }
 
@@ -300,7 +301,10 @@ void append_token(t_token **head, t_token **tail, t_token *new)
     if (!*head)
         *head = new;
     else
+    {
         (*tail)->next = new;
+        new->prev = *tail;
+    }
     *tail = new;
 }
 
@@ -359,7 +363,7 @@ void check_the_string(t_token **head, t_token **tail, char *s)
         if (c && !is_quote)
         {
             i += handle_operator(head, tail, c);
-			continue ;
+			      continue ;
         }
         i++;
     }

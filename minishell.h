@@ -51,7 +51,8 @@ typedef enum e_token_type
 typedef struct s_token
 {
 	char *value;          // The actual token string
-	t_token_type type;    // The type of token
+	t_token_type type;
+	struct s_token *prev;   // The type of token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
