@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   lexem.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/03/16 14:34:15 by salahian         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:42:10 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,6 @@ int	check_quotes(char *cmd_line)
 {
 	return (check_single_quotes(cmd_line) && check_double_quotes(cmd_line));
 }
-
-// size_t ft_strlcpy(char *dst, const char *src, int start, int end)
-// {
-// 	size_t i = 0;
-// 	while (start < end && src[start])
-// 		dst[i++] = src[start++];
-// 	dst[i] = '\0';
-// 	return (i);
-// }
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
@@ -146,15 +137,6 @@ int	count_words(char const *s)
 	if (in_word)
 		count++;
 	return (count);
-}
-
-int	handle_par(char **str, char c, int *i)
-{
-	*str = malloc(2);
-	(*str)[0] = c;
-	(*str)[1] = '\0';
-	(*i)++;
-	return (1);
 }
 
 int	handle_in_the_qouts(char **str, char *cmd_line, int *i)

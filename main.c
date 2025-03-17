@@ -88,7 +88,6 @@ int	main(void)
 		if (h)
 			print_token(*h);
 		//print_lexer(lexer(cmd_line));
-			//printf("line from prompt line is : %s\n", cmd_line);
 		rl_on_new_line();
 		free(cmd_line);
 	}
