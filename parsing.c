@@ -16,4 +16,11 @@
 
 // Step 3: Split the leftmost part into 3 based on the last two similar high priority operators.
 
-t_ast 
+
+t_ast	creat_ast(t_token *tokens)
+{
+	t_ast root;
+
+	root = malloc(sizeof(t_ast));
+	
+}
