@@ -25,13 +25,5 @@ typedef struct s_node {
     struct s_node *right;
 } t_node;
 
-// Function prototypes
-
-// this are example of functions that we must creat
-
-// t_node  *create_ast_node(t_ast_type type, const char *cmd_path);
-// void    add_argument(t_node *node, const char *arg);
-// void    free_ast(t_node *root);
-// void    traverse_ast(const t_node *root, void (*func)(const t_node *));
 
 #endif // AST_H
