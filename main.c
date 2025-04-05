@@ -89,6 +89,7 @@ int	main(void)
 			print_token(*h);
 		//print_lexer(lexer(cmd_line));
 			//printf("line from prompt line is : %s\n", cmd_line);
+		add_history(cmd_line);
 		rl_on_new_line();
 		free(cmd_line);
 	}
