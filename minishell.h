@@ -56,7 +56,15 @@ typedef struct s_token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
+typedef struct s_garbag
+{
+    void    *add;
+    struct s_garbag *next;
+}   t_gar;
+
 void	ft_putstr(char *s, int fd);
 t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);
+void    *ft_malloc(int size, int bytes);
+t_gar   **garbage_list(void);
 #endif

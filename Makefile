@@ -1,6 +1,6 @@
 FLAFS= -Wall -Werror -Wextra -lreadline -fsanitize=address -g #-fsanitize=address
 # -lreadline : flag to link readline function
-SRC= main.c lexem.c token.c utils_lib/*.c
+SRC= main.c lexem.c garbage_collector.c token.c utils_lib/*.c
 CC= cc
 NAME=exe
 

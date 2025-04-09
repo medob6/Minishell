@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 10:03:32 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:09:23 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_token *create_token(char *value, t_token_type type)
 {
     t_token *new;
 
-	new = malloc(sizeof(t_token));
+	new = ft_malloc(sizeof(t_token), 1);
     new->value = strdup(value);
     new->type = type;
     new->next = NULL;
@@ -159,7 +159,7 @@ t_token **create_tokens(char **str)
   //   ft_putstr("appah: syntax error near unexpected token\n", 2);
   //   return (NULL);
   // }
-	tokens = malloc(sizeof(t_token *) * (counter(str) + 1));
+	tokens = ft_malloc(sizeof(t_token *), (counter(str) + 1));
 	head = NULL;
 	tail = NULL;
 	i = 0;

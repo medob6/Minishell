@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 14:27:29 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:10:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ int	handle_par(char **str, char *c, int *i)
 	if (is_operator(c, i))
 	{
 		(*i)--;
-		*str = malloc(3);
+		*str = ft_malloc(1, 3);
 		(*str)[0] = c[*i];
 		(*str)[1] = c[*i];
 		(*str)[2] = '\0';
@@ -170,7 +170,7 @@ int	handle_par(char **str, char *c, int *i)
 		return (1);
 	}
 	(*i)--;
-	*str = malloc(2);
+	*str = ft_malloc(1, 2);
 	(*str)[0] = c[*i];
 	(*str)[1] = '\0';
 	(*i)++;
@@ -197,7 +197,7 @@ int	handle_in_the_qouts(char **str, char *cmd_line, int *i)
 		if (cmd_line[*i] == quote)
 			(*i)++;
 	}
-	*str = malloc(*i - start + 1);
+	*str = ft_malloc(*i - start + 1, 1);
 	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
 	return (1);
 }
@@ -239,14 +239,14 @@ int	handle_normal_words(char **str, char *cmd_line, int *i)
 		&& !is_operator(cmd_line, i))
 		(*i)++;
 	check_for_operation(cmd_line);
-	*str = malloc(*i - start + 1);
+	*str = ft_malloc(*i - start + 1, 1);
 	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
 	return (1);
 }
 
 int	handle_operators(char **str, char *cmd_line, int *i, int count)
 {
-	*str = malloc(count + 1);
+	*str = ft_malloc(1, count + 1);
 	ft_strlcpy(*str, &cmd_line[*i], count + 1);
 	*i += count;
 	return (1);
@@ -324,7 +324,7 @@ char	**lexer(char *cmd_line)
 		return (NULL);
 	}
 	total = count_words(cmd_line);
-	str = malloc(sizeof(char *) * (total + 1));
+	str = ft_malloc(sizeof(char *), (total + 1));
 	return (help_lexer(str, cmd_line));
 }
 
