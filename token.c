@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/03/18 15:41:34 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/09 10:03:32 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,21 +130,21 @@ int counter(char **s)
     return i;
 }
  
-int   check_is_valid(char **str)
-{
-  int   i;
+// int   check_is_valid(char **str)
+// {
+//   int   i;
 
-  i = 0;
-  while (str[i])
-  {
-    if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
-      return (0);
-    if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1], 0))
-      return (0);
-    i++;
-  }
-  return (1);
-}
+//   i = 0;
+//   while (str[i])
+//   {
+//     if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
+//       return (0);
+//     if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1], 0))
+//       return (0);
+//     i++;
+//   }
+//   return (1);
+// }
 t_token **create_tokens(char **str)
 {
     int i;
@@ -154,11 +154,11 @@ t_token **create_tokens(char **str)
 
 	if (!str)
 		return (NULL);
-  if (!check_is_valid(str))
-  {
-    ft_putstr("appah: syntax error near unexpected token\n", 2);
-    return (NULL);
-  }
+  // if (!check_is_valid(str))
+  // {
+  //   ft_putstr("appah: syntax error near unexpected token\n", 2);
+  //   return (NULL);
+  // }
 	tokens = malloc(sizeof(t_token *) * (counter(str) + 1));
 	head = NULL;
 	tail = NULL;

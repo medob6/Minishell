@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 09:47:19 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/09 14:27:29 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,9 @@
 
 int is_operator(const char *c, int *i)
 {
-	if ((c[*i] == '&' && c[*i + 1] == '&') || (c[*i] == '|' && c[*i + 1] == '|') ||
-	(c[*i] == '<' && c[*i + 1] == '<') || (c[*i] == '>' && c[*i + 1] == '>'))
-	{
-		//(*i)++;
-		return (1);
-	}
-	if (c[*i] == '|' || c[*i] == '>' || c[*i] == '<' ||
-    c[*i] == '$' || c[*i] == '*' || c[*i] == '(' || c[*i] == ')')
-		return (1);
-    return (0);
+	return (c[*i] == '&' || c[*i] == '|' ||
+	c[*i] == '<' || c[*i] == '>'
+	|| c[*i] == '$' || c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
 }
 
 int	check_single_quotes(char *cmd_line)
@@ -196,7 +189,7 @@ int	handle_in_the_qouts(char **str, char *cmd_line, int *i)
 		(*i)++;
 	if (cmd_line[*i] == quote)
 		(*i)++;
-	if (cmd_line[*i + 1] == quote)
+	if (cmd_line[*i] != '\0' && cmd_line[*i + 1] == quote)
 	{
 		(*i)++;
 		while (cmd_line[*i] && cmd_line[*i] != quote)
@@ -337,7 +330,7 @@ char	**lexer(char *cmd_line)
 
 // int main(void)
 // {
-// 	char **s = lexer("echo hello | wc -c");
+// 	char **s = lexer("echo hello&&wc -c");
 // 	int i = 0;
 // 	while (s[i])
 // 	{
