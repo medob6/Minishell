@@ -14,6 +14,13 @@
 
 
 /* Structures */
+
+typedef struct s_array
+{
+	void	**items;
+	size_t	length;
+	size_t	capacity;
+}	t_array;
 typedef struct s_cmd
 {
 	char	*path;

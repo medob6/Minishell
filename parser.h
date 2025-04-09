@@ -4,26 +4,48 @@
 // we shouldent have a header file called minishell , it dosnt make sense , soo for better readability we gona improve nameing 
 #include "minishell.h"
 
-typedef enum e_ast_type {
-    AST_COMMAND,
-    AST_PIPE,
-    AST_AND,
-    AST_OR,
-    AST_REDIRECT_IN,
-    AST_REDIRECT_OUT,
-    AST_HEREDOC,
-    AST_APPEND,
-    // Add other types as needed
-} t_ast_type;
+typedef enum e_ast_type
+{
+	AST_COMPOUNED_CMD,
+	AST_SIMPLE_CMD,
+	AST_PIPELINE,	  // command | command | ...
+	AST_AND,		  // command && command
+	AST_OR,			  // command || command
+	AST_SUBSHELL,	  // ( command_list )
+	AST_ERROR		  // for syntax errors
+}
+t_ast_type;
 
-// Structure for AST nodes
-typedef struct s_node {
-    t_ast_type type;
-    char *cmd_path;   // Path to the command
-    char **args;      // Null-terminated array of arguments
-    struct s_node *left;
-    struct s_node *right;
-} t_node;
 
+typedef struct s_array
+{
+	void *data;
+	int size;
+	int capacity;
+} t_array;
+
+typedef struct s_ast_node {
+	t_ast_type		type; // ls -l -e| cat -e
+	t_array			*children;       // array of child t_ast_node*
+	t_array			*redirect_list;  // array of redirection nodes
+	char			*error_message;  // null if no error
+}	t_ast_node;
+
+
+// typedef enum {
+//     SIMPLE_COMMAND,
+//     PIPE,
+//     REDIRECTION,
+//     LOGICAL_OP,
+//     SUBSHELL
+// } NodeType;
+
+// typedef struct ASTNode {
+//     NodeType type;
+//     char **command; // For SIMPLE_COMMAND
+//     struct ASTNode *left; // For PIPE, LOGICAL_OP
+//     struct ASTNode *right; // For PIPE, LOGICAL_OP
+//     char *file; // For REDIRECTION
+// } ASTNode;
 
 #endif // AST_H
