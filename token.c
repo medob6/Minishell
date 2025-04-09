@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/03/17 15:36:13 by salahian         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:41:34 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int handle_operator(t_token **head, t_token **tail, char c)
     else if (c == '<')
 		new = create_token("<", TOKEN_REDIRECT_IN);
     else if (c == 'e')
-		new = create_token("&&", TOKEN_END);
+		new = create_token("&&", TOKEN_AND);
     else if (c == '$')
 		new = create_token("$", TOKEN_DOLLAR);
 	else if (c == '*')
