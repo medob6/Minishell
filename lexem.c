@@ -6,11 +6,30 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/03/17 15:42:10 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/09 09:47:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// void    ft_putstr(char *s, int fd)
+// {
+//     write(fd, s, ft_strlen(s));
+// }
+
+int is_operator(const char *c, int *i)
+{
+	if ((c[*i] == '&' && c[*i + 1] == '&') || (c[*i] == '|' && c[*i + 1] == '|') ||
+	(c[*i] == '<' && c[*i + 1] == '<') || (c[*i] == '>' && c[*i + 1] == '>'))
+	{
+		//(*i)++;
+		return (1);
+	}
+	if (c[*i] == '|' || c[*i] == '>' || c[*i] == '<' ||
+    c[*i] == '$' || c[*i] == '*' || c[*i] == '(' || c[*i] == ')')
+		return (1);
+    return (0);
+}
 
 int	check_single_quotes(char *cmd_line)
 {
@@ -108,10 +127,13 @@ int	get_next_qout(char *cmd_line, int i)
 
 int	count_words(char const *s)
 {
-	int	i = 0, count;
-	int	q, in_word;
+	int	i;
+	int count;
+    int q;
+    int in_word;
 
-	i = 0, count = 0;
+	i = 0;
+	count = 0;
 	in_word = 0;
 	while (s[i])
 	{
@@ -122,7 +144,9 @@ int	count_words(char const *s)
 				i = q;
 			in_word = 1;
 		}
-		else if (s[i] == ' ' || s[i] == '\t')
+        if (is_operator(s, &i))
+            count++;
+		if (s[i] == ' ' || s[i] == '\t' || is_operator(s, &i))
 		{
 			if (in_word)
 			{
@@ -139,6 +163,27 @@ int	count_words(char const *s)
 	return (count);
 }
 
+int	handle_par(char **str, char *c, int *i)
+{
+	(*i)++;
+	if (is_operator(c, i))
+	{
+		(*i)--;
+		*str = malloc(3);
+		(*str)[0] = c[*i];
+		(*str)[1] = c[*i];
+		(*str)[2] = '\0';
+		(*i) += 2;
+		return (1);
+	}
+	(*i)--;
+	*str = malloc(2);
+	(*str)[0] = c[*i];
+	(*str)[1] = '\0';
+	(*i)++;
+	return (1);
+}
+
 int	handle_in_the_qouts(char **str, char *cmd_line, int *i)
 {
 	int		start;
@@ -151,9 +196,45 @@ int	handle_in_the_qouts(char **str, char *cmd_line, int *i)
 		(*i)++;
 	if (cmd_line[*i] == quote)
 		(*i)++;
+	if (cmd_line[*i + 1] == quote)
+	{
+		(*i)++;
+		while (cmd_line[*i] && cmd_line[*i] != quote)
+			(*i)++;
+		if (cmd_line[*i] == quote)
+			(*i)++;
+	}
 	*str = malloc(*i - start + 1);
 	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
 	return (1);
+}
+
+int	check_for_operation(char *cmd_line)
+{
+	int	i;
+
+	i = 0;
+	while (cmd_line[i])
+	{
+		if (cmd_line[i] == '|')
+			return ((cmd_line[i + 1] == '|') ? 2 : 1);
+		else if (cmd_line[i] == '&')
+			return ((cmd_line[i + 1] == '&') ? 2 : 0);
+		else if (cmd_line[i] == '>')
+			return ((cmd_line[i + 1] == '>') ? 2 : 1);
+		else if (cmd_line[i] == '<')
+			return ((cmd_line[i + 1] == '<') ? 2 : 1);
+		else if (cmd_line[i] == '$')
+			return (1);
+		else if (cmd_line[i] == '*')
+			return (1);
+		else if (cmd_line[i] == '(')
+			return (1);
+		else if (cmd_line[i] == ')')
+			return (1);
+		i++;
+	}
+	return (0);
 }
 
 int	handle_normal_words(char **str, char *cmd_line, int *i)
@@ -162,33 +243,44 @@ int	handle_normal_words(char **str, char *cmd_line, int *i)
 
 	start = *i;
 	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t'
-		&& cmd_line[*i] != '(' && cmd_line[*i] != ')')
+		&& !is_operator(cmd_line, i))
 		(*i)++;
+	check_for_operation(cmd_line);
 	*str = malloc(*i - start + 1);
 	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
 	return (1);
 }
 
+int	handle_operators(char **str, char *cmd_line, int *i, int count)
+{
+	*str = malloc(count + 1);
+	ft_strlcpy(*str, &cmd_line[*i], count + 1);
+	*i += count;
+	return (1);
+}
+
 char	**help_lexer(char **str, char *cmd_line)
 {
-	int	i = 0;
-	int	j = 0;
+	int	i;
+	int	j;
 
+	i = 0;
+	j = 0;
 	while (cmd_line[i])
 	{
 		while (cmd_line[i] == ' ' || cmd_line[i] == '\t')
 			i++;
 		if (!cmd_line[i])
-			break;
-		if (cmd_line[i] == '(' || cmd_line[i] == ')')
+			break ;
+		if (is_operator(cmd_line, &i))
 		{
-			j += handle_par(&str[j], cmd_line[i], &i);
-			continue;
+			j += handle_par(&str[j], cmd_line, &i);
+			continue ;
 		}
 		if (cmd_line[i] == '\'' || cmd_line[i] == '"')
 		{
 			j += handle_in_the_qouts(&str[j], cmd_line, &i);
-			continue;
+			continue ;
 		}
 		j += handle_normal_words(&str[j], cmd_line, &i);
 	}
@@ -239,13 +331,13 @@ char	**lexer(char *cmd_line)
 		return (NULL);
 	}
 	total = count_words(cmd_line);
-	str = malloc(sizeof(char *) * (1024));
+	str = malloc(sizeof(char *) * (total + 1));
 	return (help_lexer(str, cmd_line));
 }
 
 // int main(void)
 // {
-// 	char **s = lexer("(echo 'hello   world' | wc -c | ls *.c)");
+// 	char **s = lexer("echo hello | wc -c");
 // 	int i = 0;
 // 	while (s[i])
 // 	{

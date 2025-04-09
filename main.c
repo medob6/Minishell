@@ -74,7 +74,7 @@ int	main(void)
 {
 	char		*cmd_line;
 	const char	*prompt;
-	t_token		**h;
+	//t_token		**h;
 
 	cmd_line = NULL;
 	cmd_line = malloc(100);
@@ -84,10 +84,10 @@ int	main(void)
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
-		h = create_tokens(lexer(cmd_line));
-		if (h)
-			print_token(*h);
-		//print_lexer(lexer(cmd_line));
+		// h = create_tokens(lexer(cmd_line));
+		// if (h)
+		// 	print_token(*h);
+		print_lexer(lexer(cmd_line));
 		rl_on_new_line();
 		free(cmd_line);
 	}
