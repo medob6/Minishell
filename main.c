@@ -5,6 +5,24 @@ void    ft_putstr(char *s, int fd)
     write(fd, s, ft_strlen(s));
 }
 
+void    ft_lstclear(t_gar **lst)
+{
+        t_gar  *d;
+        t_gar  *s;
+
+        if (lst == NULL || *lst == NULL)
+                return ;
+        d = *lst;
+        while (d)
+        {
+                s = d->next;
+                free(d->add);
+                free(d);
+                d = s;
+        }
+        *lst = NULL;
+}
+
 const char	*costruct_prompt(void)
 {
 	char	*cwd;
@@ -12,8 +30,7 @@ const char	*costruct_prompt(void)
 	char	*prompt;
 	char	*tmp;
 
-	// just take the current working dir and $
-	cwd = malloc(100);
+	cwd = ft_malloc(1, 100);
 	if (!cwd)
 	{
 		perror("malloc");
@@ -21,6 +38,7 @@ const char	*costruct_prompt(void)
 	}
 	getcwd(cwd, 100);
 	home = getenv("HOME");
+
 	if (home && !strncmp(cwd, home, strlen(home)))
 	{
 		tmp = ft_strjoin("~", cwd + strlen(home));
@@ -28,10 +46,37 @@ const char	*costruct_prompt(void)
 		free(tmp);
 	}
 	else
-		prompt = ft_strdup(cwd);
-	free(cwd);
+		prompt = ft_strjoin(cwd, "$ ");
 	return (prompt);
 }
+
+
+// const char	*costruct_prompt(void)
+// {
+// 	char	*cwd;
+// 	char	*home;
+// 	char	*prompt;
+// 	char	*tmp;
+
+// 	// just take the current working dir and $
+// 	cwd = malloc(100);
+// 	if (!cwd)
+// 	{
+// 		perror("ft_malloc");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	getcwd(cwd, 100);
+// 	home = getenv("HOME");
+// 	if (home && !strncmp(cwd, home, strlen(home)))
+// 	{
+// 		tmp = ft_strjoin("~", cwd + strlen(home));
+// 		prompt = ft_strjoin(tmp, "$ ");
+// 		free(tmp);
+// 	}
+// 	else
+// 		prompt = ft_strdup(cwd);
+// 	return (prompt);
+// }
 
 // void	free_trash(void)
 // {
@@ -74,10 +119,10 @@ int	main(void)
 {
 	char		*cmd_line;
 	const char	*prompt;
-	t_token		**h;
+	//t_token		**h;
 
 	cmd_line = NULL;
-	cmd_line = malloc(100);
+	cmd_line = ft_malloc(1, 100);
 	prompt = costruct_prompt();
 	while (1)
 	{
@@ -89,11 +134,10 @@ int	main(void)
 			print_token(*h);
 		//print_lexer(lexer(cmd_line));
 			//printf("line from prompt line is : %s\n", cmd_line);
-		add_history(cmd_line);
 		rl_on_new_line();
-		free(cmd_line);
 	}
 	// free_trash();
+	ft_lstclear(garbage_list());
 	rl_clear_history();
 	return (0);
 }
