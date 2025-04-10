@@ -35,8 +35,8 @@
 typedef enum e_token_type
 {
 	TOKEN_WORD,
-	TOKEN_WILDCARDS,
-	TOKEN_PARENTESIS_OPEN,
+	TOKEN_WILDCARDS, // *
+	TOKEN_PARENTESIS_OPEN, //(
 	TOKEN_PARENTESIS_CLOSE,
 	TOKEN_AND,
 	TOKEN_OR,
@@ -45,14 +45,15 @@ typedef enum e_token_type
 	TOKEN_REDIRECT_OUT, // >
 	TOKEN_APPEND,       // >>
 	TOKEN_HEREDOC,      // <<
-	TOKEN_DOLLAR       // $
+	TOKEN_DOLLAR,
+	TOKEN_EOF
 }			t_token_type;
 
 typedef struct s_token
 {
 	char *value;          // The actual token string
 	t_token_type type;
-	struct s_token *prev;   // The type of token
+	struct s_token *prev;  // The type of token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
