@@ -28,51 +28,50 @@ t_ast_node	*creat_ast_node(int node_type)
 	return (new_node);
 }
 
-t_ast_node *ast_root(t_token *tkn)
+t_ast_node	*pipeline(t_token **token)
 {
-	t_ast_node *curr_node;
-	curr_node = creat_ast_node(AST_COMPOUNED_CMD);
-	while (true)
+	t_ast_node *pipe_node = create_ast_node(AST_PIPELINE);
+	t_ast_node *cmd;
+
+	while (*token && (*token)->type != TOKEN_AND && (*token)->type != TOKEN_OR && (*token)->type != TOKEN_EOF)
 	{
-		if (tkn->type != AST_AND && tkn->type != T)
-		append_childs(tkn, curr_node);
+		cmd = command(token);
+		add_child(pipe_node, cmd);
+		if (*token && (*token)->type == TOKEN_PIPE)
+			advance_token(token);
+		else
+			break;
 	}
-	return (root_node);
+	return (pipe_node);
 }
 
-t_ast_node	*parse_tokens(t_token *tokens)
+t_ast_node	*ast_root(t_token **token)
 {
-	t_ast_node *compound_node = ast_root(tokens);
-	// this root hase childs and those child ,
-	// are pipelines each pipe line hase childs that are cmds ,
-	// and cmds are either a simple cmd or a subshell
-	t_ast_node *current_node = NULL;
+	t_ast_node *compound = create_ast_node(AST_COMPOUNED_CMD);
+	t_ast_node *curr;
 
-	while (tokens && is_eof(tokens) == false)
+	while (*token && (*token)->type != TOKEN_EOF)
 	{
-		// now i should use a function taht see the command as a pipelines of type cmd_list
-
-		// Check if the token is a command (WORD).
-		// if (tkn_is_redirection(&tokens))
-		// {
-		// 	current_node = redirection(&tokens);
-		// }
-		// else if (tokens->type == TOKEN_WORD )
-		// {
-		// 	// becuse a simple cmd is a pipeline sepicial case
-		// 	current_node = parse_pipeline(&tokens);
-		// }
-		// else if ()
-		// {
-
-		// }
-		// else
-		// {
-		// 	handle_syntax_error(tokens);
-		// 	break ;
-		// }
-
-		compound_node = add_to_compound(compound_node, current_node);
+		curr = pipeline(token);
+		add_child(compound, curr);
+		if (*token && ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR))
+		{
+			t_ast_type logic_type = ((*token)->type == TOKEN_AND) ? AST_AND : AST_OR;
+			t_ast_node *op_node = create_ast_node(logic_type);
+			advance_token(token);
+			add_child(compound, op_node);
+		}
+		else
+			break;
 	}
-	return (compound_node);
+	return (compound);
 }
+
+t_ast_node *parse_tokens(t_token *tokens)
+{
+	return ast_root(&tokens);
+}
+
+// 	// this root hase childs and those child ,
+// 	// are pipelines each pipe line hase childs that are cmds ,
+// 	// and cmds are either a simple cmd or a subshell

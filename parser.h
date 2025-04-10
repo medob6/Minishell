@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-// we shouldent have a header file called minishell , it dosnt make sense , soo for better readability we gona improve nameing 
+// we shouldent have a header file called minishell , it dosnt make sense , soo for better readability we gona improve nameing
 #include "minishell.h"
 
 typedef enum e_ast_type
@@ -16,14 +16,6 @@ typedef enum e_ast_type
 }
 t_ast_type;
 
-
-typedef struct s_array
-{
-	void *data;
-	int size;
-	int capacity;
-} t_array;
-
 typedef struct s_ast_node {
 	t_ast_type		type; // ls -l -e| cat -e
 	t_array			*children;       // array of child t_ast_node*
@@ -32,20 +24,5 @@ typedef struct s_ast_node {
 }	t_ast_node;
 
 
-// typedef enum {
-//     SIMPLE_COMMAND,
-//     PIPE,
-//     REDIRECTION,
-//     LOGICAL_OP,
-//     SUBSHELL
-// } NodeType;
 
-// typedef struct ASTNode {
-//     NodeType type;
-//     char **command; // For SIMPLE_COMMAND
-//     struct ASTNode *left; // For PIPE, LOGICAL_OP
-//     struct ASTNode *right; // For PIPE, LOGICAL_OP
-//     char *file; // For REDIRECTION
-// } ASTNode;
-
-#endif // AST_H
+#endif
