@@ -16,7 +16,7 @@ void    ft_lstclear(t_gar **lst)
         while (d)
         {
                 s = d->next;
-                free(d->add);
+                free(d->addr);
                 free(d);
                 d = s;
         }
@@ -119,7 +119,7 @@ int	main(void)
 {
 	char		*cmd_line;
 	const char	*prompt;
-	//t_token		**h;
+	t_token		**h;
 
 	cmd_line = NULL;
 	cmd_line = ft_malloc(1, 100);
@@ -129,10 +129,17 @@ int	main(void)
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
-		// h = create_tokens(lexer(cmd_line));
-		// if (h)
-		// 	print_token(*h);
-		print_lexer(lexer(cmd_line));
+		h = create_tokens(lexer(cmd_line));
+		 if (h)
+		 	print_token(*h);
+		// char *line;
+    	// printf("Testing standard input...\n");
+    	// line = get_next_line(0); // This should print a prompt and wait for input
+    	// if (line) {
+        // 	printf("You typed: %s\n", line);
+        // 	free(line);
+    	// }
+		//print_lexer(lexer(cmd_line));
 		rl_on_new_line();
 	}
 	// free_trash();
