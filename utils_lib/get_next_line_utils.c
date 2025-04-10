@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 08:44:56 by mbousset          #+#    #+#             */
-/*   Updated: 2025/02/26 15:30:03 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/09 15:18:29 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*jbad_line(char **res, size_t len, int new_line)
 // 		len1 = ft_strlen(s1);
 // 	if (s2)
 // 		len2 = ft_strlen(s2);
-// 	new_str = malloc(len1 + len2 + 1);
+// 	new_str = ft_malloc(len1 + len2 + 1);
 // 	if (!new_str)
 // 		return (NULL);
 // 	if (s1)

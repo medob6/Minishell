@@ -38,7 +38,7 @@ typedef enum e_token_type
 	TOKEN_WILDCARDS,
 	TOKEN_PARENTESIS_OPEN,
 	TOKEN_PARENTESIS_CLOSE,
-	TOKEN_END,
+	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_PIPE,         // |
 	TOKEN_REDIRECT_IN,  // <
@@ -51,11 +51,20 @@ typedef enum e_token_type
 typedef struct s_token
 {
 	char *value;          // The actual token string
-	t_token_type type;    // The type of token
+	t_token_type type;
+	struct s_token *prev;   // The type of token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
+
+typedef struct s_garbag
+{
+    void    *add;
+    struct s_garbag *next;
+}   t_gar;
 
 void	ft_putstr(char *s, int fd);
 t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);
+void    *ft_malloc(int size, int bytes);
+t_gar   **garbage_list(void);
 #endif
