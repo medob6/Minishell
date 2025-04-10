@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/10 11:25:16 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/10 17:00:25 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,18 +303,14 @@ int	handle_herdoc(char *delimiter)
 	if (fd < 0)
 		return (0);
 	line = NULL;
-	ft_putstr("heredoc> ", 1);
 	while (1)
 	{
-		line = get_next_line(0);
+		line = readline("> ");
 		if (line)
 		{
-			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-				&& line[ft_strlen(delimiter)] == '\n')
+			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
 				break ;
 			write(fd, line, ft_strlen(line));
-			if (line[ft_strlen(line) - 1] == '\n')
-				ft_putstr("heredoc> ", 1);
 			free(line);
 		}
 	}
@@ -368,8 +364,6 @@ t_token	**create_tokens(char **str)
 	{
 		char *next = str[i + 1];
 		check_the_string(&head, &tail, str[i], next);
-
-		// If we handled heredoc inline, skip the next token
 		if (tail && tail->type == TOKEN_HEREDOC && next)
 			i++;
 		i++;

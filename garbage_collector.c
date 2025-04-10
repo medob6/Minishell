@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 14:53:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 16:31:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/10 16:07:57 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ void    *ft_malloc(int size, int bytes)
     new = malloc(sizeof(t_gar));
     if (!new)
         return (NULL);
-    new->add = malloc(size * bytes);
-    if (!new->add)
+    new->addr = malloc(size * bytes);
+    if (!new->addr)
         return (free(new), NULL);
-    p = new->add;
+    p = new->addr;
     new->next = NULL;
     add_to_the_list(garbage_list(), new);
     return(p);
