@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/11 10:12:05 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/11 15:43:59 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,40 +71,40 @@
 #include <limits.h>
 #include <unistd.h>
 
-int	ft_atoi(char *str, int *flag)
+long     ft_atoi(char *str, int *flag)
 {
-	long	re = 0;
-	int		i = 0;
-	int		sign = 1;
+        long    re;
+        int             i;
+        int             sign;
 
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	if (!str[i]) // "+" or "-" alone
-		*flag = 1;
-	while (str[i])
-	{
-		if (str[i] >= '0' && str[i] <= '9')
-		{
-			re = (re * 10) + (str[i] - '0');
-			if ((sign == 1 && re > (long)INT_MAX) || (sign == -1 && -re < (long)INT_MIN))
-				*flag = 1;
-		}
-		else
-			*flag = 1;
-		i++;
-	}
-	return ((int)(re * sign));
+        i = 0;
+        re = 0;
+        sign = 1;
+        if (str[i] == '-' || str[i] == '+')
+        {
+                if (str[i] == '-')
+                        sign = -1;
+                i++;
+        }
+		if (!str[i])
+			return (*flag = 1, 0);
+        while (str[i] >= '0' && str[i] <= '9')
+        {
+                if ((sign == 1 && re > (LONG_MAX - (str[i] - '0')) / 10) ||
+    			(sign == -1 && re > ((unsigned long)LONG_MAX + 1 - (str[i] - '0')) / 10))
+                        return (*flag = 1, 0);
+                re = (re * 10) + (str[i] - '0');
+                i++;
+        }
+        return (re * sign);
 }
 
-int	ft_exit(char **args, int last_status)
+int	ft_exit(char **args, long last_status)
 {
-	int		flag = 0;
-	int		num;
+	int		flag;
+	long		num;
 
+	flag = 0;
 	if (args[1] && args[2])
 	{
 		write(2, "exit\nminishell: exit: too many arguments\n", 42);
@@ -113,24 +113,25 @@ int	ft_exit(char **args, int last_status)
 	if (!args[1])
 	{
 		write(1, "exit\n", 5);
-		return (last_status);
+		exit(last_status);
 	}
 	num = ft_atoi(args[1], &flag);
 	if (flag)
 	{
 		write(2, "exit\nminishell: exit: numeric argument required\n", 49);
-		return (2); // Usually shells exit 2 for this
+		exit(2);
 	}
+	//printf("h\n");
 	write(1, "exit\n", 5);
-	return ((unsigned char)num); // Wrap to 0–255
+	exit((unsigned char)num);
 }
 
 int	main(void)
 {
     char *test1[] = {"exit", NULL};
-	char *test2[] = {"exit", "-n", NULL};
+	char *test2[] = {"exit", "9223372036854775808", NULL};
 	char *test3[] = {"echo", NULL};
-	int	code = ft_exit(test2, 0);
-	printf("%d\n", code);
+	long	code = ft_exit(test2, 0);
+	printf("%ld\n", code);
 	return code;
 }
