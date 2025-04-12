@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/12 18:37:21 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/12 18:39:25 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,7 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 			if (c == 'h' && s[*index])
 			{
 				handle_herdoc(s[*index]);
-				append_token(head, tail, create_token(s[*index], TOKEN_WORD));
+				append_token(head, tail, create_token(s[*index], TOKEN_HEREDOC));
 			}
 			return ;
 		}
