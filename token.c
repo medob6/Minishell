@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/12 17:59:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/12 18:37:21 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@ int	handle_operator(t_token **head, t_token **tail, char c, char *s)
 	else if (c == '|')
 		new = create_token("|", TOKEN_PIPE);
 	else if (c == 'a')
-		new = create_token(">>", TOKEN_APPEND);
+		new = create_token(s, TOKEN_APPEND);
 	else if (c == '>')
 		new = create_token(s, TOKEN_REDIRECT_OUT);
 	else if (c == 'h')
@@ -276,7 +276,7 @@ int	handle_operator(t_token **head, t_token **tail, char c, char *s)
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
 	else if (c == '$')
-		new = create_token(s, TOKEN_TO_EXPAND);
+		new = create_token("$", TOKEN_TO_EXPAND);
 	else if (c == '*')
 		new = create_token("*", TOKEN_WILDCARDS);
 	else if (c == '(')
@@ -328,7 +328,7 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
-			if (c == 'h' || c == '>' || c == '<' || c == '$')
+			if (c == 'h' || c == '>' || c == '<' || c == 'a')
 				(*index)++;
 			i += handle_operator(head, tail, c, s[*index]);
 			if (c == 'h' && s[*index])
