@@ -49,6 +49,13 @@ typedef enum e_token_type
 	TOKEN_EOF
 }			t_token_type;
 
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}	t_env;
+
 typedef struct s_token
 {
 	char *value;          // The actual token string
@@ -62,6 +69,7 @@ typedef struct s_garbag
     void    *addr;
     struct s_garbag *next;
 }   t_gar;
+
 
 void	ft_putstr(char *s, int fd);
 t_token		**create_tokens(char **str);
