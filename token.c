@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/10 17:00:25 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:59:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,7 @@ void	append_token(t_token **head, t_token **tail, t_token *new)
 	*tail = new;
 }
 
-int	handle_operator(t_token **head, t_token **tail, char c)
+int	handle_operator(t_token **head, t_token **tail, char c, char *s)
 {
 	t_token	*new = NULL;
 
@@ -268,22 +268,21 @@ int	handle_operator(t_token **head, t_token **tail, char c)
 	else if (c == 'a')
 		new = create_token(">>", TOKEN_APPEND);
 	else if (c == '>')
-		new = create_token(">", TOKEN_REDIRECT_OUT);
+		new = create_token(s, TOKEN_REDIRECT_OUT);
 	else if (c == 'h')
 		new = create_token("<<", TOKEN_HEREDOC);
 	else if (c == '<')
-		new = create_token("<", TOKEN_REDIRECT_IN);
+		new = create_token(s, TOKEN_REDIRECT_IN);
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
 	else if (c == '$')
-		new = create_token("$", TOKEN_DOLLAR);
+		new = create_token(s, TOKEN_TO_EXPAND);
 	else if (c == '*')
 		new = create_token("*", TOKEN_WILDCARDS);
 	else if (c == '(')
 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
 	else if (c == ')')
 		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
-
 	append_token(head, tail, new);
 	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') ? 2 : 1);
 }
@@ -319,27 +318,29 @@ int	handle_herdoc(char *delimiter)
 	return (1);
 }
 
-void	check_the_string(t_token **head, t_token **tail, char *s, char *next)
+void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i = 0;
 	char	c;
 
-	while (s[i])
+	while (s[*index][i])
 	{
-		c = check_for_operations(s, i);
+		c = check_for_operations(s[*index], i);
 		if (c)
 		{
-			i += handle_operator(head, tail, c);
-			if (c == 'h' && next)
+			if (c == 'h' || c == '>' || c == '<' || c == '$')
+				(*index)++;
+			i += handle_operator(head, tail, c, s[*index]);
+			if (c == 'h' && s[*index])
 			{
-				handle_herdoc(next);
-				append_token(head, tail, create_token(next, TOKEN_WORD));
+				handle_herdoc(s[*index]);
+				append_token(head, tail, create_token(s[*index], TOKEN_WORD));
 			}
 			return ;
 		}
 		i++;
 	}
-	create_simple_token(head, tail, s);
+	create_simple_token(head, tail, s[*index]);
 }
 
 int	counter(char **s)
@@ -363,7 +364,7 @@ t_token	**create_tokens(char **str)
 	while (str[i])
 	{
 		char *next = str[i + 1];
-		check_the_string(&head, &tail, str[i], next);
+		check_the_string(&head, &tail, str, &i);
 		if (tail && tail->type == TOKEN_HEREDOC && next)
 			i++;
 		i++;
