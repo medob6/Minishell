@@ -6,13 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/12 16:42:16 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/13 15:11:51 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-#include <string.h> // for strcmp
 
 void remove_from_the_list(t_env **head, t_env *tmp, t_env *prev)
 {
