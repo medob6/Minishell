@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/12 18:39:25 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/14 09:32:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@
 // 	else if (c == 'e')
 // 		new = create_token("&&", TOKEN_AND);
 // 	else if (c == '$')
-// 		new = create_token("$", TOKEN_DOLLAR);
+// 		new = create_token("$", TOKEN_TO_EXPAND);
 // 	else if (c == '*')
 // 		new = create_token("*", TOKEN_WILDCARDS);
 // 	else if (c == '(')
@@ -164,22 +164,22 @@
 // 	return (i);
 // }
 
-// // int   check_is_valid(char **str)
-// // {
-// //   int   i;
+// int   check_is_valid(char **str)
+// {
+//   int   i;
 
-// //   i = 0;
-// //   while (str[i])
-// //   {
-// //     if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
-// //       return (0);
-// //     if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1],
-// 		//0))
-// //       return (0);
-// //     i++;
-// //   }
-// //   return (1);
-// // }
+//   i = 0;
+//   while (str[i])
+//   {
+//     if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
+//       return (0);
+//     if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1],
+// 		0))
+//       return (0);
+//     i++;
+//   }
+//   return (1);
+// }
 // t_token	**create_tokens(char **str)
 // {
 // 	int		i;
@@ -236,7 +236,10 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-	new->value = value ? ft_strdup(value) : NULL;
+	if (!value)
+		new->value = NULL;
+	else
+		new->value = ft_strdup(value);
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;
@@ -320,16 +323,25 @@ int	handle_herdoc(char *delimiter)
 
 void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
-	int		i = 0;
+	int		i;
 	char	c;
 
+	i = 0;
 	while (s[*index][i])
 	{
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
 			if (c == 'h' || c == '>' || c == '<' || c == 'a')
-				(*index)++;
+			{
+				if (check_for_operations(s[*index + 1], i))
+				{
+					append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
+					return ;
+				}
+				if (s[*index + 1] != NULL)
+					(*index)++;
+			}
 			i += handle_operator(head, tail, c, s[*index]);
 			if (c == 'h' && s[*index])
 			{
@@ -353,17 +365,21 @@ int	counter(char **s)
 
 t_token	**create_tokens(char **str)
 {
-	int		i = 0;
+	int		i;
+	char *next;
 	t_token	**tokens;
-	t_token	*head = NULL;
-	t_token	*tail = NULL;
+	t_token	*head;
+	t_token	*tail;
 
 	if (!str)
 		return (NULL);
 	tokens = ft_malloc(sizeof(t_token *), 2);
+	i = 0;
+	head = NULL;
+	tail = NULL;
 	while (str[i])
 	{
-		char *next = str[i + 1];
+		next = str[i + 1];
 		check_the_string(&head, &tail, str, &i);
 		if (tail && tail->type == TOKEN_HEREDOC && next)
 			i++;
@@ -394,3 +410,19 @@ t_token	**create_tokens(char **str)
 // 		print_tokens(tokens[0]);
 // 	return (0);
 // }
+
+
+// << && ls
+// << herdoc , dele = NULL
+// && AND
+// WORD ls
+
+// ls > >
+// word ls
+// redir_out > , NULL
+// redir_out > , NULL
+
+// << eof && ls
+// << herdoc , dele = eof
+// && AND
+// WORD ls

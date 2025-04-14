@@ -96,11 +96,44 @@ const char	*costruct_prompt(void)
 // 	}
 // 	rl_clear_history();
 // }
+
+char *get_value(int type)
+{
+	if (type == TOKEN_WORD)
+		return ("TOKEN_WORD");
+	else if (type == TOKEN_WILDCARDS) // *
+		return ("TOKEN_WILDCARDS");
+	else if (type == TOKEN_PARENTESIS_OPEN) // (
+		return ("TOKEN_PARENTESIS_OPEN");
+	else if (type == TOKEN_PARENTESIS_CLOSE) // )
+		return ("TOKEN_PARENTESIS_CLOSE");
+	else if (type == TOKEN_AND)
+		return ("TOKEN_AND");
+	else if (type == TOKEN_OR)
+		return ("TOKEN_OR");
+	else if (type == TOKEN_PIPE) // |
+		return ("TOKEN_PIPE");
+	else if (type == TOKEN_REDIRECT_IN) // <
+		return ("TOKEN_REDIRECT_IN");
+	else if (type == TOKEN_REDIRECT_OUT) // >
+		return ("TOKEN_REDIRECT_OUT");
+	else if (type == TOKEN_APPEND) // >>
+		return ("TOKEN_APPEND");
+	else if (type == TOKEN_HEREDOC) // <<
+		return ("TOKEN_HEREDOC");
+	else if (type == TOKEN_TO_EXPAND)
+		return ("TOKEN_TO_EXPAND");
+	else if (type == TOKEN_EOF)
+		return ("TOKEN_EOF");
+	else
+		return ("UNKNOWN_TOKEN");
+}
+
 void print_token(t_token *head)
 {
     while (head)
     {
-        printf("%s %u\n", head->value, head->type);
+        printf("%s %s\n", head->value, get_value(head->type));
         head = head->next;
     }
 }

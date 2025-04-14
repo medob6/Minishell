@@ -6,16 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 15:10:13 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/14 08:19:45 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// void    ft_putstr(char *s, int fd)
-// {
-//     write(fd, s, ft_strlen(s));
-// }
 
 int is_operator(const char *c, int *i)
 {
@@ -118,11 +113,24 @@ int	get_next_qout(char *cmd_line, int i)
 	return (i);
 }
 
+int skip_quotes(const char *s, int i, int *in_word)
+{
+	int q;
+
+	if (s[i] == '\'' || s[i] == '"')
+	{
+		q = get_next_qout((char *)s, i);
+		*in_word = 1;
+		if (q > i)
+			return q;
+	}
+	return i;
+}
+
 int	count_words(char const *s)
 {
 	int	i;
 	int count;
-    int q;
     int in_word;
 
 	i = 0;
@@ -130,22 +138,13 @@ int	count_words(char const *s)
 	in_word = 0;
 	while (s[i])
 	{
-		if (s[i] == '\'' || s[i] == '"')
-		{
-			q = get_next_qout((char *)s, i);
-			if (q > i)
-				i = q;
-			in_word = 1;
-		}
+		i = skip_quotes(s, i, &in_word);
         if (is_operator(s, &i))
             count++;
-		if (s[i] == ' ' || s[i] == '\t' || is_operator(s, &i))
+		if ((s[i] == ' ' || s[i] == '\t' || is_operator(s, &i)) && in_word)
 		{
-			if (in_word)
-			{
-				count++;
-				in_word = 0;
-			}
+			count++;
+			in_word = 0;
 		}
 		else
 			in_word = 1;
@@ -210,20 +209,19 @@ int	check_for_operation(char *cmd_line)
 	while (cmd_line[i])
 	{
 		if (cmd_line[i] == '|')
-			return ((cmd_line[i + 1] == '|') ? 2 : 1);
+			return ((cmd_line[i + 1] == '|') + 1);
 		else if (cmd_line[i] == '&')
-			return ((cmd_line[i + 1] == '&') ? 2 : 0);
+		{
+			if (cmd_line[i + 1] == '&')
+				return (2);
+			return (0);
+		}
 		else if (cmd_line[i] == '>')
-			return ((cmd_line[i + 1] == '>') ? 2 : 1);
+			return ((cmd_line[i + 1] == '>') + 1);
 		else if (cmd_line[i] == '<')
-			return ((cmd_line[i + 1] == '<') ? 2 : 1);
-		else if (cmd_line[i] == '$')
-			return (1);
-		else if (cmd_line[i] == '*')
-			return (1);
-		else if (cmd_line[i] == '(')
-			return (1);
-		else if (cmd_line[i] == ')')
+			return ((cmd_line[i + 1] == '<') + 1);
+		else if (cmd_line[i] == '$' || cmd_line[i] == '*' ||
+		cmd_line[i] == '(' || cmd_line[i] == ')')
 			return (1);
 		i++;
 	}
