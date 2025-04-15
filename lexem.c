@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 10:28:25 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 16:06:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,12 +316,12 @@ char	**lexer(char *cmd_line)
 
 	if (!check_quotes(cmd_line))
 	{
-		ft_putstr("ERROR:\nbalanced brakets.\n", 2);
+		ft_print("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
 	}
 	if (!check_parenthesis(cmd_line))
 	{
-		ft_putstr("ERROR:\nbalanced paronthesis.\n", 2);
+		ft_print("ERROR:\nbalanced paronthesis.\n", 2);
 		return (NULL);
 	}
 	total = count_words(cmd_line);

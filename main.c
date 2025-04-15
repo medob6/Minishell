@@ -1,10 +1,5 @@
 #include "minishell.h"
 
-void    ft_putstr(char *s, int fd)
-{
-    write(fd, s, ft_strlen(s));
-}
-
 void    ft_lstclear(t_gar **lst)
 {
         t_gar  *d;
@@ -43,7 +38,6 @@ const char	*costruct_prompt(void)
 	{
 		tmp = ft_strjoin("~", cwd + strlen(home));
 		prompt = ft_strjoin(tmp, "$ ");
-		free(tmp);
 	}
 	else
 		prompt = ft_strjoin(cwd, "$ ");
@@ -59,7 +53,7 @@ const char	*costruct_prompt(void)
 // 	char	*tmp;
 
 // 	// just take the current working dir and $
-// 	cwd = malloc(100);
+// 	cwd = ft_malloc(100);
 // 	if (!cwd)
 // 	{
 // 		perror("ft_malloc");
@@ -155,6 +149,7 @@ int	main(void)
 	t_token		**h;
 
 	cmd_line = NULL;
+	ft_error(1);
 	cmd_line = ft_malloc(1, 100);
 	prompt = costruct_prompt();
 	while (1)
@@ -175,7 +170,8 @@ int	main(void)
 		//print_lexer(lexer(cmd_line));
 		rl_on_new_line();
 	}
-	// free_trash();
+	if (ft_error(0) == -1)
+		return (1);
 	ft_lstclear(garbage_list());
 	rl_clear_history();
 	return (0);

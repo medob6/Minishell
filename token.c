@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 11:20:49 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 12:06:15 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	handle_operator(t_token **head, t_token **tail, char *s, char c)
 {
 	t_token	*new;
 
+	new = NULL;
 	if (c == 'o')
 		new = create_token("||", TOKEN_OR);
 	else if (c == '|')
@@ -118,10 +119,7 @@ int	handle_herdoc(char *delimiter)
 			break ;
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
 			&& ft_strlen(line) == ft_strlen(delimiter))
-		{
-			free(line);
 			break ;
-		}
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);

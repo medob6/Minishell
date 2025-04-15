@@ -71,9 +71,9 @@ typedef struct s_garbag
 }   t_gar;
 
 
-void	ft_putstr(char *s, int fd);
 t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);
 void    *ft_malloc(int size, int bytes);
 t_gar   **garbage_list(void);
+int	ft_print(char *c, int fd);
 #endif
