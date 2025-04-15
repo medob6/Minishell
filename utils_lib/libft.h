@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 15:28:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/04/09 15:17:10 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 16:03:09 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+#include "../minishell.h"
 
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s1);

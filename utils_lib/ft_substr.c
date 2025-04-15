@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:06:38 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/09 15:18:20 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 16:02:54 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char    *ft_substr(char const *s, unsigned int start, size_t len)
         if (len > e - start)
                 len = e - start;
         i = (size_t)start;
-        p = malloc(sizeof(char) * (len + 1));
+        p = ft_malloc(sizeof(char), (len + 1));
         if (p == NULL)
                 return (NULL);
         j = 0;
