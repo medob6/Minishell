@@ -6,220 +6,28 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/14 09:32:13 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 11:20:49 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// char	check_for_operations(char *cmd_line, int i)
-// {
-// 	if (cmd_line[i] == '|')
-// 		return ((cmd_line[i + 1] == '|') ? 'o' : '|');
-// 	else if (cmd_line[i] == '&')
-// 		return ((cmd_line[i + 1] == '&') ? 'e' : '\0');
-// 	else if (cmd_line[i] == '>')
-// 		return ((cmd_line[i + 1] == '>') ? 'a' : '>');
-// 	else if (cmd_line[i] == '<')
-// 		return ((cmd_line[i + 1] == '<') ? 'h' : '<');
-// 	else if (cmd_line[i] == '$')
-// 		return ('$');
-// 	else if (cmd_line[i] == '*')
-// 		return ('*');
-// 	else if (cmd_line[i] == '(')
-// 		return ('(');
-// 	else if (cmd_line[i] == ')')
-// 		return (')');
-// 	return ('\0');
-// }
-
-// t_token	*create_token(char *value, t_token_type type)
-// {
-// 	t_token	*new;
-
-// 	new = ft_malloc(sizeof(t_token), 1);
-// 	new->value = ft_strdup(value);
-// 	new->type = type;
-// 	new->next = NULL;
-// 	new->prev = NULL;
-// 	return (new);
-// }
-
-// void	append_token(t_token **head, t_token **tail, t_token *new)
-// {
-// 	if (!new)
-// 		return ;
-// 	if (!*head)
-// 		*head = new;
-// 	else
-// 	{
-// 		(*tail)->next = new;
-// 		new->prev = *tail;
-// 	}
-// 	*tail = new;
-// }
-
-// int	handle_operator(t_token **head, t_token **tail, char c)
-// {
-// 	t_token	*new;
-
-// 	new = NULL;
-// 	if (c == 'o')
-// 		new = create_token("||", TOKEN_OR);
-// 	else if (c == '|')
-// 		new = create_token("|", TOKEN_PIPE);
-// 	else if (c == 'a')
-// 		new = create_token(">>", TOKEN_APPEND);
-// 	else if (c == '>')
-// 		new = create_token(">", TOKEN_REDIRECT_OUT);
-// 	else if (c == 'h')
-// 		new = create_token("<<", TOKEN_HEREDOC);
-// 	else if (c == '<')
-// 		new = create_token("<", TOKEN_REDIRECT_IN);
-// 	else if (c == 'e')
-// 		new = create_token("&&", TOKEN_AND);
-// 	else if (c == '$')
-// 		new = create_token("$", TOKEN_TO_EXPAND);
-// 	else if (c == '*')
-// 		new = create_token("*", TOKEN_WILDCARDS);
-// 	else if (c == '(')
-// 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
-// 	else if (c == ')')
-// 		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
-// 	append_token(head, tail, new);
-// 	if (c == 'o' || c == 'a' || c == 'h' || c == 'e')
-// 		return (2);
-// 	return (1);
-// }
-
-// void	create_simple_token(t_token **head, t_token **tail, char *s)
-// {
-// 	t_token	*new;
-
-// 	new = create_token(s, TOKEN_WORD);
-// 	append_token(head, tail, new);
-// }
-
-// int	handle_herdoc(char *delimiter)
-// {
-// 	char	*line;
-// 	int		fd;
-
-// 	printf("%s\n", delimiter);
-// 	fd = open("/tmp/apah", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-// 	if (fd < 0)
-// 		return (0);
-// 	line = NULL;
-// 	ft_putstr("heredoc> ", 1);
-// 	while (1)
-// 	{
-// 		line = get_next_line(0);
-// 		if (line)
-// 		{
-// 			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-// 				&& line[ft_strlen(delimiter)] == '\n' && ft_strlen(line) != 2)
-// 				break ;
-// 			write(fd, line, ft_strlen(line));
-// 			if (line[ft_strlen(line) - 1] == '\n')
-// 				ft_putstr("heredoc> ", 1);
-// 			free(line);
-// 		}
-// 	}
-// 	free(line);
-// 	close(fd);
-// 	return (1);
-// }
-
-// void	check_the_string(t_token **head, t_token **tail, char *s)
-// {
-// 	int		i;
-// 	int		is_quote;
-// 	char	c;
-
-// 	i = 0;
-// 	is_quote = 0;
-// 	while (s[i])
-// 	{
-// 		if (s[i] == '\'' || s[i] == '"')
-// 			is_quote = 1;
-// 		c = check_for_operations(s, i);
-// 		if (c && !is_quote)
-// 		{
-// 			i += handle_operator(head, tail, c);
-// 			continue ;
-// 		}
-// 		i++;
-// 	}
-// 	if (!c)
-// 		create_simple_token(head, tail, s);
-// }
-
-// int	counter(char **s)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (s[i])
-// 		i++;
-// 	return (i);
-// }
-
-// int   check_is_valid(char **str)
-// {
-//   int   i;
-
-//   i = 0;
-//   while (str[i])
-//   {
-//     if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
-//       return (0);
-//     if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1],
-// 		0))
-//       return (0);
-//     i++;
-//   }
-//   return (1);
-// }
-// t_token	**create_tokens(char **str)
-// {
-// 	int		i;
-// 	t_token	**tokens;
-// 	t_token	*head;
-// 	t_token	*tail;
-
-// 	if (!str)
-// 		return (NULL);
-// 	tokens = ft_malloc(sizeof(t_token *), (counter(str) + 1));
-// 	head = NULL;
-// 	tail = NULL;
-// 	i = 0;
-// 	while (str[i])
-// 	{
-// 		check_the_string(&head, &tail, str[i]);
-// 		if (tail && tail->type == TOKEN_HEREDOC && str[i + 1])
-// 		{
-// 			handle_herdoc(str[i + 1]);
-// 			append_token(&head, &tail, create_token(str[i + 1],
-// 						TOKEN_WORD));
-// 			i++;
-// 		}
-// 		i++;
-// 	}
-// 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
-// 	tokens[0] = head;
-// 	tokens[1] = NULL;
-// 	return (tokens);
-// }
 char	check_for_operations(char *cmd_line, int i)
 {
-	if (cmd_line[i] == '|')
-		return ((cmd_line[i + 1] == '|') ? 'o' : '|');
-	else if (cmd_line[i] == '&')
-		return ((cmd_line[i + 1] == '&') ? 'e' : '\0');
+	if (cmd_line[i] == '|' && cmd_line[i + 1] == '|')
+		return ('o');
+	else if (cmd_line[i] == '&' && cmd_line[i + 1] == '&')
+		return ('e');
+	else if (cmd_line[i] == '>' && cmd_line[i + 1] == '>')
+		return ('a');
+	else if (cmd_line[i] == '<' && cmd_line[i + 1] == '<')
+		return ('h');
+	else if (cmd_line[i] == '|')
+		return ('|');
 	else if (cmd_line[i] == '>')
-		return ((cmd_line[i + 1] == '>') ? 'a' : '>');
+		return ('>');
 	else if (cmd_line[i] == '<')
-		return ((cmd_line[i + 1] == '<') ? 'h' : '<');
+		return ('<');
 	else if (cmd_line[i] == '$')
 		return ('$');
 	else if (cmd_line[i] == '*')
@@ -236,10 +44,7 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-	if (!value)
-		new->value = NULL;
-	else
-		new->value = ft_strdup(value);
+	new->value = ft_strdup(value);
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;
@@ -260,26 +65,24 @@ void	append_token(t_token **head, t_token **tail, t_token *new)
 	*tail = new;
 }
 
-int	handle_operator(t_token **head, t_token **tail, char c, char *s)
+int	handle_operator(t_token **head, t_token **tail, char *s, char c)
 {
-	t_token	*new = NULL;
+	t_token	*new;
 
 	if (c == 'o')
 		new = create_token("||", TOKEN_OR);
 	else if (c == '|')
 		new = create_token("|", TOKEN_PIPE);
 	else if (c == 'a')
-		new = create_token(s, TOKEN_APPEND);
+		new = create_token(">>", TOKEN_APPEND);
 	else if (c == '>')
-		new = create_token(s, TOKEN_REDIRECT_OUT);
-	else if (c == 'h')
-		new = create_token("<<", TOKEN_HEREDOC);
+		new = create_token(">", TOKEN_REDIRECT_OUT);
 	else if (c == '<')
-		new = create_token(s, TOKEN_REDIRECT_IN);
+		new = create_token("<", TOKEN_REDIRECT_IN);
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
 	else if (c == '$')
-		new = create_token("$", TOKEN_TO_EXPAND);
+		new = create_token(s, TOKEN_TO_EXPAND);
 	else if (c == '*')
 		new = create_token("*", TOKEN_WILDCARDS);
 	else if (c == '(')
@@ -287,12 +90,14 @@ int	handle_operator(t_token **head, t_token **tail, char c, char *s)
 	else if (c == ')')
 		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
 	append_token(head, tail, new);
-	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') ? 2 : 1);
+	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') + 1);
 }
 
 void	create_simple_token(t_token **head, t_token **tail, char *s)
 {
-	t_token	*new = create_token(s, TOKEN_WORD);
+	t_token	*new;
+
+	new = create_token(s, TOKEN_WORD);
 	append_token(head, tail, new);
 }
 
@@ -301,52 +106,99 @@ int	handle_herdoc(char *delimiter)
 	char	*line;
 	int		fd;
 
+	if (!delimiter)
+		return (0);
 	fd = open("/tmp/apah", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 0)
 		return (0);
-	line = NULL;
 	while (1)
 	{
 		line = readline("> ");
-		if (line)
+		if (!line)
+			break ;
+		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
+			&& ft_strlen(line) == ft_strlen(delimiter))
 		{
-			if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
-				break ;
-			write(fd, line, ft_strlen(line));
 			free(line);
+			break ;
 		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
 	}
-	free(line);
 	close(fd);
 	return (1);
+}
+
+void	append_redirect_arg(t_token **head, t_token **tail, char c, char *next)
+{
+	if (c == '>')
+		append_token(head, tail, create_token(next, TOKEN_REDIRECT_OUT));
+	else if (c == 'a')
+		append_token(head, tail, create_token(next, TOKEN_APPEND));
+	else
+		append_token(head, tail, create_token(next, TOKEN_REDIRECT_IN));
+}
+
+void	append_empty_redirect(t_token **head, t_token **tail, char c)
+{
+	if (c == '>')
+		append_token(head, tail, create_token(NULL, TOKEN_REDIRECT_OUT));
+	else if (c == 'a')
+		append_token(head, tail, create_token(NULL, TOKEN_APPEND));
+	else
+		append_token(head, tail, create_token(NULL, TOKEN_REDIRECT_IN));
+}
+
+int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
+{
+	char	nc;
+
+	if (!next)
+		return (0);
+	nc = check_for_operations(next, 0);
+	if (nc == '\0')
+	{
+		append_redirect_arg(head, tail, c, next);
+		return (1);
+	}
+	else
+		append_empty_redirect(head, tail, c);
+	return (0);
+}
+
+int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
+{
+	if (next && check_for_operations(next, 0) == '\0')
+	{
+		handle_herdoc(next);
+		append_token(head, tail, create_token(next, TOKEN_HEREDOC));
+		return (1);
+	}
+	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
+	return (0);
 }
 
 void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
+	char	*next;
 
 	i = 0;
+	next = s[*index + 1];
 	while (s[*index][i])
 	{
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
-			if (c == 'h' || c == '>' || c == '<' || c == 'a')
+			if (c == 'h')
+				*index += handle_heredoc_case(head, tail, next);
+			else
 			{
-				if (check_for_operations(s[*index + 1], i))
-				{
-					append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
-					return ;
-				}
-				if (s[*index + 1] != NULL)
-					(*index)++;
-			}
-			i += handle_operator(head, tail, c, s[*index]);
-			if (c == 'h' && s[*index])
-			{
-				handle_herdoc(s[*index]);
-				append_token(head, tail, create_token(s[*index], TOKEN_HEREDOC));
+				i += handle_operator(head, tail, s[*index], c);
+				if (c == '>' || c == '<' || c == 'a')
+					*index += handle_redirection(head, tail, c, next);
 			}
 			return ;
 		}
@@ -357,7 +209,9 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 
 int	counter(char **s)
 {
-	int	i = 0;
+	int	i;
+
+	i = 0;
 	while (s[i])
 		i++;
 	return (i);
@@ -366,23 +220,19 @@ int	counter(char **s)
 t_token	**create_tokens(char **str)
 {
 	int		i;
-	char *next;
 	t_token	**tokens;
 	t_token	*head;
 	t_token	*tail;
 
+	head = NULL;
+	tail = NULL;
 	if (!str)
 		return (NULL);
 	tokens = ft_malloc(sizeof(t_token *), 2);
 	i = 0;
-	head = NULL;
-	tail = NULL;
 	while (str[i])
 	{
-		next = str[i + 1];
 		check_the_string(&head, &tail, str, &i);
-		if (tail && tail->type == TOKEN_HEREDOC && next)
-			i++;
 		i++;
 	}
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
@@ -390,39 +240,3 @@ t_token	**create_tokens(char **str)
 	tokens[1] = NULL;
 	return (tokens);
 }
-
-// void print_tokens(t_token *head)
-// {
-//     while (head)
-//     {
-//         printf("%s %u\n", head->value, head->type);
-//         head = head->next;
-//     }
-// }
-// int	main(void)
-// {
-// 	char *input[] = {
-// 		"echo", "hello", "&&", "cat", "<<", "EOF", NULL
-// 	};
-
-// 	t_token **tokens = create_tokens(input);
-// 	if (tokens && tokens[0])
-// 		print_tokens(tokens[0]);
-// 	return (0);
-// }
-
-
-// << && ls
-// << herdoc , dele = NULL
-// && AND
-// WORD ls
-
-// ls > >
-// word ls
-// redir_out > , NULL
-// redir_out > , NULL
-
-// << eof && ls
-// << herdoc , dele = eof
-// && AND
-// WORD ls
