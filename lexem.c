@@ -6,17 +6,21 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/14 08:19:45 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/15 10:28:25 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int is_operator(const char *c, int *i)
+// void    ft_putstr(char *s, int fd)
+// {
+//     write(fd, s, ft_strlen(s));
+// }
+
+int	is_operator(const char *c, int *i)
 {
-	return (c[*i] == '&' || c[*i] == '|' ||
-	c[*i] == '<' || c[*i] == '>'
-	|| c[*i] == '$' || c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
+	return (c[*i] == '&' || c[*i] == '|' || c[*i] == '<' || c[*i] == '>'
+		|| c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
 }
 
 int	check_single_quotes(char *cmd_line)
@@ -113,25 +117,25 @@ int	get_next_qout(char *cmd_line, int i)
 	return (i);
 }
 
-int skip_quotes(const char *s, int i, int *in_word)
+int	skip_quotes(const char *s, int i, int *in_word)
 {
-	int q;
+	int	q;
 
 	if (s[i] == '\'' || s[i] == '"')
 	{
 		q = get_next_qout((char *)s, i);
 		*in_word = 1;
 		if (q > i)
-			return q;
+			return (q);
 	}
-	return i;
+	return (i);
 }
 
 int	count_words(char const *s)
 {
 	int	i;
-	int count;
-    int in_word;
+	int	count;
+	int	in_word;
 
 	i = 0;
 	count = 0;
@@ -139,8 +143,8 @@ int	count_words(char const *s)
 	while (s[i])
 	{
 		i = skip_quotes(s, i, &in_word);
-        if (is_operator(s, &i))
-            count++;
+		if (is_operator(s, &i))
+			count++;
 		if ((s[i] == ' ' || s[i] == '\t' || is_operator(s, &i)) && in_word)
 		{
 			count++;
@@ -220,8 +224,7 @@ int	check_for_operation(char *cmd_line)
 			return ((cmd_line[i + 1] == '>') + 1);
 		else if (cmd_line[i] == '<')
 			return ((cmd_line[i + 1] == '<') + 1);
-		else if (cmd_line[i] == '$' || cmd_line[i] == '*' ||
-		cmd_line[i] == '(' || cmd_line[i] == ')')
+		else if (cmd_line[i] == '*' || cmd_line[i] == '(' || cmd_line[i] == ')')
 			return (1);
 		i++;
 	}
@@ -328,7 +331,7 @@ char	**lexer(char *cmd_line)
 
 // int main(void)
 // {
-// 	char **s = lexer("echo hello&&wc -c");
+// 	char **s = lexer("$ls");
 // 	int i = 0;
 // 	while (s[i])
 // 	{
