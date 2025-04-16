@@ -6,21 +6,13 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/09 15:09:23 by salahian         ###   ########.fr       */
-=======
 /*   Updated: 2025/04/15 12:06:15 by salahian         ###   ########.fr       */
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-<<<<<<< HEAD
-char check_for_operations(char *cmd_line, int i)
-=======
 char	check_for_operations(char *cmd_line, int i)
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 {
 	if (cmd_line[i] == '|' && cmd_line[i + 1] == '|')
 		return ('o');
@@ -52,35 +44,15 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-<<<<<<< HEAD
-    new->value = strdup(value);
-    new->type = type;
-    new->next = NULL;
-    new->prev = NULL;
-    return new;
-=======
 	new->value = ft_strdup(value);
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;
 	return (new);
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 }
 
 void	append_token(t_token **head, t_token **tail, t_token *new)
 {
-<<<<<<< HEAD
-    if (!new) 
-		return;
-    if (!*head)
-        *head = new;
-    else
-    {
-        (*tail)->next = new;
-        new->prev = *tail;
-    }
-    *tail = new;
-=======
 	if (!new)
 		return ;
 	if (!*head)
@@ -91,7 +63,6 @@ void	append_token(t_token **head, t_token **tail, t_token *new)
 		new->prev = *tail;
 	}
 	*tail = new;
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 }
 
 int	handle_operator(t_token **head, t_token **tail, char *s, char c)
@@ -109,28 +80,16 @@ int	handle_operator(t_token **head, t_token **tail, char *s, char c)
 		new = create_token(">", TOKEN_REDIRECT_OUT);
 	else if (c == '<')
 		new = create_token("<", TOKEN_REDIRECT_IN);
-<<<<<<< HEAD
-    else if (c == 'e')
-		new = create_token("&&", TOKEN_AND);
-    else if (c == '$')
-		new = create_token("$", TOKEN_DOLLAR);
-=======
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
 	else if (c == '$')
 		new = create_token(s, TOKEN_TO_EXPAND);
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 	else if (c == '*')
 		new = create_token("*", TOKEN_WILDCARDS);
 	else if (c == '(')
 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
 	else if (c == ')')
 		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
-<<<<<<< HEAD
-  append_token(head, tail, new);
-  if (c == 'o' || c == 'a' || c == 'h' || c == 'e')
-		return (2);
-=======
 	append_token(head, tail, new);
 	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') + 1);
 }
@@ -166,7 +125,6 @@ int	handle_herdoc(char *delimiter)
 		free(line);
 	}
 	close(fd);
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 	return (1);
 }
 
@@ -226,29 +184,6 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 	char	*next;
 
 	i = 0;
-<<<<<<< HEAD
-	is_quote = 0;
-    while (s[i])
-    {
-        if (s[i] == '\'' || s[i] == '"')
-			is_quote = 1;
-        c = check_for_operations(s, i);
-        if (c && !is_quote)
-        {
-            i += handle_operator(head, tail, c);
-			      continue ;
-        }
-        i++;
-    }
-	if (!c)
-    	create_simple_token(head, tail, s);
-}
-
-int counter(char **s)
-{
-    int i = 0;
-    while (s[i])
-=======
 	next = s[*index + 1];
 	while (s[*index][i])
 	{
@@ -265,32 +200,12 @@ int counter(char **s)
 			}
 			return ;
 		}
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 		i++;
 	}
 	create_simple_token(head, tail, s[*index]);
 }
- 
-// int   check_is_valid(char **str)
-// {
-//   int   i;
 
-<<<<<<< HEAD
-//   i = 0;
-//   while (str[i])
-//   {
-//     if (check_for_operations(str[i], 0) && str[i + 1] == NULL)
-//       return (0);
-//     if (check_for_operations(str[i], 0) && check_for_operations(str[i + 1], 0))
-//       return (0);
-//     i++;
-//   }
-//   return (1);
-// }
-t_token **create_tokens(char **str)
-=======
 int	counter(char **s)
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 {
 	int	i;
 
@@ -307,33 +222,12 @@ t_token	**create_tokens(char **str)
 	t_token	*head;
 	t_token	*tail;
 
-<<<<<<< HEAD
-	if (!str)
-		return (NULL);
-  // if (!check_is_valid(str))
-  // {
-  //   ft_putstr("appah: syntax error near unexpected token\n", 2);
-  //   return (NULL);
-  // }
-	tokens = ft_malloc(sizeof(t_token *), (counter(str) + 1));
-=======
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 	head = NULL;
 	tail = NULL;
 	if (!str)
 		return (NULL);
 	tokens = ft_malloc(sizeof(t_token *), 2);
 	i = 0;
-<<<<<<< HEAD
-  while (str[i])
-  {
-      check_the_string(&head, &tail, str[i]);
-      i++;
-  }
-  tokens[0] = head;
-  tokens[1] = NULL;
-  return tokens;
-=======
 	while (str[i])
 	{
 		check_the_string(&head, &tail, str, &i);
@@ -343,5 +237,4 @@ t_token	**create_tokens(char **str)
 	tokens[0] = head;
 	tokens[1] = NULL;
 	return (tokens);
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 }

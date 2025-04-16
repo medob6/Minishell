@@ -60,35 +60,20 @@ typedef struct s_token
 {
 	char *value;          // The actual token string
 	t_token_type type;
-<<<<<<< HEAD
-	struct s_token *prev;   // The type of token
-=======
 	struct s_token *prev;  // The type of token
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
 typedef struct s_garbag
 {
-<<<<<<< HEAD
-    void    *add;
-    struct s_garbag *next;
-}   t_gar;
-
-void	ft_putstr(char *s, int fd);
-=======
     void    *addr;
     struct s_garbag *next;
 }   t_gar;
 
 
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);
 void    *ft_malloc(int size, int bytes);
 t_gar   **garbage_list(void);
-<<<<<<< HEAD
-=======
 int	ft_print(char *c, int fd);
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 #endif
