@@ -45,6 +45,19 @@ const char	*costruct_prompt(void)
 	return (prompt);
 }
 
+char	*get_redir_value(int type)
+{
+	if (type == TOKEN_REDIRECT_IN) // <
+		return ("<");
+	else if (type == TOKEN_REDIRECT_OUT) // >
+		return (">");
+	else if (type == TOKEN_APPEND) // >>
+		return (">>");
+	else if (type == TOKEN_HEREDOC) // <<
+		return ("<<");
+	else
+		return ("fuck you redirections");
+}
 char	*get_value(int type)
 {
 	if (type == TOKEN_WORD)
@@ -148,14 +161,21 @@ void	print_ast(t_ast_node *node, int depth)
 	printf("_______");
 	if (node->type == AST_SIMPLE_CMD)
 	{
-		printf("AST Node: %s  arg_list : (", get_value_ast(node->type));
-		for (size_t j = 0; j < node->children->length; j++)
-			printf(" %s ", (char *)(node->children->items[j]));
-		printf(")  | ");
-		// TODO: print redirct list + newline
-		printf(" redirct_list : (");
-		for (size_t d = 0; d < node->redirect_list->length; d++)
-			printf(" %s ", (char *)(node->redirect_list->items[d]));
+		printf("AST Node: AST_SIMPLE_COMMAND  arg_list : (");
+		if (node->children)
+		{
+			for (size_t j = 0; j < node->children->length; j++)
+				printf(" %s ", (char *)(node->children->items[j]));
+		}
+		printf(") AND ");
+		printf("redirct_list : (");
+		if (node->redirect_list)
+		{
+			for (size_t d = 0; d < node->redirect_list->length; d++)
+				printf("  {redir_type : %s, filename : %s} ",
+					get_redir_value(((t_token *)node->redirect_list->items[d])->type),
+					((t_token *)node->redirect_list->items[d])->value);
+		}
 		printf(") \n");
 		return ;
 	}
@@ -180,14 +200,13 @@ void	print_ast(t_ast_node *node, int depth)
 
 int	main(void)
 {
-	char *cmd_line;
-	const char *prompt;
-	t_token **h;
-	t_ast_node *ast;
+	char		*cmd_line;
+	const char	*prompt;
+	t_token		**h;
+	t_ast_node	*ast;
 
 	ft_error(1);
 	prompt = costruct_prompt();
-
 	while (1)
 	{
 		cmd_line = readline(prompt);
@@ -195,21 +214,23 @@ int	main(void)
 			break ;
 		if (*cmd_line)
 			add_history(cmd_line);
-
 		h = create_tokens(lexer(cmd_line));
 		ast = parse_tokens(*h);
 		if (!ast)
 			printf("❌ Parser returned NULL (syntax error?)\n");
 		else
 			print_ast(ast, 0);
-
 		free(cmd_line);
 		rl_on_new_line();
 	}
-
 	if (ft_error(0) == -1)
 		return (1);
 	ft_lstclear(garbage_list());
 	rl_clear_history();
 	return (0);
 }
+
+// example test
+// cat << eof  && (echo hello > file1 && cat < file1 | grep hi
+		// || echo "fallback") && (ls	-l | grep .c) || mkdir test
+		// && echo done >> lolo
