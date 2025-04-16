@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 12:06:15 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/16 18:35:22 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,6 @@ int	handle_operator(t_token **head, t_token **tail, char *s, char c)
 		new = create_token("||", TOKEN_OR);
 	else if (c == '|')
 		new = create_token("|", TOKEN_PIPE);
-	else if (c == 'a')
-		new = create_token(">>", TOKEN_APPEND);
-	else if (c == '>')
-		new = create_token(">", TOKEN_REDIRECT_OUT);
-	else if (c == '<')
-		new = create_token("<", TOKEN_REDIRECT_IN);
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
 	else if (c == '$')
