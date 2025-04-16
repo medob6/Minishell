@@ -1,21 +1,23 @@
+#include "array.h"
 #include "minishell.h"
+#include "parser.h"
 
-void    ft_lstclear(t_gar **lst)
+void	ft_lstclear(t_gar **lst)
 {
-        t_gar  *d;
-        t_gar  *s;
+	t_gar	*d;
+	t_gar	*s;
 
-        if (lst == NULL || *lst == NULL)
-                return ;
-        d = *lst;
-        while (d)
-        {
-                s = d->next;
-                free(d->addr);
-                free(d);
-                d = s;
-        }
-        *lst = NULL;
+	if (lst == NULL || *lst == NULL)
+		return ;
+	d = *lst;
+	while (d)
+	{
+		s = d->next;
+		free(d->addr);
+		free(d);
+		d = s;
+	}
+	*lst = NULL;
 }
 
 const char	*costruct_prompt(void)
@@ -33,7 +35,6 @@ const char	*costruct_prompt(void)
 	}
 	getcwd(cwd, 100);
 	home = getenv("HOME");
-
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
 		tmp = ft_strjoin("~", cwd + ft_strlen(home));
@@ -43,7 +44,6 @@ const char	*costruct_prompt(void)
 		prompt = ft_strjoin(cwd, "$ ");
 	return (prompt);
 }
-
 
 // const char	*costruct_prompt(void)
 // {
@@ -91,7 +91,7 @@ const char	*costruct_prompt(void)
 // 	rl_clear_history();
 // }
 
-char *get_value(int type)
+char	*get_value(int type)
 {
 	if (type == TOKEN_WORD)
 		return ("TOKEN_WORD");
@@ -123,13 +123,13 @@ char *get_value(int type)
 		return ("UNKNOWN_TOKEN");
 }
 
-void print_token(t_token *head)
+void	print_token(t_token *head)
 {
-    while (head)
-    {
-        printf("%s %s\n", head->value, get_value(head->type));
-        head = head->next;
-    }
+	while (head)
+	{
+		printf("%s %s\n", head->value, get_value(head->type));
+		head = head->next;
+	}
 }
 
 int	ft_error(int a)
@@ -150,41 +150,105 @@ int	ft_print(char *c, int fd)
 
 void	print_lexer(char **s)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (s && s[i])
 	{
 		printf("token[%d]: [%s]\n", i, s[i]);
 		i++;
 	}
 }
+char	*get_value_ast(int type)
+{
+	if (type == AST_COMPOUNED_CMD)
+		return ("AST_COMPOUNED_CMD");
+	else if (type == AST_CMD)
+		return ("AST_CMD");
+	else if (type == AST_SIMPLE_CMD)
+		return ("AST_SIMPLE_CMD");
+	else if (type == AST_PIPELINE)
+		return ("AST_PIPELINE");
+	else if (type == AST_AND)
+		return ("AST_AND");
+	else if (type == AST_OR)
+		return ("AST_OR");
+	else if (type == AST_SUBSHELL)
+		return ("AST_SUBSHELL");
+	else if (type == AST_ERROR)
+		return ("AST_ERROR");
+	else
+		return ("argment");
+}
+void	print_ast(t_ast_node *node, int depth)
+{
+	t_token	*redir;
+
+	if (!node)
+		return ;
+	for (int i = 0; i < depth; i++)
+	{
+		if (i < depth)
+			printf("\t|");
+	}
+	printf("_______");
+	if (node->type == AST_SIMPLE_CMD)
+	{
+		printf("AST Node: %s  arg_list : (", get_value_ast(node->type));
+		for (size_t j = 0; j < node->children->length; j++)
+			printf(" %s ", (char *)(node->children->items[j]));
+		printf(") ");
+		// TODO: print redirct list + newline
+		return ;
+	}
+	else
+		printf("AST Node: %s\n", get_value_ast(node->type));
+	if (node->redirect_list)
+	{
+		for (size_t i = 0; i < node->redirect_list->length; i++)
+		{
+			redir = node->redirect_list->items[i];
+			for (int j = 0; j < depth + 1; j++)
+				printf("  ");
+			printf("Redirect: %s\n", redir->value);
+		}
+	}
+	if (node->children)
+	{
+		for (size_t i = 0; i < node->children->length; i++)
+			print_ast(node->children->items[i], depth + 1);
+	}
+}
+
 int	main(void)
 {
-	char		*cmd_line;
-	const char	*prompt;
-	t_token		**h;
+	char *cmd_line;
+	const char *prompt;
+	t_token **h;
+	t_ast_node *ast;
 
-	cmd_line = NULL;
 	ft_error(1);
-	cmd_line = ft_malloc(1, 100);
 	prompt = costruct_prompt();
+
 	while (1)
 	{
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
+		if (*cmd_line) // only add non-empty lines to history
+			add_history(cmd_line);
+
 		h = create_tokens(lexer(cmd_line));
-		 if (h)
-		 	print_token(*h);
-		// char *line;
-    	// printf("Testing standard input...\n");
-    	// line = get_next_line(0); // This should print a prompt and wait for input
-    	// if (line) {
-        // 	printf("You typed: %s\n", line);
-        // 	free(line);
-    	// }
-		//print_lexer(lexer(cmd_line));
+		ast = parse_tokens(*h);
+		if (!ast)
+			printf("❌ Parser returned NULL (syntax error?)\n");
+		else
+			print_ast(ast, 0);
+
+		free(cmd_line); // free after processing
 		rl_on_new_line();
 	}
+
 	if (ft_error(0) == -1)
 		return (1);
 	ft_lstclear(garbage_list());
