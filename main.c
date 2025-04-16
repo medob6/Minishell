@@ -52,9 +52,9 @@ const char	*costruct_prompt(void)
 	getcwd(cwd, 100);
 	home = getenv("HOME");
 
-	if (home && !strncmp(cwd, home, strlen(home)))
+	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
-		tmp = ft_strjoin("~", cwd + strlen(home));
+		tmp = ft_strjoin("~", cwd + ft_strlen(home));
 		prompt = ft_strjoin(tmp, "$ ");
 	}
 	else
@@ -122,6 +122,21 @@ void print_token(t_token *head)
     }
 }
 
+int	ft_error(int a)
+{
+	static int	c;
+
+	if (a != 0)
+		c = a;
+	return (c);
+}
+
+int	ft_print(char *c, int fd)
+{
+	if (ft_error(0) != -1)
+		ft_error(write(fd, c, ft_strlen(c)));
+	return (ft_error(0));
+}
 
 void	print_lexer(char **s)
 {

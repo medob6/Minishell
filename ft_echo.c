@@ -6,27 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 16:21:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/16 11:13:04 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_error(int a)
-{
-	static int	c;
-
-	if (a != 0)
-		c = a;
-	return (c);
-}
-
-int	ft_print(char *c, int fd)
-{
-	if (ft_error(0) != -1)
-		ft_error(write(fd, c, ft_strlen(c)));
-	return (ft_error(0));
-}
 
 int	check_the_string(char *s)
 {
