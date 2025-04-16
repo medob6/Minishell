@@ -71,6 +71,7 @@ typedef struct s_garbag
     struct s_garbag *next;
 }   t_gar;
 
+// void print_ast(t_ast_node *node, int depth);
 
 t_token		**create_tokens(char **str);
 char **lexer(char *cmd_line);

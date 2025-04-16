@@ -81,49 +81,19 @@ void	print_ast(t_ast_node *node, int depth)
 	}
 }
 
-t_token	*tokenize_test_input(char **token)
-{
-	t_token	*head;
-	t_token	*tail;
 
-	head = NULL;
-	tail = NULL;
-	// this are the tokens types :
-	// AST_COMPOUNED_CMD,
-	// AST_CMD,
-	// AST_SIMPLE_CMD,
-	// AST_PIPELINE, // command | command | ...
-	// AST_AND,      // command && command
-	// AST_OR,       // command || command
-	// AST_SUBSHELL, // ( command_list )
-	// AST_ERROR     // for syntax errors
-	// example test "echo hello > > | ls -l > out"
-	add_token_to_list(&head, &tail, TOKEN_WORD, "ls");
-	add_token_to_list(&head, &tail, TOKEN_WORD, "-l");
-	add_token_to_list(&head, &tail, TOKEN_PIPE, NULL);
-	add_token_to_list(&head, &tail, TOKEN_WORD, "grep");
-	add_token_to_list(&head, &tail, TOKEN_WORD, "txt");
-	add_token_to_list(&head, &tail, TOKEN_AND, NULL);
-	add_token_to_list(&head, &tail, TOKEN_WORD, "echo");
-	add_token_to_list(&head, &tail, TOKEN_WORD, "done");
-	// add_token_to_list(&head, &tail, TOKEN_AND, NULL);
-	// add_token_to_list(&head, &tail, TOKEN_PIPE, NULL);
-	add_token_to_list(&head, &tail, TOKEN_EOF, NULL);
-	return (head);
-}
+// int	main(int ac, char **av)
+// {
+// 	t_token		*tokens;
+// 	t_ast_node	*ast;
 
-int	main(int ac, char **av)
-{
-	t_token		*tokens;
-	t_ast_node	*ast;
-
-	tokens = tokenize_test_input(av);
-	if (tokens)
-		printf("token created .\n");
-	ast = parse_tokens(tokens);
-	if (!ast)
-		printf("❌ Parser returned NULL (syntax error?)\n");
-	else
-		print_ast(ast, 0); // you'll need to implement a small tree printer
-	return (0);
-}
+// 	tokens = tokenize_test_input(av);
+// 	if (tokens)
+// 		printf("token created .\n");
+// 	ast = parse_tokens(tokens);
+// 	if (!ast)
+// 		printf("❌ Parser returned NULL (syntax error?)\n");
+// 	else
+// 		print_ast(ast, 0); // you'll need to implement a small tree printer
+// 	return (0);
+// }
