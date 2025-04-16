@@ -26,11 +26,6 @@ const char	*costruct_prompt(void)
 	char	*tmp;
 
 	cwd = ft_malloc(1, 100);
-	if (!cwd)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
 	getcwd(cwd, 100);
 	home = getenv("HOME");
 
