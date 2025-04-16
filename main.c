@@ -45,52 +45,6 @@ const char	*costruct_prompt(void)
 	return (prompt);
 }
 
-// const char	*costruct_prompt(void)
-// {
-// 	char	*cwd;
-// 	char	*home;
-// 	char	*prompt;
-// 	char	*tmp;
-
-// 	// just take the current working dir and $
-// 	cwd = ft_malloc(100);
-// 	if (!cwd)
-// 	{
-// 		perror("ft_malloc");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	getcwd(cwd, 100);
-// 	home = getenv("HOME");
-// 	if (home && !strncmp(cwd, home, strlen(home)))
-// 	{
-// 		tmp = ft_strjoin("~", cwd + strlen(home));
-// 		prompt = ft_strjoin(tmp, "$ ");
-// 		free(tmp);
-// 	}
-// 	else
-// 		prompt = ft_strdup(cwd);
-// 	return (prompt);
-// }
-
-// void	free_trash(void)
-// {
-// 	HIST_ENTRY	**history_list;
-// 	int			i;
-
-// 	history_list = history_list();
-// 	if (history_list)
-// 	{
-// 		i = 0;
-// 		while (history_list[i])
-// 		{
-// 			free(history_list[i]->line);
-// 			free(history_list[i]);
-// 			i++;
-// 		}
-// 	}
-// 	rl_clear_history();
-// }
-
 char	*get_value(int type)
 {
 	if (type == TOKEN_WORD)
@@ -235,7 +189,7 @@ int	main(void)
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
-		if (*cmd_line) // only add non-empty lines to history
+		if (*cmd_line)
 			add_history(cmd_line);
 
 		h = create_tokens(lexer(cmd_line));
@@ -245,7 +199,7 @@ int	main(void)
 		else
 			print_ast(ast, 0);
 
-		free(cmd_line); // free after processing
+		free(cmd_line);
 		rl_on_new_line();
 	}
 
