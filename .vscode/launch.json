@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/mbousset/Desktop/minishell",
-      "program": "/home/mbousset/Desktop/minishell/build/Debug/outDebug",
+      "cwd": "/home/mbousset/Desktop/Minishell",
+      "program": "/home/mbousset/Desktop/Minishell/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
