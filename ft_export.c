@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 16:28:12 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/16 11:08:05 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	add_the_new(t_env **env, t_env *new)
 //         while (tmp)
 //         {
 //             if (ft_strncmp(args[i], tmp->key, sep) == 0
-	&& tmp->key[sep] == '\0')
+//	&& tmp->key[sep] == '\0')
 //             {
 //                 if (args[i][sep] == '=')
 //                     tmp->value = ft_strdup(&args[i][sep + 1]);

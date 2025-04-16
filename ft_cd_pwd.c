@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 16:18:04 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/16 16:05:51 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_pwd(t_env **env_list)
 	{
 		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)
 		{
-			cur->value = strdup(cwd);
+			cur->value = ft_strdup(cwd);
 			break ;
 		}
 		cur = cur->next;
@@ -40,18 +40,19 @@ int	ft_pwd(t_env **env_list)
 int	update_pwd(t_env **env_list, char *cwd)
 {
 	t_env	*cur;
+	char	*old;
 
 	cur = *env_list;
 	while (cur)
 	{
 		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)
 		{
-			cur->value = strdup(cwd);
-			if (!cur->value)
-			{
-				perror("strdup");
-				return (0);
-			}
+			old = cur->value;
+			cur->value = ft_strdup(cwd);
+		}
+		else if (ft_strncmp(cur->key, "OLDPWD", ft_strlen("OLDPWD")) == 0)
+		{
+			cur->value = old;
 			return (1);
 		}
 		cur = cur->next;
