@@ -12,31 +12,27 @@
 # include <sys/types.h>
 # include <unistd.h>
 
-typedef struct s_array
-{
-	void	**items;
-	size_t	length;
-	size_t	capacity;
-}	t_array;
 
 typedef enum e_token_type
 {
 	TOKEN_WORD,
+	TOKEN_PIPE, // |
 	TOKEN_AND,
 	TOKEN_OR,
-	TOKEN_PIPE,         // |
 	TOKEN_REDIRECT_IN,  // <
 	TOKEN_REDIRECT_OUT, // >
-	TOKEN_APPEND,       // >>
-	TOKEN_HEREDOC,      // <<
-	TOKEN_DOLLAR,       // $
+	TOKEN_PARENTESIS_CLOSE,
+	TOKEN_PARENTESIS_OPEN,
+	TOKEN_APPEND,  // >>
+	TOKEN_HEREDOC, // <<
+	TOKEN_DOLLAR,  // $
 	TOKEN_EOF
 }			t_token_type;
 
 typedef struct s_token
 {
-	t_token_type type;    // The type of token
 	char *value;          // The actual token string
+	t_token_type type;    // The type of token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 

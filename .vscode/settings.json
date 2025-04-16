@@ -61,5 +61,6 @@
   },
   "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
     "clang-diagnostic-implicit-function-declaration"
-  ]
+  ],
+  "functionHeaderExtension.headerFilePath": "/home/mbousset/Desktop/Minishell/parser.h"
 }
