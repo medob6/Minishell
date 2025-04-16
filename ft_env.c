@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/23 22:12:20 by mbousset          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/09 15:17:19 by salahian         ###   ########.fr       */
-=======
-/*   Updated: 2025/04/15 16:02:25 by salahian         ###   ########.fr       */
->>>>>>> b83116466f80f973f0d96241032b11d51b679a10
+/*   Created: 2025/04/11 16:34:48 by salahian          #+#    #+#             */
+/*   Updated: 2025/04/15 16:08:23 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-void	*ft_calloc(size_t count, size_t size)
+int	ft_env(t_env **env)
 {
-	void	*ptr;
+	t_env	*tmp;
 
-	if (count > 0 && size > SIZE_MAX / count)
-		return (NULL);
-	ptr = ft_malloc(count, size);
-	if (ptr == NULL)
-		return (NULL);
-	ft_bzero(ptr, count * size);
-	return (ptr);
+	if (!env)
+		return (1);
+	tmp = *env;
+	while (tmp)
+	{
+		ft_print(tmp->key, 1);
+		ft_print(tmp->value, 1);
+		ft_print("\n", 1);
+		tmp = tmp->next;
+	}
+	return (0);
 }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	return (ft_env(envp));
+// }

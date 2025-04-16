@@ -6,7 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/04/09 15:10:13 by salahian         ###   ########.fr       */
+=======
+/*   Updated: 2025/04/15 16:06:27 by salahian         ###   ########.fr       */
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +21,18 @@
 //     write(fd, s, ft_strlen(s));
 // }
 
+<<<<<<< HEAD
 int is_operator(const char *c, int *i)
 {
 	return (c[*i] == '&' || c[*i] == '|' ||
 	c[*i] == '<' || c[*i] == '>'
 	|| c[*i] == '$' || c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
+=======
+int	is_operator(const char *c, int *i)
+{
+	return (c[*i] == '&' || c[*i] == '|' || c[*i] == '<' || c[*i] == '>'
+		|| c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 }
 
 int	check_single_quotes(char *cmd_line)
@@ -118,20 +129,43 @@ int	get_next_qout(char *cmd_line, int i)
 	return (i);
 }
 
+int	skip_quotes(const char *s, int i, int *in_word)
+{
+	int	q;
+
+	if (s[i] == '\'' || s[i] == '"')
+	{
+		q = get_next_qout((char *)s, i);
+		*in_word = 1;
+		if (q > i)
+			return (q);
+	}
+	return (i);
+}
+
 int	count_words(char const *s)
 {
 	int	i;
+<<<<<<< HEAD
 	int count;
     int q;
     int in_word;
+=======
+	int	count;
+	int	in_word;
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 
 	i = 0;
 	count = 0;
 	in_word = 0;
 	while (s[i])
 	{
-		if (s[i] == '\'' || s[i] == '"')
+		i = skip_quotes(s, i, &in_word);
+		if (is_operator(s, &i))
+			count++;
+		if ((s[i] == ' ' || s[i] == '\t' || is_operator(s, &i)) && in_word)
 		{
+<<<<<<< HEAD
 			q = get_next_qout((char *)s, i);
 			if (q > i)
 				i = q;
@@ -146,6 +180,10 @@ int	count_words(char const *s)
 				count++;
 				in_word = 0;
 			}
+=======
+			count++;
+			in_word = 0;
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 		}
 		else
 			in_word = 1;
@@ -210,6 +248,7 @@ int	check_for_operation(char *cmd_line)
 	while (cmd_line[i])
 	{
 		if (cmd_line[i] == '|')
+<<<<<<< HEAD
 			return ((cmd_line[i + 1] == '|') ? 2 : 1);
 		else if (cmd_line[i] == '&')
 			return ((cmd_line[i + 1] == '&') ? 2 : 0);
@@ -224,6 +263,20 @@ int	check_for_operation(char *cmd_line)
 		else if (cmd_line[i] == '(')
 			return (1);
 		else if (cmd_line[i] == ')')
+=======
+			return ((cmd_line[i + 1] == '|') + 1);
+		else if (cmd_line[i] == '&')
+		{
+			if (cmd_line[i + 1] == '&')
+				return (2);
+			return (0);
+		}
+		else if (cmd_line[i] == '>')
+			return ((cmd_line[i + 1] == '>') + 1);
+		else if (cmd_line[i] == '<')
+			return ((cmd_line[i + 1] == '<') + 1);
+		else if (cmd_line[i] == '*' || cmd_line[i] == '(' || cmd_line[i] == ')')
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 			return (1);
 		i++;
 	}
@@ -315,12 +368,12 @@ char	**lexer(char *cmd_line)
 
 	if (!check_quotes(cmd_line))
 	{
-		ft_putstr("ERROR:\nbalanced brakets.\n", 2);
+		ft_print("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
 	}
 	if (!check_parenthesis(cmd_line))
 	{
-		ft_putstr("ERROR:\nbalanced paronthesis.\n", 2);
+		ft_print("ERROR:\nbalanced paronthesis.\n", 2);
 		return (NULL);
 	}
 	total = count_words(cmd_line);
@@ -330,7 +383,11 @@ char	**lexer(char *cmd_line)
 
 // int main(void)
 // {
+<<<<<<< HEAD
 // 	char **s = lexer("echo hello&&wc -c");
+=======
+// 	char **s = lexer("$ls");
+>>>>>>> b83116466f80f973f0d96241032b11d51b679a10
 // 	int i = 0;
 // 	while (s[i])
 // 	{
