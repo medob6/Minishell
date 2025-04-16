@@ -151,8 +151,12 @@ void	print_ast(t_ast_node *node, int depth)
 		printf("AST Node: %s  arg_list : (", get_value_ast(node->type));
 		for (size_t j = 0; j < node->children->length; j++)
 			printf(" %s ", (char *)(node->children->items[j]));
-		printf(") ");
+		printf(")  | ");
 		// TODO: print redirct list + newline
+		printf(" redirct_list : (");
+		for (size_t d = 0; d < node->redirect_list->length; d++)
+			printf(" %s ", (char *)(node->redirect_list->items[d]));
+		printf(") \n");
 		return ;
 	}
 	else
