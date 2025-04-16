@@ -3,15 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// AST_COMPOUNED_CMD,
-// AST_CMD,
-// AST_SIMPLE_CMD,
-// AST_PIPELINE, // command | command | ...
-// AST_AND,      // command && command
-// AST_OR,       // command || command
-// AST_SUBSHELL, // ( command_list )
-// AST_ERROR     // for syntax errors
-
 t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*tok;
