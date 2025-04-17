@@ -142,10 +142,28 @@ char	*get_value_ast(int type)
 	else
 		return ("argment");
 }
+
+void	print_redir(t_ast_node *node)
+{
+	printf("redirct_list : (");
+	for (size_t d = 0; d < node->redirect_list->length; d++)
+	{
+		printf(" {redir_type : %s, filename : %s} ",
+			get_redir_value(((t_token *)node->redirect_list->items[d])->type),
+			((t_token *)node->redirect_list->items[d])->value);
+	}
+	printf(") \n");
+	return ;
+}
+
+void	print_tabs(int n)
+{
+	while (n--)
+		printf("\t");
+}
 void	print_ast(t_ast_node *node, int depth)
 {
-	t_token	*redir;
-
+	// t_token	*redir;
 	if (!node)
 		return ;
 	for (int i = 0; i < depth; i++)
@@ -167,7 +185,7 @@ void	print_ast(t_ast_node *node, int depth)
 		if (node->redirect_list)
 		{
 			for (size_t d = 0; d < node->redirect_list->length; d++)
-				printf("  {redir_type : %s, filename : %s} ",
+				printf(" {redir_type : %s, filename : %s} ",
 					get_redir_value(((t_token *)node->redirect_list->items[d])->type),
 					((t_token *)node->redirect_list->items[d])->value);
 		}
@@ -175,15 +193,14 @@ void	print_ast(t_ast_node *node, int depth)
 		return ;
 	}
 	else
-		printf("AST Node: %s\n", get_value_ast(node->type));
-	if (node->redirect_list)
 	{
-		for (size_t i = 0; i < node->redirect_list->length; i++)
+		if (node->type != AST_SUBSHELL)
+			printf("AST Node: %s\n", get_value_ast(node->type));
+		else
 		{
-			redir = node->redirect_list->items[i];
-			for (int j = 0; j < depth + 1; j++)
-				printf("  ");
-			printf("Redirect: %s\n", redir->value);
+			printf("AST Node: %s ; ", get_value_ast(node->type));
+			// print_tabs(depth);
+			print_redir(node);
 		}
 	}
 	if (node->children)
@@ -218,6 +235,7 @@ int	main(void)
 			printf("This are the tokens we have : \n");
 			print_token(*h);
 			printf("\n\n");
+			printf("line : %s\n", cmd_line);
 			ast = parse_tokens(*h);
 		}
 		if (!ast)
@@ -236,5 +254,5 @@ int	main(void)
 
 // example test
 // cat << eof  && (echo hello > file1 && cat < file1 | grep hi
-		// || echo "fallback") && (ls	-l | grep .c) || mkdir test
-		// && echo done >> lolo
+// || echo "fallback") && (ls	-l | grep .c) || mkdir test
+// && echo done >> lolo
