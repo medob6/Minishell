@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 14:53:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/10 16:07:57 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:44:56 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ t_gar   **garbage_list(void)
     return (&tail);
 }
 
-void    add_to_the_list(t_gar **tail, t_gar *new)
+void add_to_the_list(t_gar **tail, t_gar *new)
 {
-    if (!tail || !*tail)
-        *tail = new;
+    if (!tail || !new)
+        return;
     new->next = *tail;
+    *tail = new;
 }
+
 
 void    *ft_malloc(int size, int bytes)
 {
