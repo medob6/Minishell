@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 15:58:37 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:15:37 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 int	is_operator(const char *c, int *i)
 {
 	return (c[*i] == '&' || c[*i] == '|' || c[*i] == '<' || c[*i] == '>'
-		|| c[*i] == '*' || c[*i] == '(' || c[*i] == ')');
+		|| c[*i] == '(' || c[*i] == ')');
 }
 
 int	check_single_quotes(char *cmd_line)
@@ -165,7 +165,7 @@ int	count_words(char const *s)
 int	handle_par(char **str, char *c, int *i)
 {
 	(*i)++;
-	if (is_operator(c, i) && c[*i] != '(' && c[*i] != ')' && c[*i] != '*' && (c[*i - 1] == c[*i]))
+	if (is_operator(c, i) && c[*i] != '(' && c[*i] != ')' && (c[*i - 1] == c[*i]))
 	{
 		(*i)--;
 		*str = ft_malloc(1, 3);
@@ -227,7 +227,7 @@ int	check_for_operation(char *cmd_line)
 			return ((cmd_line[i + 1] == '>') + 1);
 		else if (cmd_line[i] == '<')
 			return ((cmd_line[i + 1] == '<') + 1);
-		else if (cmd_line[i] == '*' || cmd_line[i] == '(' || cmd_line[i] == ')')
+		else if (cmd_line[i] == '(' || cmd_line[i] == ')')
 			return (1);
 		i++;
 	}

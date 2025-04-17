@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 16:03:53 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:16:41 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,6 @@ char	check_for_operations(char *cmd_line, int i)
 		return ('>');
 	else if (cmd_line[i] == '<')
 		return ('<');
-	else if (cmd_line[i] == '$')
-		return ('$');
-	else if (cmd_line[i] == '*')
-		return ('*');
 	else if (cmd_line[i] == '(')
 		return ('(');
 	else if (cmd_line[i] == ')')
@@ -65,7 +61,7 @@ void	append_token(t_token **head, t_token **tail, t_token *new)
 	*tail = new;
 }
 
-int	handle_operator(t_token **head, t_token **tail, char *s, char c)
+int	handle_operator(t_token **head, t_token **tail, char c)
 {
 	t_token	*new;
 
@@ -82,10 +78,6 @@ int	handle_operator(t_token **head, t_token **tail, char *s, char c)
 	// 	new = create_token("<", TOKEN_REDIRECT_IN);
 	else if (c == 'e')
 		new = create_token("&&", TOKEN_AND);
-	else if (c == '$')
-		new = create_token(s, TOKEN_TO_EXPAND);
-	else if (c == '*')
-		new = create_token("*", TOKEN_WILDCARDS);
 	else if (c == '(')
 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
 	else if (c == ')')
@@ -195,7 +187,7 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 				*index += handle_heredoc_case(head, tail, next);
 			else
 			{
-				i += handle_operator(head, tail, s[*index], c);
+				i += handle_operator(head, tail, c);
 				if (c == '>' || c == '<' || c == 'a')
 					*index += handle_redirection(head, tail, c, next);
 			}
