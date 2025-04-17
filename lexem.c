@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/15 16:06:27 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:41:25 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,10 @@ int	count_words(char const *s)
 	{
 		i = skip_quotes(s, i, &in_word);
 		if (is_operator(s, &i))
+		{
+			in_word = 0;
 			count++;
+		}
 		if ((s[i] == ' ' || s[i] == '\t' || is_operator(s, &i)) && in_word)
 		{
 			count++;
@@ -162,7 +165,7 @@ int	count_words(char const *s)
 int	handle_par(char **str, char *c, int *i)
 {
 	(*i)++;
-	if (is_operator(c, i))
+	if (is_operator(c, i) && c[*i] != '(' && c[*i] != ')' && c[*i] != '*')
 	{
 		(*i)--;
 		*str = ft_malloc(1, 3);
@@ -319,11 +322,11 @@ char	**lexer(char *cmd_line)
 		ft_print("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
 	}
-	if (!check_parenthesis(cmd_line))
-	{
-		ft_print("ERROR:\nbalanced paronthesis.\n", 2);
-		return (NULL);
-	}
+	// if (!check_parenthesis(cmd_line))
+	// {
+	// 	ft_print("ERROR:\nbalanced paronthesis.\n", 2);
+	// 	return (NULL);
+	// }
 	total = count_words(cmd_line);
 	str = ft_malloc(sizeof(char *), (total + 1));
 	return (help_lexer(str, cmd_line));
