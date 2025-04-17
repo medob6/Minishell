@@ -27,12 +27,7 @@ const char	*costruct_prompt(void)
 	char	*prompt;
 	char	*tmp;
 
-	cwd = ft_calloc(100, 1);
-	if (!cwd)
-	{
-		perror("allocation err :");
-		exit(EXIT_FAILURE);
-	}
+	cwd = ft_malloc(1, 100);
 	getcwd(cwd, 100);
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
