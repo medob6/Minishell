@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 10:41:25 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 15:58:37 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int	count_words(char const *s)
 int	handle_par(char **str, char *c, int *i)
 {
 	(*i)++;
-	if (is_operator(c, i) && c[*i] != '(' && c[*i] != ')' && c[*i] != '*')
+	if (is_operator(c, i) && c[*i] != '(' && c[*i] != ')' && c[*i] != '*' && (c[*i - 1] == c[*i]))
 	{
 		(*i)--;
 		*str = ft_malloc(1, 3);
