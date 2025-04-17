@@ -33,18 +33,57 @@ t_ast_node	*simple_command(t_token **token)
 	}
 	if ((!simple_cmd->children && !simple_cmd->children))
 		return (NULL);
+	if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
+		advance_token(token);
 	return (simple_cmd);
 }
 
+bool	paranteses_symetric(t_token **token)
+{
+	t_token	*temp_head;
+
+	int count_open, count_close;
+	count_open = 1;
+	count_close = 0;
+	if ((*token)->type == TOKEN_PARENTESIS_OPEN)
+		advance_token(token);
+	temp_head = *token;
+	while (temp_head->type != TOKEN_EOF)
+	{
+		if (temp_head->type == TOKEN_PARENTESIS_OPEN)
+			count_open++;
+		if (temp_head->type == TOKEN_PARENTESIS_CLOSE)
+			count_close++;
+		if (count_close == count_open)
+		{
+			printf("symtric\n");
+			return (true);
+		}
+		printf("open : %d, close : %d \n", count_open, count_close);
+		temp_head = (temp_head)->next;
+	}
+	return (false);
+}
 t_ast_node	*subshell(t_token **token)
 {
 	t_ast_node	*compouned;
 
-	compouned = compound_cmd(token);
-	if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-		advance_token(token);
-	else
+	// here i check if this current open parantes has a close symtric to it if not return null syntax error else we remove them and call compuned on the current
+	if (!paranteses_symetric(token))
+	{
+		printf("unsymtric\n");
 		return (NULL);
+	}
+	compouned = compound_cmd(token);
+	// if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
+	// {
+	// 	printf("closed\n");
+	// 	advance_token(token);
+	// 	if ((*token)->type == TOKEN_EOF)
+	// 		printf("eof\n");
+	// }
+	// else
+	// 	return (NULL);
 	return (compouned);
 }
 
@@ -52,7 +91,7 @@ t_ast_node	*command(t_token **token)
 {
 	if ((*token)->type == TOKEN_PARENTESIS_OPEN)
 	{
-		advance_token(token);
+		// advance_token(token);
 		return (subshell(token));
 	}
 	return (simple_command(token));
@@ -87,6 +126,7 @@ t_ast_node	*compound_cmd(t_token **token)
 	while (*token && (*token)->type != TOKEN_EOF)
 	{
 		current = pipeline(token);
+		printf("token_type == %s\n", get_value((*token)->type));
 		if (!current)
 			return (NULL);
 		add_child(compound, current);
@@ -102,8 +142,8 @@ t_ast_node	*compound_cmd(t_token **token)
 			if ((*token)->type == TOKEN_EOF)
 				return (NULL);
 		}
-		else
-			break ;
+		if ((*token)->type != TOKEN_EOF)
+			printf("token_type == %s\n", get_value((*token)->type));
 	}
 	return (compound);
 }
