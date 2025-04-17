@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "minishell.h"
 
 t_ast_node	*creat_ast_node(int node_type)
 {
@@ -27,6 +27,8 @@ t_ast_node	*simple_command(t_token **token)
 		}
 		else if ((*token)->type == TOKEN_WORD)
 			add_child(simple_cmd, (*token)->value);
+		else if ((*token)->type == TOKEN_TO_EXPAND) // i add
+			add_child(simple_cmd, (*token)->value); // i add
 		else
 			break ;
 		advance_token(token);
