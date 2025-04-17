@@ -27,10 +27,10 @@ const char	*costruct_prompt(void)
 	char	*prompt;
 	char	*tmp;
 
-	cwd = ft_malloc(1, 100);
+	cwd = ft_calloc(100, 1);
 	if (!cwd)
 	{
-		perror("malloc");
+		perror("allocation err :");
 		exit(EXIT_FAILURE);
 	}
 	getcwd(cwd, 100);
@@ -203,20 +203,28 @@ int	main(void)
 	char		*cmd_line;
 	const char	*prompt;
 	t_token		**h;
-	t_ast_node	*ast = NULL;
+	t_ast_node	*ast;
 
+	ast = NULL;
 	ft_error(1);
 	prompt = costruct_prompt();
 	while (1)
 	{
 		cmd_line = readline(prompt);
+		printf("\n");
+		// printf("cmd_line = %s\n",cmd_line);
 		if (!cmd_line)
 			break ;
 		if (*cmd_line)
 			add_history(cmd_line);
 		h = create_tokens(lexer(cmd_line));
 		if (h)
+		{
+			printf("This are the tokens we have : \n");
+			print_token(*h);
+			printf("\n\n");
 			ast = parse_tokens(*h);
+		}
 		if (!ast)
 			printf("❌ Parser returned NULL (syntax error?)\n");
 		else
@@ -232,4 +240,6 @@ int	main(void)
 }
 
 // example test
-// cat << eof  && (echo hello > file1 && cat < file1 | grep hi || echo "fallback") && (ls	-l | grep .c) || mkdir test && echo done >> lolo
+// cat << eof  && (echo hello > file1 && cat < file1 | grep hi
+		// || echo "fallback") && (ls	-l | grep .c) || mkdir test
+		// && echo done >> lolo

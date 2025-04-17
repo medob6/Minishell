@@ -4,7 +4,7 @@ t_ast_node	*creat_ast_node(int node_type)
 {
 	t_ast_node	*new_node;
 
-	new_node = malloc(sizeof(t_ast_node));
+	new_node = ft_calloc(1, sizeof(t_ast_node));
 	new_node->children = NULL;
 	new_node->error_message = NULL;
 	new_node->redirect_list = NULL;
@@ -31,7 +31,7 @@ t_ast_node	*simple_command(t_token **token)
 			break ;
 		advance_token(token);
 	}
-	if (!simple_cmd->children && !simple_cmd->children)
+	if ((!simple_cmd->children && !simple_cmd->children))
 		return (NULL);
 	return (simple_cmd);
 }
@@ -80,24 +80,24 @@ t_ast_node	*pipeline(t_token **token)
 t_ast_node	*compound_cmd(t_token **token)
 {
 	t_ast_node	*compound;
-	t_ast_node	*curr;
+	t_ast_node	*current;
 	t_ast_type	logic_type;
 
 	compound = creat_ast_node(AST_COMPOUNED_CMD);
 	while (*token && (*token)->type != TOKEN_EOF)
 	{
-		curr = pipeline(token);
-		if (!curr)
+		current = pipeline(token);
+		if (!current)
 			return (NULL);
-		add_child(compound, curr);
+		add_child(compound, current);
 		if ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR)
 		{
 			if ((*token)->type == TOKEN_AND)
 				logic_type = AST_AND;
 			else
 				logic_type = AST_OR;
-			curr = creat_ast_node(logic_type);
-			add_child(compound, curr);
+			current = creat_ast_node(logic_type);
+			add_child(compound, current);
 			advance_token(token);
 			if ((*token)->type == TOKEN_EOF)
 				return (NULL);

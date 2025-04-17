@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 14:53:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/10 16:07:57 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:15:22 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void    add_to_the_list(t_gar **tail, t_gar *new)
 {
     if (!tail || !*tail)
         *tail = new;
+    // printf("add new\n");
     new->next = *tail;
 }
 

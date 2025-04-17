@@ -7,7 +7,7 @@ t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*tok;
 
-	tok = malloc(sizeof(t_token));
+	tok = ft_calloc(1, sizeof(t_token));
 	tok->type = type;
 	tok->value = value ? strdup(value) : NULL;
 	tok->next = NULL;
@@ -80,20 +80,3 @@ void	print_ast(t_ast_node *node, int depth)
 			print_ast(node->children->items[i], depth + 1);
 	}
 }
-
-
-// int	main(int ac, char **av)
-// {
-// 	t_token		*tokens;
-// 	t_ast_node	*ast;
-
-// 	tokens = tokenize_test_input(av);
-// 	if (tokens)
-// 		printf("token created .\n");
-// 	ast = parse_tokens(tokens);
-// 	if (!ast)
-// 		printf("❌ Parser returned NULL (syntax error?)\n");
-// 	else
-// 		print_ast(ast, 0); // you'll need to implement a small tree printer
-// 	return (0);
-// }
