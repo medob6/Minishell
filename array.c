@@ -1,22 +1,23 @@
 #include "array.h"
 
-t_array	*creat_array()
+t_array	*creat_array(void)
 {
-	t_array *new_array;
-	new_array = malloc(sizeof(t_array));
+	t_array	*new_array;
+
+	new_array = ft_calloc(1, sizeof(t_array));
 	new_array->capacity = 2;
 	new_array->length = 0;
-	new_array->items = malloc(sizeof(void *) * new_array->capacity);
+	new_array->items = ft_calloc(new_array->capacity, sizeof(void *));
 	return (new_array);
 }
 
 void	array_extend(t_array *arr)
 {
 	void	**new_items;
-	size_t		i;
+	size_t	i;
 
 	arr->capacity *= 2;
-	new_items = malloc(sizeof(void *) * arr->capacity);
+	new_items = ft_calloc(arr->capacity, sizeof(void *));
 	i = 0;
 	while (i < arr->length)
 	{
