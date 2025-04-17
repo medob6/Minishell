@@ -1,6 +1,6 @@
-#include "array.h"
+
 #include "minishell.h"
-#include "parser.h"
+
 
 void	ft_lstclear(t_gar **lst)
 {
@@ -193,12 +193,15 @@ void	print_ast(t_ast_node *node, int depth)
 	}
 }
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	char		*cmd_line;
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
+	t_env *env;
+	(void)ac;
+	(void)av;
 
 	ast = NULL;
 	ft_error(1);
@@ -219,6 +222,11 @@ int	main(void)
 			print_token(*h);
 			printf("\n\n");
 			ast = parse_tokens(*h);
+			env = create_the_main_list(envp);
+			if (traverse_ast(ast, &env))
+				printf("all good\n");
+			else
+				printf("somthing not right\n");
 		}
 		if (!ast)
 			printf("❌ Parser returned NULL (syntax error?)\n");
