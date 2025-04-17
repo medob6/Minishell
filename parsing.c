@@ -18,7 +18,7 @@ t_ast_node	*simple_command(t_token **token)
 	t_ast_node	*simple_cmd;
 
 	i++;
-	printf("token : %s , i = %d\n", get_value((*token)->type), i);
+	// printf("token : %s , i = %d\n", get_value((*token)->type), i);
 	simple_cmd = creat_ast_node(AST_SIMPLE_CMD);
 	while (true)
 	{
@@ -79,7 +79,12 @@ t_ast_node	*subshell(t_token **token)
 	compouned = compound_cmd(token, AST_SUBSHELL);
 	if ((*token)->type != TOKEN_PARENTESIS_CLOSE)
 		return (NULL);
-	advance_token(token);
+	else
+	{
+		// printf("tkn : %s\n", get_value((*token)->type));
+		advance_token(token);
+		// printf("tkn : %s\n", get_value((*token)->type));
+	}
 	while (true)
 	{
 		if (is_redirction((*token)->type))
@@ -123,7 +128,12 @@ t_ast_node	*pipeline(t_token **token)
 	}
 	return (pipe_node);
 }
-
+bool	is_and_or(t_token_type type)
+{
+	if (type == TOKEN_AND || type == TOKEN_OR || type == TOKEN_EOF)
+		return (true);
+	return (false);
+}
 t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 {
 	t_ast_node	*compound;
@@ -142,7 +152,7 @@ t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 		current = pipeline(token);
 		// printf("depth= %d  pipeline a TOKEN IS return (val : %p : %s\n", i,
 		// 	current, get_value((*token)->type));
-		if (!current)
+		if (!current || current->type == TOKEN_EOF)
 			return (i--, (NULL));
 		add_child(compound, current);
 		if ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR)
@@ -157,11 +167,23 @@ t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 			if ((*token)->type == TOKEN_EOF)
 				return (i--, (NULL));
 		}
-		else if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
+		else
 			break ;
-		// TODO: test parser more fix this test  : (ls) > s or (ls) >> d
+		// else if ((*token)->type == TOKEN_PARENTESIS_CLOSE
+		// 	&& !is_and_or((*token)->next->type))
+		// 	return (NULL);
+		// else if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
+		// 	break ;
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO: test parser more fix this test  : (ls) (ls)
 	}
 	i--;
+	// if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
+	// {
+	// 	printf("fuck this case \n");
+	// 	advance_token(token);
+	// }
+	if (i == 0 && (*token)->type != TOKEN_EOF)
+		return (NULL);
 	return (compound);
 }
 
@@ -171,7 +193,7 @@ t_ast_node	*parse_tokens(t_token *tokens)
 
 	if (!paranteses_symetric(&tokens))
 		return (NULL);
-	root = compound_cmd(&tokens,AST_COMPOUNED_CMD);
+	root = compound_cmd(&tokens, AST_COMPOUNED_CMD);
 	if (!root)
 		return (NULL);
 	return (root);
