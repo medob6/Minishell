@@ -141,6 +141,11 @@ char	*get_value_ast(int type)
 
 void	print_redir(t_ast_node *node)
 {
+	if (!node || !node->redirect_list)
+	{
+		printf("\n");
+		return ;
+	}
 	printf("redirct_list : (");
 	for (size_t d = 0; d < node->redirect_list->length; d++)
 	{
