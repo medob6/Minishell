@@ -30,8 +30,6 @@ t_ast_node	*simple_command(t_token **token)
 		}
 		else if ((*token)->type == TOKEN_WORD)
 			add_child(simple_cmd, (*token)->value);
-		else if ((*token)->type == TOKEN_TO_EXPAND)
-			add_child(simple_cmd, (*token)->value);
 		else
 			break ;
 		advance_token(token);
