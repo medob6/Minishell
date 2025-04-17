@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 18:27:01 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:45:28 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,11 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 	next = s[*index + 1];
 	while (s[*index][i])
 	{
+		if (s[*index][i] == '\'' || s[*index][i] == '\"')
+		{
+			create_simple_token(head, tail, s[*index]);
+			return ;
+		}
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
