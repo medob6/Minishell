@@ -90,8 +90,6 @@ char *get_value(int type)
 {
 	if (type == TOKEN_WORD)
 		return ("TOKEN_WORD");
-	else if (type == TOKEN_WILDCARDS) // *
-		return ("TOKEN_WILDCARDS");
 	else if (type == TOKEN_PARENTESIS_OPEN) // (
 		return ("TOKEN_PARENTESIS_OPEN");
 	else if (type == TOKEN_PARENTESIS_CLOSE) // )
@@ -110,8 +108,6 @@ char *get_value(int type)
 		return ("TOKEN_APPEND");
 	else if (type == TOKEN_HEREDOC) // <<
 		return ("TOKEN_HEREDOC");
-	else if (type == TOKEN_TO_EXPAND)
-		return ("TOKEN_TO_EXPAND");
 	else if (type == TOKEN_EOF)
 		return ("TOKEN_EOF");
 	else
