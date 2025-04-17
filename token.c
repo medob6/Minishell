@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/16 18:35:16 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:03:53 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,13 +152,14 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 {
 	char	nc;
 
-	if (!next)
-		return (0);
-	nc = check_for_operations(next, 0);
-	if (nc == '\0')
+	if (next)
 	{
-		append_redirect_arg(head, tail, c, next);
-		return (1);
+		nc = check_for_operations(next, 0);
+		if (nc == '\0')
+		{
+			append_redirect_arg(head, tail, c, next);
+			return (1);
+		}
 	}
 	else
 		append_empty_redirect(head, tail, c);
