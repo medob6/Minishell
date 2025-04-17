@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 16:40:11 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:56:18 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
-		printf("%s\n", tmp);
+		printf("[%s]\n", tmp);
 		if (tmp && tmp[0] == '$')
 		{
             if (expand_the_value(node->children, env, i))
@@ -67,25 +67,25 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	return (expand);
 }
 
-int	traverse_ast(t_ast_node *node, t_env **env)
-{
-	//size_t i;
-    //t_ast_node *child;
+// int	traverse_ast(t_ast_node *node, t_env **env)
+// {
+// 	size_t i;
+//     t_ast_node *child;
     
-	// if (!node)
-	// 	return (1);
-	// if (node->type == TOKEN_TO_EXPAND)
-	    return (expand_variables(node, env));
-	// if (node->children)
-	// {
-	// 	i = 0;
-	// 	while (i < node->children->length)
-	// 	{
-	// 		child = (t_ast_node *)node->children->items[i];
-	// 		if (traverse_ast(child, env) != 1)
-	// 			return (0);
-	// 		i++;
-	// 	}
-	// }
-	// return (0);
-}
+// 	if (!node)
+// 		return (1);
+// 	if (node->type == TOKEN_WORD)
+// 	    return (expand_variables(node, env));
+// 	if (node->children)
+// 	{
+// 		i = 0;
+// 		while (i < node->children->length)
+// 		{
+// 			child = (t_ast_node *)node->children->items[i];
+// 			if (traverse_ast(child, env) != 1)
+// 				return (0);
+// 			i++;
+// 		}
+// 	}
+// 	return (0);
+// }
