@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 18:15:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:27:01 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,8 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 			append_redirect_arg(head, tail, c, next);
 			return (1);
 		}
+		else
+			append_empty_redirect(head, tail, c);
 	}
 	else
 		append_empty_redirect(head, tail, c);
