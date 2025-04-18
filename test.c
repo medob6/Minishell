@@ -1,7 +1,5 @@
 #include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 
 t_token	*new_token(t_token_type type, char *value)
 {
