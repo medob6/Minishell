@@ -1,5 +1,4 @@
-#include "array.h"
-#include "minishell.h"
+#include "execution/execution.h"
 #include "parser.h"
 
 void	ft_lstclear(t_gar **lst)
@@ -32,7 +31,7 @@ const char	*costruct_prompt(void)
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
-		tmp = ft_strjoin("~", cwd + ft_strlen(home));
+		tmp = ft_strjoin("\033[0;32m~\033[0m", cwd + ft_strlen(home));
 		prompt = ft_strjoin(tmp, "$ ");
 	}
 	else
@@ -225,6 +224,7 @@ int	main(void)
 	{
 		cmd_line = readline(prompt);
 		printf("\n");
+		printf("cmd_line is  : %s\n\n", cmd_line);
 		// printf("cmd_line = %s\n",cmd_line);
 		if (!cmd_line)
 			break ;
@@ -233,16 +233,25 @@ int	main(void)
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 		{
-			printf("This are the tokens we have : \n");
+				printf("\033[0;32m============================\033[0m\n\n");
+			printf("This are the tokens we have : \n\n");
 			print_token(*h);
 			printf("\n\n");
-			printf("line : %s\n", cmd_line);
+			// printf("line : %s\n", cmd_line);
 			ast = parse_tokens(*h);
 		}
 		if (!ast)
 			printf("❌ Parser returned NULL (syntax error?)\n");
 		else
+		{
+			// here rather then printing the ast tree i should execute the cmd
+			// berore executing the cmd line , it will be passed first to the exapander to expand it either pathname exepansion or var expansion
+
+			// execute_cmd_line(ast);
+			printf("\033[0;32m============================\033[0m\n\n");
+			printf("This is the tree i created : \n\n");
 			print_ast(ast, 0);
+		}
 		free(cmd_line);
 		rl_on_new_line();
 	}
