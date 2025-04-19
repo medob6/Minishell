@@ -17,7 +17,7 @@ t_ast_node	*simple_command(t_token **token)
 	t_ast_node	*simple_cmd;
 
 	simple_cmd = creat_ast_node(AST_SIMPLE_CMD);
-	while ((*token)->type != TOKEN_EOF)
+	while (true)
 	{
 		if (is_redirction((*token)->type))
 		{
@@ -31,30 +31,66 @@ t_ast_node	*simple_command(t_token **token)
 			break ;
 		advance_token(token);
 	}
-	if ((!simple_cmd->children && !simple_cmd->children))
+	if ((!simple_cmd->children && !simple_cmd->redirect_list))
 		return (NULL);
 	return (simple_cmd);
 }
+bool	paranteses_symetric(t_token **token)
+{
+	t_token	*temp_head;
 
+	int count_open, count_close;
+	count_open = 0;
+	count_close = 0;
+	temp_head = *token;
+	while (temp_head->type != TOKEN_EOF)
+	{
+		if (temp_head->type == TOKEN_PARENTESIS_OPEN)
+			count_open++;
+		if (temp_head->type == TOKEN_PARENTESIS_CLOSE)
+			count_close++;
+		if (count_close > count_open)
+			return (false);
+		temp_head = (temp_head)->next;
+	}
+	if (count_close == count_open)
+		return (true);
+	return (false);
+}
 t_ast_node	*subshell(t_token **token)
 {
 	t_ast_node	*compouned;
 
-	compouned = compound_cmd(token);
-	if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-		advance_token(token);
-	else
+	if ((*token)->type != TOKEN_PARENTESIS_OPEN)
 		return (NULL);
+	advance_token(token);
+	compouned = compound_cmd(token, AST_SUBSHELL);
+	if ((*token)->type != TOKEN_PARENTESIS_CLOSE)
+		return (NULL);
+	else
+		advance_token(token);
+	while (true)
+	{
+		if (is_redirction((*token)->type))
+		{
+			if (!(*token)->value)
+				return (NULL);
+			add_redirect(compouned, *token);
+		}
+		else
+			break ;
+		advance_token(token);
+	}
 	return (compouned);
 }
 
 t_ast_node	*command(t_token **token)
 {
-	if ((*token)->type == TOKEN_PARENTESIS_OPEN)
-	{
-		advance_token(token);
-		return (subshell(token));
-	}
+	t_ast_node	*command;
+
+	command = subshell(token);
+	if (command)
+		return (command);
 	return (simple_command(token));
 }
 
@@ -76,35 +112,51 @@ t_ast_node	*pipeline(t_token **token)
 	}
 	return (pipe_node);
 }
+bool	is_and_or(t_token_type type)
+{
+	if (type == TOKEN_AND || type == TOKEN_OR || type == TOKEN_EOF)
+		return (true);
+	return (false);
+}
+static t_ast_node	*create_logic_node(t_token **token)
+{
+	t_ast_node	*logic;
 
-t_ast_node	*compound_cmd(t_token **token)
+	if ((*token)->type == TOKEN_AND)
+		logic = creat_ast_node(AST_AND);
+	else
+		logic = creat_ast_node(AST_OR);
+	advance_token(token);
+	return (logic);
+}
+
+t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 {
 	t_ast_node	*compound;
 	t_ast_node	*current;
-	t_ast_type	logic_type;
+	static int	depth;
 
-	compound = creat_ast_node(AST_COMPOUNED_CMD);
+	depth++;
+	compound = creat_ast_node(type);
 	while (*token && (*token)->type != TOKEN_EOF)
 	{
 		current = pipeline(token);
-		if (!current)
+		if (!current || current->type == TOKEN_EOF)
 			return (NULL);
 		add_child(compound, current);
 		if ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR)
 		{
-			if ((*token)->type == TOKEN_AND)
-				logic_type = AST_AND;
-			else
-				logic_type = AST_OR;
-			current = creat_ast_node(logic_type);
+			current = create_logic_node(token);
 			add_child(compound, current);
-			advance_token(token);
 			if ((*token)->type == TOKEN_EOF)
 				return (NULL);
 		}
 		else
 			break ;
 	}
+	depth--;
+	if (depth == 0 && (*token)->type != TOKEN_EOF)
+		return (NULL);
 	return (compound);
 }
 
@@ -112,7 +164,9 @@ t_ast_node	*parse_tokens(t_token *tokens)
 {
 	t_ast_node	*root;
 
-	root = compound_cmd(&tokens);
+	if (!paranteses_symetric(&tokens))
+		return (NULL);
+	root = compound_cmd(&tokens, AST_COMPOUNED_CMD);
 	if (!root)
 		return (NULL);
 	return (root);
