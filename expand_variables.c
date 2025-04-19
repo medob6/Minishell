@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/19 14:32:17 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/19 14:53:43 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,11 @@ int		is_valid(char *tmp)
 {
 	int		i;
 
-	i = 2;
+	i = 1;
+	if(!((tmp[i] >= 'A' && tmp[i] <= 'Z') ||
+      	(tmp[i] >= 'a' && tmp[i] <= 'z') ||
+      	tmp[i] == '_'))
+		return 1;
 	while (tmp[i])
 	{
 		if (!((tmp[i] >= '0' && tmp[i] <= '9') ||

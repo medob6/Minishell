@@ -121,7 +121,7 @@ void			add_child(t_ast_node *parent, void *new_child);
 void			add_redirect(t_ast_node *parent, t_token *redir);
 void			advance_token(t_token **token);
 bool			is_redirction(t_token_type token_type);
-t_ast_node		*compound_cmd(t_token **token);
+t_ast_node		*compound_cmd(t_token **token, t_ast_type type);
 
 // debuging functions
 char			*get_value(int type);
