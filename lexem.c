@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/18 16:08:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:39:23 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,14 +290,16 @@ char **help_lexer(char **str, char *cmd_line)
 			j += handle_par(&str[j], cmd_line, &i);
 			continue;
 		}
+		if (cmd_line[i] != '\'' || cmd_line[i] != '"')
+			j += handle_normal_words(&str[j], cmd_line, &i);
 		if (cmd_line[i] == '\'' || cmd_line[i] == '"')
 		{
-			j += handle_in_the_qouts(&str[j], cmd_line, &i);
+			handle_in_the_qouts(&str[j], cmd_line, &i);
 			// if (ft_strchr("'\"", cmd_line[i]) == NULL)
 			// 	j++;
 			continue;
 		}
-		j += handle_normal_words(&str[j], cmd_line, &i);
+		//j += handle_normal_words(&str[j], cmd_line, &i);
 	}
 	//printf("%d\n", j);
 	str[j] = NULL;
