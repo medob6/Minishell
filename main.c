@@ -156,7 +156,7 @@ void	print_ast(t_ast_node *node, int depth)
 		if (node->children)
 		{
 			for (size_t j = 0; j < node->children->length; j++)
-				printf(" %s ", (char *)(node->children->items[j]));
+				printf("%s", (char *)(node->children->items[j]));
 		}
 		printf(") AND ");
 		printf("redirct_list : (");
