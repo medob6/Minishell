@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 14:53:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 10:50:49 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/19 08:06:04 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void add_to_the_list(t_gar **tail, t_gar *new)
     new->next = *tail;
     *tail = new;
 }
-
 
 void    *ft_malloc(int size, int bytes)
 {
