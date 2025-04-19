@@ -21,6 +21,7 @@ void	array_extend(t_array *arr)
 	i = 0;
 	while (i < arr->length)
 	{
+		// TODO: add position fixing .
 		new_items[i] = arr->items[i];
 		i++;
 	}

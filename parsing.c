@@ -14,11 +14,8 @@ t_ast_node	*creat_ast_node(int node_type)
 
 t_ast_node	*simple_command(t_token **token)
 {
-	static int	i;
 	t_ast_node	*simple_cmd;
 
-	i++;
-	// printf("token : %s , i = %d\n", get_value((*token)->type), i);
 	simple_cmd = creat_ast_node(AST_SIMPLE_CMD);
 	while (true)
 	{
@@ -34,14 +31,8 @@ t_ast_node	*simple_command(t_token **token)
 			break ;
 		advance_token(token);
 	}
-	// printf("simpl cmd 1 : %p\n", simple_cmd->children);
 	if ((!simple_cmd->children && !simple_cmd->redirect_list))
-	{
-		// printf("simpl cmd 2: %p\n", simple_cmd->children);
-		// printf("returning NULL \n");
-		// printf("TOKEN IS : %s", (*token)->value);
 		return (NULL);
-	}
 	return (simple_cmd);
 }
 bool	paranteses_symetric(t_token **token)
@@ -70,21 +61,14 @@ t_ast_node	*subshell(t_token **token)
 {
 	t_ast_node	*compouned;
 
-	// subshell         : '(' command_list ')' redirect_list*
 	if ((*token)->type != TOKEN_PARENTESIS_OPEN)
 		return (NULL);
 	advance_token(token);
-	// if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-	// 	printf("WAAAAAAAAAAAA######\n");
 	compouned = compound_cmd(token, AST_SUBSHELL);
 	if ((*token)->type != TOKEN_PARENTESIS_CLOSE)
 		return (NULL);
 	else
-	{
-		// printf("tkn : %s\n", get_value((*token)->type));
 		advance_token(token);
-		// printf("tkn : %s\n", get_value((*token)->type));
-	}
 	while (true)
 	{
 		if (is_redirction((*token)->type))
@@ -134,55 +118,44 @@ bool	is_and_or(t_token_type type)
 		return (true);
 	return (false);
 }
+static t_ast_node	*create_logic_node(t_token **token)
+{
+	t_ast_node	*logic;
+
+	if ((*token)->type == TOKEN_AND)
+		logic = creat_ast_node(AST_AND);
+	else
+		logic = creat_ast_node(AST_OR);
+	advance_token(token);
+	return (logic);
+}
+
 t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 {
 	t_ast_node	*compound;
 	t_ast_node	*current;
-	t_ast_type	logic_type;
-	static int	i;
+	static int	depth;
 
-	i++;
+	depth++;
 	compound = creat_ast_node(type);
 	while (*token && (*token)->type != TOKEN_EOF)
 	{
-		// if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-		// 	break ;
-		// printf("depth= %d pipeline b TOKEN IS  : %s\n", i,
-		// 	get_value((*token)->type));
 		current = pipeline(token);
-		// printf("depth= %d  pipeline a TOKEN IS return (val : %p : %s\n", i,
-		// 	current, get_value((*token)->type));
 		if (!current || current->type == TOKEN_EOF)
-			return (i--, (NULL));
+			return (NULL);
 		add_child(compound, current);
 		if ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR)
 		{
-			if ((*token)->type == TOKEN_AND)
-				logic_type = AST_AND;
-			else
-				logic_type = AST_OR;
-			current = creat_ast_node(logic_type);
+			current = create_logic_node(token);
 			add_child(compound, current);
-			advance_token(token);
 			if ((*token)->type == TOKEN_EOF)
-				return (i--, (NULL));
+				return (NULL);
 		}
 		else
 			break ;
-		// else if ((*token)->type == TOKEN_PARENTESIS_CLOSE
-		// 	&& !is_and_or((*token)->next->type))
-		// 	return (NULL);
-		// else if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-		// 	break ;
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO: test parser more fix this test  : (ls) (ls)
 	}
-	i--;
-	// if ((*token)->type == TOKEN_PARENTESIS_CLOSE)
-	// {
-	// 	printf("fuck this case \n");
-	// 	advance_token(token);
-	// }
-	if (i == 0 && (*token)->type != TOKEN_EOF)
+	depth--;
+	if (depth == 0 && (*token)->type != TOKEN_EOF)
 		return (NULL);
 	return (compound);
 }
