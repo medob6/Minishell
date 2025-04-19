@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/19 14:32:17 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/19 16:30:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,14 @@ size_t	next_dollar(char *s)
 {
 	int		i;
 
-	i = 0;
+	i = 1;
 	while (s[i])
 	{
 		if (s[i] == '$')
 			return (i);
 		i++;
 	}
-	return (i);
+	return (0);
 }
 
 int		check_the_word(t_array *child, t_env **env, int i)
@@ -109,6 +109,8 @@ int		check_the_word(t_array *child, t_env **env, int i)
 			new_str = expand_the_value(&str[index], env);
 			if (new_str[0] != '\0')
 				child->items[i] = new_str;
+			else if (!next_dollar(&str[index]))
+				old_str = NULL;
 			else
 				old_str = ft_strjoin(old_str, ft_substr(&str[index], index, next_dollar(&str[index]) + 2));
 		}
