@@ -55,6 +55,7 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
+<<<<<<< HEAD
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     "minishell.h": "c",
@@ -63,4 +64,7 @@
     "errno.h": "c",
     "history.h": "c"
   }
+=======
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
+>>>>>>> origin/execution
 }
