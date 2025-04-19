@@ -39,16 +39,16 @@ void execute_cmd_line(t_ast_node *root, char **envp) {
 	// error handeling happens in the execution not expansion
 	// the root childs are pipelines
 	//
-	int i;
-	int exit_status;
-	i = 0;
+	// int i;
+	// int exit_status;
+	// i = 0;
 
-	while (i < root->children->length)
-	{
-		exit_status = execute_pipeline(root->children->items[i]);
-		if (exit_status != 0 && )
+	// while (i < root->children->length)
+	// {
+	// 	exit_status = execute_pipeline(root->children->items[i]);
+	// 	if (exit_status != 0 && )
 
-	}
+	// }
 
     
 }
