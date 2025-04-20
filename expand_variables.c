@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/20 16:12:05 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/20 16:33:55 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
-		if (tmp && tmp[0] == '$')
+		if (tmp)
 		{
             if (check_the_word(node->children, env, i))
 	            expand = 1;
