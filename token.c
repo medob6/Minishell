@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/17 16:41:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/20 16:25:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,13 +138,16 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 {
 	char	nc;
 
-	if (!next)
-		return (0);
-	nc = check_for_operations(next, 0);
-	if (nc == '\0')
+	if (next)
 	{
-		append_redirect_arg(head, tail, c, next);
-		return (1);
+		nc = check_for_operations(next, 0);
+		if (nc == '\0')
+		{
+			append_redirect_arg(head, tail, c, next);
+			return (1);
+		}
+		else
+			append_empty_redirect(head, tail, c);
 	}
 	else
 		append_empty_redirect(head, tail, c);
@@ -173,6 +176,11 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 	next = s[*index + 1];
 	while (s[*index][i])
 	{
+		if (s[*index][i] == '\'' || s[*index][i] == '\"')
+		{
+			create_simple_token(head, tail, s[*index]);
+			return ;
+		}
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
