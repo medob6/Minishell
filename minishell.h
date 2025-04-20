@@ -54,6 +54,7 @@ typedef struct s_env
 typedef enum e_token_type
 {
 	TOKEN_WORD,
+	//TOKEN_WILDCARDS, // *
 	TOKEN_PARENTESIS_OPEN, //(
 	TOKEN_PARENTESIS_CLOSE,
 	TOKEN_AND,
@@ -63,6 +64,7 @@ typedef enum e_token_type
 	TOKEN_REDIRECT_OUT, // >
 	TOKEN_APPEND,       // >>
 	TOKEN_HEREDOC,      // <<
+	//TOKEN_TO_EXPAND,
 	TOKEN_EOF
 }			t_token_type;
 
