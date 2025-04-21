@@ -72,7 +72,7 @@ typedef struct s_token
 {
 	char *value;          // The actual token string
 	t_token_type type;
-	struct s_token *prev;  // The type of token
+	struct s_token *prev; // The type of token
 	struct s_token *next; // Linked list to store multiple tokens
 }			t_token;
 
@@ -123,7 +123,7 @@ void			add_child(t_ast_node *parent, void *new_child);
 void			add_redirect(t_ast_node *parent, t_token *redir);
 void			advance_token(t_token **token);
 bool			is_redirction(t_token_type token_type);
-t_ast_node		*compound_cmd(t_token **token);
+t_ast_node		*compound_cmd(t_token **token , t_ast_type token_type);
 
 // debuging functions
 char			*get_value(int type);
