@@ -1,7 +1,4 @@
 #include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 t_token	*new_token(t_token_type type, char *value)
 {
@@ -60,9 +57,9 @@ void	print_ast(t_ast_node *node, int depth)
 	for (int i = 0; i < depth; i++)
 	{
 		if (i < depth)
-			printf("\t|");
+			printf("\033[0;32m\t|\033[0m");
 	}
-	printf("_______");
+	printf("\033[0;32m_______\033[0m");
 	printf("AST Node: %s\n", get_value(node->type));
 	if (node->redirect_list)
 	{

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/20 16:33:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/21 09:56:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,29 @@ int     ft_strcmp(const char *s1, const char *s2)
         return (0);
 }
 
-int		is_valid_t(char *tmp)
+int	valid(char c)
 {
-	int		i;
+	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_');
+}
 
-	i = 2;
+int	is_valid_length(char *tmp, int flag)
+{
+	int i;
+
+	i = flag;
+	if (!flag && !valid(tmp[i]))
+		return (0);
+	i = !(flag);
 	while (tmp[i])
 	{
 		if (!((tmp[i] >= '0' && tmp[i] <= '9') ||
-      	(tmp[i] >= 'A' && tmp[i] <= 'Z') ||
-      	(tmp[i] >= 'a' && tmp[i] <= 'z') ||
-      	tmp[i] == '_'))
-			return (i);
+			(tmp[i] >= 'A' && tmp[i] <= 'Z') ||
+			(tmp[i] >= 'a' && tmp[i] <= 'z') ||
+			tmp[i] == '_'))
+			break;
 		i++;
 	}
-	return (0);
+	return (i);
 }
 
 char  *expand_the_value(char *str, t_env **env)
@@ -70,7 +78,7 @@ char  *expand_the_value(char *str, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	index = is_valid_t(str);
+	index = is_valid_length(str, 1);
 	if (index)
 		str = ft_strjoin(ft_strdup(""), &str[index]);
 	else
@@ -92,10 +100,6 @@ size_t	next_dollar(char *s)
 	return (0);
 }
 
-int	valid(char c)
-{
-	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_');
-}
 
 // int		check_the_word(t_array *child, t_env **env, int i)
 // {
@@ -128,101 +132,128 @@ int	valid(char c)
 // 	return (1);
 // }
 
+// int	check_the_word(t_array *child, t_env **env, int i)
+// {
+// 	char	*str;
+// 	char	*old_str;
+// 	char	*tmp;
+// 	int		index;
+// 	int		var_len;
+// 	//char	buf[2];
+	
+// 	str = child->items[i];
+// 	old_str = ft_strdup("");
+// 	index = 0;
+// 	while (str[index])
+// 	{
+// 		if (str[index] == '$')
+// 		{
+// 			var_len = is_valid_length(&str[index + 1], 0);
 
-int	is_valid(char *tmp)
+// 			if (var_len == 0)
+// 			{
+// 				char buf[2] = { '$', '\0' };
+// 				tmp = ft_strjoin(old_str, buf);
+// 				old_str = tmp;
+// 				index++;
+// 				continue ;
+// 			}
+// 			char *var = ft_substr(str, index, var_len + 1);
+// 			char *exp = expand_the_value(var, env);
+// 			tmp = ft_strjoin(old_str, exp);
+// 			old_str = tmp;
+// 			index += var_len + 1;
+// 		}
+// 		else
+// 		{
+// 			char buf[2] = { str[index], '\0' };
+// 			tmp = ft_strjoin(old_str, buf);
+// 			old_str = tmp;
+// 			index++;
+// 		}
+// 	}
+// 	child->items[i] = old_str;
+// 	return (1);
+// }
+
+char *handle_expansion(char *str, int *index, t_env **env, char *old_str)
 {
-	int	i;
+	int var_len = is_valid_length(&str[*index + 1], 0);
+	char *tmp;
 
-	if (!valid(tmp[0]))
-		return (0); // not valid
-	i = 1;
-	while (tmp[i])
+	if (var_len == 0)
 	{
-		if (!((tmp[i] >= '0' && tmp[i] <= '9') ||
-			  (tmp[i] >= 'A' && tmp[i] <= 'Z') ||
-			  (tmp[i] >= 'a' && tmp[i] <= 'z') ||
-			  tmp[i] == '_'))
-			break ;
-		i++;
+		char buf[2] = { '$', '\0' };
+		tmp = ft_strjoin(old_str, buf);
+		(*index)++;
+		return (tmp);
 	}
-	return (i); // return length of valid var name
+	char *var = ft_substr(str, *index, var_len + 1);
+	char *exp = expand_the_value(var, env);
+	tmp = ft_strjoin(old_str, exp);
+	free(var);
+	free(exp);
+	*index += var_len + 1;
+	return (tmp);
+}
+
+char *append_char(char *old_str, char c)
+{
+	char buf[2] = { c, '\0' };
+	char *tmp = ft_strjoin(old_str, buf);
+	return (tmp);
 }
 
 int	check_the_word(t_array *child, t_env **env, int i)
 {
-	char	*str = child->items[i];
-	char	*old_str = ft_strdup("");
-	char	*tmp;
-	int		index = 0;
-	int		var_len;
-	//char	buf[2];
+	char *str = child->items[i];
+	char *old_str = ft_strdup("");
+	char *tmp;
+	int index = 0;
 
 	while (str[index])
 	{
-		if (str[index] == '$')
+		if (str[index] == '\'')
 		{
-			var_len = is_valid(&str[index + 1]);
-
-			if (var_len == 0)
-			{
-				char buf[2] = { '$', '\0' };
-				tmp = ft_strjoin(old_str, buf);
-				free(old_str);
-				old_str = tmp;
+			int start = index;
+			index++;
+			while (str[index] && str[index] != '\'')
 				index++;
-				continue ;
-			}
-			char *var = ft_substr(str, index, var_len + 1);
-			char *exp = expand_the_value(var, env);
-			tmp = ft_strjoin(old_str, exp);
-			old_str = tmp;
-			index += var_len + 1;
+			if (str[index] == '\'')
+				index++;
+			tmp = ft_strjoin(old_str, ft_substr(str, start, index - start));
 		}
+		else if (str[index] == '$')
+			tmp = handle_expansion(str, &index, env, old_str);
 		else
 		{
-			char buf[2] = { str[index], '\0' };
-			tmp = ft_strjoin(old_str, buf);
-			old_str = tmp;
-			index++;
+			tmp = append_char(old_str, str[index]);
+			if (str[index] != '\0')
+				index++;
 		}
+		free(old_str);
+		old_str = tmp;
 	}
 	child->items[i] = old_str;
 	return (1);
 }
 
+int	check_the_single_qout(char *s)
+{
+	int		i;
 
-// int	expand_the_value(t_array *child, t_env **env, int i)
-// {
-// 	t_env	*tmp;
-// 	int		index;
-
-// 	tmp = *env;
-// 	while (tmp)
-// 	{
-// 		if (ft_strncmp(&((char *)child->items[i])[1], tmp->key, ft_strlen(tmp->key)) == 0)
-// 		{
-// 			printf("%d\n", is_valid(&((char *)child->items[i])[1]));
-// 			if (ft_strlen(&((char *)child->items[i])[1]) > ft_strlen(tmp->key) && is_valid(&((char *)child->items[i])[1]))
-// 				child->items[i] = ft_strjoin(ft_strdup(tmp->value),
-// 				&((char *)child->items[i])[ft_strlen(tmp->key) + 1]);
-// 			else if (!is_valid(&((char *)child->items[i])[1]))
-// 				child->items[i] = ft_strdup(tmp->value);
-// 			else
-// 				child->items[i] = ft_strdup("");
-// 			return (1);
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// 	index = 0;
-// 	index = is_valid(&((char *)child->items[i])[1]);
-// 	if (index)
-// 		child->items[i] = ft_strjoin(ft_strdup(""),
-// 		&((char *)child->items[i])[index]);
-// 	else
-// 		child->items[i] = ft_strdup("");
-// 	return (0);
-// }
-
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '\'')
+		{
+			if (ft_strchr(&s[i], '$') != NULL)
+				return (0);
+		}
+		i++;
+	}
+	return (1);
+}
 
 int	expand_variables(t_ast_node *node, t_env **env)
 {
@@ -237,7 +268,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
-		if (tmp)
+		if (tmp) //&& check_the_single_qout(tmp))
 		{
             if (check_the_word(node->children, env, i))
 	            expand = 1;
