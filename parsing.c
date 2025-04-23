@@ -132,10 +132,9 @@ static t_ast_node	*create_logic_node(t_token **token)
 
 t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 {
-	t_ast_node	*compound;
-	t_ast_node	*current;
 	static int	depth;
 
+	t_ast_node (*compound), (*current);
 	depth++;
 	compound = creat_ast_node(type);
 	while (*token && (*token)->type != TOKEN_EOF)
@@ -163,6 +162,8 @@ t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 t_ast_node	*parse_tokens(t_token *tokens)
 {
 	t_ast_node	*root;
+
+	// printf("%p\n",tokens);
 
 	if (!paranteses_symetric(&tokens))
 		return (NULL);
