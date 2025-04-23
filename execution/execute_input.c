@@ -163,7 +163,7 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, char **envp)
 	}
 	return (cmd_lst);
 }
-
+// wait_for_prc() , cmd_is_path
 int	execute_pipeline(t_ast_node *pipeline, char **envp)
 {
 	t_data	prg_data;
