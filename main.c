@@ -262,9 +262,11 @@ void	print_ast(t_ast_node *node, int depth)
 // 	}
 // }
 
-int	main(void)
+int	main(int ac,char **av,char **envp)
 {
-	char		*cmd_line;
+	(void)ac;
+	(void)av;
+	char *cmd_line;
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
@@ -282,6 +284,7 @@ int	main(void)
 			break ;
 		if (*cmd_line)
 			add_history(cmd_line);
+		
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 		{
@@ -302,8 +305,10 @@ int	main(void)
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
 			print_ast(ast, 0);
-			// test_redirect_func(ast,0);
-			t_env *env_lst = NULL;// should be created before
+			//TODO here we should test rederiction first
+			t_env *env_lst = create_the_main_list(envp);// should be created before
+			printf("\033[0;32m============================\033[0m\n\n");
+			printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
 			execution(ast, env_lst);
 		}
 		free(cmd_line);

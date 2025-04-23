@@ -1,6 +1,7 @@
 #include "execution.h"
 
 // change linked list to  arr
+
 int	lst_size(t_env *head)
 {
 	int	i;
@@ -43,7 +44,8 @@ int	open_file(t_token *file_token)
 	else if (file_token->type == TOKEN_APPEND)
 		return (open(file_token->value, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	else if (file_token->type == TOKEN_HEREDOC)
-		return (file_token->value);
+		return (atoi(file_token->value));
+	return (-1);
 }
 void	redirect(t_token *file_obj)
 {
@@ -64,20 +66,21 @@ void	redirect(t_token *file_obj)
 void	perforem_redirections(t_data *data, int n)
 {
 	int		i;
-	int		fd;
 	t_token	**redir_lst;
 
 	i = 0;
+	// all good for one cmd
 	redir_lst = data->lst_cmd[n].redirlist;
-	if (i != data->cmd_nbr - 1)
+	if (n != data->cmd_nbr - 1)
 		close(data->fd[0]);
 	if (data->old_fd != -1)
 	{
 		dup2(data->old_fd, STDIN_FILENO);
 		close(data->old_fd);
 	}
-	while (redir_lst[i])
+	while (redir_lst && redir_lst[i])
 	{
+		printf(" i = %d \n",i);
 		redirect(redir_lst[i]);
 		i++;
 	}
@@ -86,6 +89,14 @@ void	perforem_redirections(t_data *data, int n)
 		dup2(data->out_fd, STDOUT_FILENO);
 		close(data->out_fd);
 	}
+}
+
+void	parent(int *old_fd, int *fd)
+{
+	close(fd[1]);
+	if (*old_fd >= 0)
+		close(*old_fd);
+	*old_fd = fd[0];
 }
 
 void	child(t_data *prg_data, int index)
@@ -122,12 +133,15 @@ bool	parse_cmd(t_cmd *cmd, t_ast_node *node, char **envp)
 {
 	char	**cmd_args;
 
-	cmd_args = (char **)node->children->items;
-	cmd->redirlist = (t_token **)node->redirect_list->items;
+	cmd_args = NULL;
+	if ((t_token **)node->children)
+		cmd_args = (char **)node->children->items;
+	if ((t_token **)node->redirect_list)
+		cmd->redirlist = (t_token **)node->redirect_list->items;
 	if (!cmd_args || cmd_args[0] == NULL)
 	{
 		if (!cmd_args[0])
-			free(cmd_args);
+			ft_free(cmd_args);
 		cmd->args = NULL;
 		cmd->path = NULL;
 		return (false);
@@ -163,54 +177,65 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, char **envp)
 	}
 	return (cmd_lst);
 }
-// wait_for_prc() , cmd_is_path
+
 int	execute_pipeline(t_ast_node *pipeline, char **envp)
 {
 	t_data	prg_data;
 	int		status;
 
+	// TODO :  make a function that initialize var
+	prg_data.old_fd = -1;
+	prg_data.out_fd = -1;
+	prg_data.fd[0] = -1;
+	prg_data.fd[1] = -1;
+
 	prg_data.cmd_nbr = pipeline->children->length;
 	prg_data.lst_cmd = parse_cmd_list(prg_data.cmd_nbr,
-			pipeline->children->items, envp);
+			(t_ast_node **)pipeline->children->items, envp);
 	prg_data.envp = envp;
 	pipe_exec(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
+	free_garbeg(&prg_data);
 	return (status);
 }
 
-int	execute_cmd_line(t_ast_node *root, char **envp)
+int execute_cmd_line(t_ast_node *root, char **envp)
 {
-	int	i;
+    size_t i = 0;
+    int status = 0;
 
-	i = 0;
-	while ((root && root->children) && i < root->children->length)
-	{
-		status = execute_pipeline(root->children->items[i], envp);
-		if (!status)
-		{
-			if (((t_ast_node *)root->children->items[i++])->type == AST_AND)
-				status = execute_pipeline(root->children->items[i++], envp);
-			else
-				return (status);
-		}
-		else
-		{
-			if (((t_ast_node *)root->children->items[i++])->type == AST_OR)
-				status = execute_pipeline(root->children->items[i++], envp);
-			else
-				return (status);
-		}
-	}
-	return (status);
+    if (!root || !root->children || root->children->length == 0)
+        return (0);
+
+    while (i < root->children->length) {
+        t_ast_node *cmd = (t_ast_node *)root->children->items[i];
+        status = execute_pipeline(cmd, envp);
+
+        if (++i < root->children->length) {
+            t_ast_node *op = (t_ast_node *)root->children->items[i];
+
+            if ((status == 0 && op->type == AST_AND) ||(status != 0 && op->type == AST_OR))
+			{
+                ++i;
+                continue;
+            } else {
+                return status;
+            }
+        } else {
+            break;
+        }
+    }
+    return status;
 }
 
 int	execution(t_ast_node *root, t_env *env)
 {
+	int		n;
 	char	**envp;
 
-	(void)env;
-	// envp = extract_envp(env);
-	// expand_ast(root);
-	return (execute_cmd_line(root, envp));
+	envp = extract_envp(env);
+	// expand_ast(root); // i am still waiting for my partener to make this one
+	n = execute_cmd_line(root, envp);// the problem of prompt not shoing out is becuase of this line
+	return (n);
 }
