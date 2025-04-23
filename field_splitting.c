@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/22 14:51:51 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:56:06 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int     check_for_field_split(char *tmp)
                     return (0);
                 i++;
             }
-            i++;
+            //i++;
         }
         if (tmp[i] == '$')
             dollar = 1;
