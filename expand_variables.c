@@ -6,25 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/21 09:56:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:32:20 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int     ft_strcmp(const char *s1, const char *s2)
-{
-        size_t  i;
-
-        i = 0;
-        while ((s1[i] || s2[i]))
-        {
-                if (s1[i] != s2[i])
-                        return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-                i++;
-        }
-        return (0);
-}
 
 int	valid(char c)
 {
@@ -100,117 +86,52 @@ size_t	next_dollar(char *s)
 	return (0);
 }
 
-
-// int		check_the_word(t_array *child, t_env **env, int i)
-// {
-// 	char	*str;
-// 	char	*old_str;
-// 	char	*new_str;
-// 	int		index;
-
-// 	str = (char *)child->items[i];
-// 	index = 0;
-// 	old_str = NULL;
-// 	new_str = NULL;
-// 	while (str[index])
-// 	{
-// 		if (str[index] == '$' && (str[index + 1] && valid(str[index + 1])))
-// 		{
-// 			new_str = expand_the_value(&str[index], env);
-// 			if (new_str[0] != '\0')
-// 				child->items[i] = new_str;
-// 			// else if (!next_dollar(&str[index]))
-// 			// 	old_str = NULL;
-// 			//else
-// 				//old_str = ft_strjoin(old_str, ft_substr(&str[index], index, next_dollar(&str[index]) + 2));
-// 		}
-// 		else
-// 			old_str = ft_strjoin(old_str, ft_substr(&str[index], index, next_dollar(&str[index]) + 2));
-// 		index++;
-// 	}
-// 	child->items[i] = ft_strjoin(old_str, new_str);
-// 	return (1);
-// }
-
-// int	check_the_word(t_array *child, t_env **env, int i)
-// {
-// 	char	*str;
-// 	char	*old_str;
-// 	char	*tmp;
-// 	int		index;
-// 	int		var_len;
-// 	//char	buf[2];
-	
-// 	str = child->items[i];
-// 	old_str = ft_strdup("");
-// 	index = 0;
-// 	while (str[index])
-// 	{
-// 		if (str[index] == '$')
-// 		{
-// 			var_len = is_valid_length(&str[index + 1], 0);
-
-// 			if (var_len == 0)
-// 			{
-// 				char buf[2] = { '$', '\0' };
-// 				tmp = ft_strjoin(old_str, buf);
-// 				old_str = tmp;
-// 				index++;
-// 				continue ;
-// 			}
-// 			char *var = ft_substr(str, index, var_len + 1);
-// 			char *exp = expand_the_value(var, env);
-// 			tmp = ft_strjoin(old_str, exp);
-// 			old_str = tmp;
-// 			index += var_len + 1;
-// 		}
-// 		else
-// 		{
-// 			char buf[2] = { str[index], '\0' };
-// 			tmp = ft_strjoin(old_str, buf);
-// 			old_str = tmp;
-// 			index++;
-// 		}
-// 	}
-// 	child->items[i] = old_str;
-// 	return (1);
-// }
-
 char *handle_expansion(char *str, int *index, t_env **env, char *old_str)
 {
-	int var_len = is_valid_length(&str[*index + 1], 0);
+	int var_len;
 	char *tmp;
+	char *exp;
+	char *var;
+	char buf[2];
 
+	var_len = is_valid_length(&str[*index + 1], 0);
 	if (var_len == 0)
 	{
-		char buf[2] = { '$', '\0' };
+		buf[0] = '$';
+		buf[1] = '\0';
 		tmp = ft_strjoin(old_str, buf);
 		(*index)++;
 		return (tmp);
 	}
-	char *var = ft_substr(str, *index, var_len + 1);
-	char *exp = expand_the_value(var, env);
+	var = ft_substr(str, *index, var_len + 1);
+	exp = expand_the_value(var, env);
 	tmp = ft_strjoin(old_str, exp);
-	free(var);
-	free(exp);
 	*index += var_len + 1;
 	return (tmp);
 }
 
 char *append_char(char *old_str, char c)
 {
-	char buf[2] = { c, '\0' };
-	char *tmp = ft_strjoin(old_str, buf);
+	char buf[2];
+	char *tmp;
+
+	buf[0] = c;
+	buf[1] = '\0';
+	tmp = ft_strjoin(old_str, buf);
 	return (tmp);
 }
 
-int	check_the_word(t_array *child, t_env **env, int i)
+int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 {
-	char *str = child->items[i];
 	char *old_str = ft_strdup("");
 	char *tmp;
 	int index = 0;
+	char *str;
 
+	if (flag)
+		str = child->items[i];
+	else
+		str = ((t_token *)child->items[i])->value;
 	while (str[index])
 	{
 		if (str[index] == '\'')
@@ -231,10 +152,22 @@ int	check_the_word(t_array *child, t_env **env, int i)
 			if (str[index] != '\0')
 				index++;
 		}
-		free(old_str);
 		old_str = tmp;
 	}
-	child->items[i] = old_str;
+	if (flag)
+	{
+		if (split)
+			child->items[i] = applicate_field_split(old_str);
+		else
+			child->items[i] = old_str;
+	}
+	else
+	{
+		if (split)
+			((t_token *)child->items[i])->value = applicate_field_split(old_str);
+		else
+			((t_token *)child->items[i])->value = old_str;
+	}
 	return (1);
 }
 
@@ -255,72 +188,108 @@ int	check_the_single_qout(char *s)
 	return (1);
 }
 
-int	expand_variables(t_ast_node *node, t_env **env)
+void expand_cmd(t_ast_node *node, t_env **env)
 {
 	size_t		i;
-	int		expand;
+	int		split;
 	char	*tmp;
-
-	if (!node || !env || !*env)
-		return (0);
+	
 	i = 0;
-	expand = 0;
+	split = 0;
+	if (!node->children)
+		return ;
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
-		if (tmp) //&& check_the_single_qout(tmp))
+		if (tmp)
 		{
-            if (check_the_word(node->children, env, i))
-	            expand = 1;
+			if (check_for_field_split(tmp))
+			{
+				split = 1;
+				if (check_for_last_exp(node) != -1)
+					tmp = (char *)node->children->items[check_for_last_exp(node)];
+    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+        			split = 0;
+			}
+            check_the_word(node->children, env, i, 1, split);
         }
 		i++;
 	}
+}
+
+void expand_redirection(t_ast_node *node, t_env **env)
+{
+	size_t		i;
+	int		split;
+	char	*tmp;
+	
+	i = 0;
+	split = 0;
+	if (!node->redirect_list)
+		return ;
+	while (i < node->redirect_list->length)
+	{
+		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+		{
+			i++;
+			continue;
+		}
+		tmp = ((t_token *)node->redirect_list->items[i])->value;
+		if (tmp)
+		{
+			if (check_for_field_split(tmp))
+			{
+				split = 1;
+				if (check_for_last_exp(node) != -1)
+					tmp = (char *)node->children->items[check_for_last_exp(node)];
+    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+        			split = 0;
+			}
+            check_the_word(node->redirect_list, env, i, 0, split);
+        }
+		i++;
+	}
+}
+int	expand_variables(t_ast_node *node, t_env **env)
+{
+	int expand;
+	if (!node || !env || !*env)
+		return (0);
+	expand = 0;
+	expand_redirection(node,env);
+	expand_cmd(node,env);
 	return (expand);
 }
 
-// int	traverse_ast(t_ast_node *node, t_env **env)
-// {
-// 	size_t i;
-//     t_ast_node *child;
-    
-// 	if (!node)
-// 		return (1);
-// 	if (node->type == TOKEN_WORD)
-// 	    return (expand_variables(node, env));
-// 	if (node->children)
-// 	{
-// 		i = 0;
-// 		while (i < node->children->length)
-// 		{
-// 			child = (t_ast_node *)node->children->items[i];
-// 			if (traverse_ast(child, env) != 1)
-// 				return (0);
-// 			i++;
-// 		}
-// 	}
-// 	return (0);
-// }
-
-int	traverse_ast(t_ast_node *node, t_env **env)
+void expand_pipeline(t_ast_node *node, t_env **env)
+{
+	size_t i;
+	i = 0;
+	while (i  < node->children->length)
+	{
+		if (((t_ast_node *)node->children->items[i])->type == AST_SIMPLE_CMD)
+			expand_variables((t_ast_node *)node->children->items[i],env);
+		else if (((t_ast_node *)node->children->items[i])->type == AST_SUBSHELL)
+		{
+			expand_redirection((t_ast_node *)node->children->items[i],env);
+			expand_ast((t_ast_node *)node->children->items[i],env);
+		}
+		i++;
+	}
+	
+}
+int	expand_ast(t_ast_node *node, t_env **env)
 {
 	size_t i;
 
-	if (!node)
-		return (1);
-
-	// Expand only if this is a command node with arguments
-	if (node->type == AST_SIMPLE_CMD)
-		return expand_variables(node, env);
-
-	// For other nodes, traverse their AST children
-	if (node->children)
+	if (!node || !node->children)
+		return (0);
+	i = 0;
+	while (i  < node->children->length)
 	{
-		for (i = 0; i < node->children->length; i++)
-		{
-			t_ast_node *child = (t_ast_node *)node->children->items[i];
-			if (!traverse_ast(child, env))
-				return (0);
-		}
+		if (((t_ast_node *)node->children->items[i])->type == AST_PIPELINE)
+			expand_pipeline((t_ast_node *)node->children->items[i],env);
+		i++;
 	}
 	return (1);
 }

@@ -245,7 +245,7 @@ int	main(int ac, char **av, char **envp)
 			printf("\n\n");
 			ast = parse_tokens(*h);
 			env = create_the_main_list(envp);
-			if (traverse_ast(ast, &env))
+			if (expand_ast(ast, &env))
 				printf("all good\n");
 			else
 				printf("somthing not right\n");
