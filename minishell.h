@@ -128,8 +128,14 @@ t_ast_node		*compound_cmd(t_token **token , t_ast_type token_type);
 // debuging functions
 char			*get_value(int type);
 
-int	traverse_ast(t_ast_node *node, t_env **env);
+int	expand_ast(t_ast_node *node, t_env **env);
 int	is_valid_identifier(char *s);
 int	ft_export(char **args, t_env **env);
+void field_splitting(t_ast_node *node);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+
+int	check_the_last_arg(char *tmp);
+int     check_for_last_exp(t_ast_node *node);
+int     check_for_field_split(char *tmp);
+char    *applicate_field_split(char *str);
 #endif
