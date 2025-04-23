@@ -1,8 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# include "utils_lib/get_next_line.h"
 # include "utils_lib/libft.h"
-# include "utils_lib/get_next_line.h"
 # include "utils_lib/libft.h"
 # include <errno.h>
 # include <fcntl.h>
@@ -14,6 +12,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 # include <stddef.h>
+#include <dirent.h>
 // # include "env.h"
 // # include "token.h"
 // # include "array.h"
@@ -138,4 +137,6 @@ int	check_the_last_arg(char *tmp);
 int     check_for_last_exp(t_ast_node *node);
 int     check_for_field_split(char *tmp);
 char    *applicate_field_split(char *str);
+char *append_char(char *old_str, char c);
+void    expand_path_name(t_ast_node *node);
 #endif
