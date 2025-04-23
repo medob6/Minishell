@@ -167,6 +167,7 @@ t_ast_node	*parse_tokens(t_token *tokens)
 
 	if (!paranteses_symetric(&tokens))
 		return (NULL);
+	//TODO remove paranteses that are unecessery
 	root = compound_cmd(&tokens, AST_COMPOUNED_CMD);
 	if (!root)
 		return (NULL);
