@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/23 16:56:06 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/24 16:44:33 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ char    *applicate_field_split(char *str)
     new_str = NULL;
     start = 0;
     tmp = NULL;
+    if (!str[0])
+        new_str = str;
     while (str && str[j])
     {
         while (str[j] && (str[j] == ' ' || str[j] == '\t' || str[j] == '\n'))
