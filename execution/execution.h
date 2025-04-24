@@ -4,7 +4,8 @@
 # include "../parser.h"
 
 // int			status = 0;
-int			execute_cmd_line(t_ast_node *root, char **envp);
+
+int			execute_cmd_line(t_ast_node *root, t_env *envp);
 
 /* Structures */
 
@@ -29,12 +30,14 @@ typedef struct s_data
 	int		fd[2];
 	t_cmd	*lst_cmd;
 	int		cmd_nbr;
-	char	**envp;
+	t_env	*env;
 }			t_data;
 
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+char	**extract_envp(t_env *env)
+;
 int			ft_strcmp(char *s1, char *s2);
 int			ft_echo(char **args, int fd);
 void		exit_status(t_data *prg_data, int status);

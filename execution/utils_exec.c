@@ -187,7 +187,10 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 {
 	char *new_path;
 	int status;
+	char **envp;
 
+	envp = extract_envp(prg_data->env);
+	// HERE : EXPAND FOR THIS SINGAL CMD
 	if (!cmd.path)
 	{
 		if (!cmd.args)
@@ -199,7 +202,7 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 	new_path = ft_strjoin(cmd.path, "/");
 	if (access(new_path, F_OK) != 0)
 	{
-		execve(cmd.path, cmd.args, prg_data->envp);
+		execve(cmd.path, cmd.args, envp);
 		print_err(strerror(errno), cmd.path);
 		status = 127;
 	}

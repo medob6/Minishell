@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 18:17:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/24 20:16:17 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	ft_echo(char **args,int fd)
 
 	new_line = 1;
 	i = 1;
-		printf("out_fd = %d\n",fd);
+	// printf("out_fd = %d\n",fd);
 	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0
 		&& check_string(args[1]))
 	{
