@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_pwd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/16 16:05:51 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:13:52 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	ft_pwd(t_env **env_list)
 {

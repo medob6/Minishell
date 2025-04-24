@@ -8,7 +8,7 @@ int			execute_cmd_line(t_ast_node *root, char **envp);
 
 /* Structures */
 
-// TODO: from stuct cmd remove ext_status , add redir list
+// TODO: from stuct cmd remove exit_status , add redir list
 typedef struct s_cmd
 {
 	char	*path;
@@ -16,6 +16,8 @@ typedef struct s_cmd
 	pid_t	pid;
 	int		exit_status;
 	t_token	**redirlist;
+	size_t	redir_ars_nbr;
+	int		is_built_in;
 }			t_cmd;
 
 // TODO: from data struct remove uneccesery data like out_fd
@@ -33,6 +35,10 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+int			ft_strcmp(char *s1, char *s2);
+int			ft_echo(char **args, int fd);
+void		exit_status(t_data *prg_data, int status);
+
 void		free_garbeg(t_data *prg_data);
 void		free_pointers(char **p);
 void		ft_free(void *address);

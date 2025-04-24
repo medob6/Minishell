@@ -2,9 +2,10 @@
 
 // TODO : tomorow i will test execution using the new file i have added in the makefile called execute_input and add functions from pipex
 
-// add this :  execute command , ft_exit
+// add this :  execute command , exit_status
 #include <sys/types.h>
 #include <sys/wait.h>
+
 void	free_pointers(char **p)
 {
 	int	i;
@@ -19,29 +20,32 @@ void	free_pointers(char **p)
 	}
 	ft_free(p);
 }
-void ft_free(void *address)
+void	ft_free(void *address)
 {
-    t_gar **garbage_lst = garbage_list();
-    t_gar *prev = NULL;
-    t_gar *cur = *garbage_lst;
+	t_gar	**garbage_lst;
+	t_gar	*prev;
+	t_gar	*cur;
 
-    while (cur)
-    {
-        if (cur->addr == address)
-        {
-            if (prev)
-                prev->next = cur->next;
-            else
-                *garbage_lst = cur->next;
-            free(cur->addr);
-            free(cur);
-            return;
-        }
-        prev = cur;
-        cur = cur->next;
-    }
-    // Optionally, print a warning if not found
-	return;
+	garbage_lst = garbage_list();
+	prev = NULL;
+	cur = *garbage_lst;
+	while (cur)
+	{
+		if (cur->addr == address)
+		{
+			if (prev)
+				prev->next = cur->next;
+			else
+				*garbage_lst = cur->next;
+			free(cur->addr);
+			free(cur);
+			return ;
+		}
+		prev = cur;
+		cur = cur->next;
+	}
+	// Optionally, print a warning if not found // oe do something
+	return ;
 }
 void	free_garbeg(t_data *prg_data)
 {
@@ -57,7 +61,7 @@ void	free_garbeg(t_data *prg_data)
 	ft_free(prg_data->lst_cmd);
 	get_next_line(-1);
 }
-void	ft_exit(t_data *prg_data, int status)
+void	exit_status(t_data *prg_data, int status)
 {
 	free_garbeg(prg_data);
 	exit(status);
@@ -190,7 +194,7 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 			ft_putstr_fd("Mysh: Command not found: \n", 2);
 		else
 			print_err("command not found", cmd.args[0]);
-		ft_exit(prg_data, 127);
+		exit_status(prg_data, 127);
 	}
 	new_path = ft_strjoin(cmd.path, "/");
 	if (access(new_path, F_OK) != 0)
@@ -205,5 +209,5 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 		status = 126;
 	}
 	ft_free(new_path);
-	ft_exit(prg_data, status);
+	exit_status(prg_data, status);
 }

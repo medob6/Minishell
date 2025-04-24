@@ -1,7 +1,6 @@
 #include "execution/execution.h"
 #include "parser.h"
 
-
 void	ft_lstclear(t_gar **lst)
 {
 	t_gar	*d;
@@ -86,7 +85,8 @@ void	print_token(t_token *head)
 {
 	while (head)
 	{
-		printf("   \033[0;36m%-15s => %s\033[0m\n", head->value, get_value(head->type));
+		printf("   \033[0;36m%-15s => %s\033[0m\n", head->value,
+			get_value(head->type));
 		head = head->next;
 	}
 }
@@ -109,8 +109,9 @@ int	ft_print(char *c, int fd)
 
 void	print_lexer(char **s)
 {
-	int	i = 0;
+	int	i;
 
+	i = 0;
 	while (s && s[i])
 	{
 		printf("\033[0;33mtoken[%d]:\033[0m [\033[0;32m%s\033[0m]\n", i, s[i]);
@@ -142,6 +143,8 @@ char	*get_value_ast(int type)
 
 void	print_redir(t_ast_node *node)
 {
+	t_token	*redir;
+
 	if (!node || !node->redirect_list)
 	{
 		printf("\n");
@@ -150,10 +153,8 @@ void	print_redir(t_ast_node *node)
 	printf("\033[0;36mredir_list:\033[0m (");
 	for (size_t d = 0; d < node->redirect_list->length; d++)
 	{
-		t_token *redir = (t_token *)node->redirect_list->items[d];
-		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m, filename: \033[1;36m%s\033[0;36m}\033[0m ",
-			get_redir_value(redir->type),
-			redir->value);
+		redir = (t_token *)node->redirect_list->items[d];
+		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",get_redir_value(redir->type), redir->value);
 	}
 	printf(")\n");
 }
@@ -214,63 +215,15 @@ void	print_ast(t_ast_node *node, int depth)
 	}
 }
 
-
-
-
-// void test_redirect_func(t_ast_node *node, int depth)
-// {
-
-// 	t_token	*redir;
-
-// 	if (!node)
-// 		return ;
-// 	for (int i = 0; i < depth; i++)
-// 		printf("\033[0;32m\t|\033[0m");
-// 	printf("\033[0;32m_______\033[0m");
-// 	if (node->type == AST_SIMPLE_CMD)
-// 	{
-
-		
-	// 	printf("\033[0;36m testing redir_list:\033[0m (");
-	// 	if (node->redirect_list)
-	// 	// {
-	// 		perforem_redirections(node->redirect_list);
-	// 		for (size_t d = 0; d < node->redirect_list->length; d++)
-	// 		{
-	// 			redir = (t_token *)node->redirect_list->items[d];
-	// 			printf(" \033[0;36m{redir_type: %s, filename: %s}\033[0m ",
-	// 				get_redir_value(redir->type), redir->value);
-	// 		}
-	// 	}
-	// 	printf(")\n");
-	// 	return ;
-	// }
-// 	// else
-// 	// {
-// 	// 	printf("\033[0;31mAST Node:\033[0m %s", get_value_ast(node->type));
-// 	// 	if (node->type == AST_SUBSHELL)
-// 	// 	{
-// 	// 		printf(" ; ");
-// 	// 		print_redir(node);
-// 	// 	}
-// 	// 	printf("\n");
-// 	// }
-// 	if (node->children)
-// 	{
-// 		for (size_t i = 0; i < node->children->length; i++)
-// 			print_ast(node->children->items[i], depth + 1);
-// 	}
-// }
-
-int	main(int ac,char **av,char **envp)
+int	main(int ac, char **av, char **envp)
 {
-	(void)ac;
-	(void)av;
-	char *cmd_line;
+	char		*cmd_line;
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
 
+	(void)ac;
+	(void)av;
 	ast = NULL;
 	ft_error(1);
 	prompt = costruct_prompt();
@@ -279,12 +232,12 @@ int	main(int ac,char **av,char **envp)
 		ast = NULL;
 		cmd_line = readline(prompt);
 		printf("\n");
-		printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n", cmd_line);
+		printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",
+			cmd_line);
 		if (!cmd_line)
 			break ;
 		if (*cmd_line)
 			add_history(cmd_line);
-		
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 		{
@@ -298,15 +251,15 @@ int	main(int ac,char **av,char **envp)
 		{
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
-			
 		}
 		else
 		{
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
 			print_ast(ast, 0);
-			//TODO here we should test rederiction first
-			t_env *env_lst = create_the_main_list(envp);// should be created before
+			// TODO here we should test rederiction first
+			t_env *env_lst = create_the_main_list(envp);
+				// should be created before
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
 			execution(ast, env_lst);

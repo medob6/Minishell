@@ -163,8 +163,6 @@ t_ast_node	*parse_tokens(t_token *tokens)
 {
 	t_ast_node	*root;
 
-	// printf("%p\n",tokens);
-
 	if (!paranteses_symetric(&tokens))
 		return (NULL);
 	//TODO remove paranteses that are unecessery

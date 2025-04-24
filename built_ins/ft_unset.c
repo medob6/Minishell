@@ -6,11 +6,11 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/19 08:05:33 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:14:21 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	remove_from_the_list(t_env **head, t_env *tmp, t_env *prev)
 {
