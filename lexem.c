@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/19 15:39:23 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/24 09:17:40 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,6 +264,33 @@ int handle_normal_words(char **str, char *cmd_line, int *i)
 	return (1);
 }
 
+int handle_word(char **str, char *cmd_line, int *i)
+{
+	int start;
+	int n = 0;
+	char quote;
+
+	start = *i;
+
+	if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+	{
+		quote = cmd_line[*i];
+		start = *i;
+		while (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+			*i = skip_quotes(cmd_line, *i, &n);
+	}
+	if (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+	{
+		while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+			(*i)++;
+	}
+
+	*str = ft_malloc(*i - start + 1, 1);
+	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
+	return (1);
+}
+
+
 int handle_operators(char **str, char *cmd_line, int *i, int count)
 {
 	*str = ft_malloc(1, count + 1);
@@ -276,9 +303,11 @@ char **help_lexer(char **str, char *cmd_line)
 {
 	int i;
 	int j;
+	//int	flag;
 
 	i = 0;
 	j = 0;
+	//flag = 1;
 	while (cmd_line[i])
 	{
 		while (cmd_line[i] == ' ' || cmd_line[i] == '\t')
@@ -287,21 +316,16 @@ char **help_lexer(char **str, char *cmd_line)
 			break;
 		if (is_operator(cmd_line, i))
 		{
+			//flag = 1;
 			j += handle_par(&str[j], cmd_line, &i);
 			continue;
 		}
-		if (cmd_line[i] != '\'' || cmd_line[i] != '"')
-			j += handle_normal_words(&str[j], cmd_line, &i);
-		if (cmd_line[i] == '\'' || cmd_line[i] == '"')
+		else
 		{
-			handle_in_the_qouts(&str[j], cmd_line, &i);
-			// if (ft_strchr("'\"", cmd_line[i]) == NULL)
-			// 	j++;
-			continue;
+			j += handle_word(&str[j], cmd_line, &i);
+			continue ;
 		}
-		//j += handle_normal_words(&str[j], cmd_line, &i);
 	}
-	//printf("%d\n", j);
 	str[j] = NULL;
 	return (str);
 }
