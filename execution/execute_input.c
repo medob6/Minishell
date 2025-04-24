@@ -359,7 +359,7 @@ int	execution(t_ast_node *root, t_env *env)
 
 // TODO
 // what i should do now :
-//1- implement builting in execution !!!!!!!!! //TODO   ===> "understand what i do"
+//1- implement builting in execution !!!!!!!!! //TODO   ===> "understand what i do" // check if file descriptors are closed and only needed ones opened 
 //2- upgrade heredoc code			 !!!!!!!!! have some errors and linked to 7
 //3- extract envp before rederection
 //4- check for imbiguse rederictions
@@ -369,7 +369,7 @@ int	execution(t_ast_node *root, t_env *env)
 //8- test execuiton
 //9- remove paranteses in parsing
 //10- test everything //TODO when expansion is finished
-
+//11- //TODO close arrays that was filled in parsing with null
 
 //PROBLEMS
 // we got a lot of problems that should be fixed
