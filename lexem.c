@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 09:17:40 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/24 11:11:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,29 +264,64 @@ int handle_normal_words(char **str, char *cmd_line, int *i)
 	return (1);
 }
 
+// int handle_word(char **str, char *cmd_line, int *i)
+// {
+// 	int start;
+// 	int n = 0;
+// 	char quote;
+
+// 	start = *i;
+
+// 	if (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+// 	{
+// 		while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+// 			(*i)++;
+// 	}
+// 	if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+// 	{
+// 		quote = cmd_line[*i];
+// 		start = *i;
+// 		while (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+// 			*i = skip_quotes(cmd_line, *i, &n);
+// 	}
+// 	if (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+// 	{
+// 		while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+// 			(*i)++;
+// 	}
+
+// 	*str = ft_malloc(*i - start + 1, 1);
+// 	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
+// 	return (1);
+// }
+
 int handle_word(char **str, char *cmd_line, int *i)
 {
-	int start;
-	int n = 0;
-	char quote;
+	char	*tmp = NULL;
+	char	quote;
 
-	start = *i;
-
-	if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
 	{
-		quote = cmd_line[*i];
-		start = *i;
-		while (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
-			*i = skip_quotes(cmd_line, *i, &n);
+		if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
+		{
+			quote = cmd_line[*i];
+			int start = (*i)++;
+			while (cmd_line[*i] && cmd_line[*i] != quote)
+				(*i)++;
+			if (cmd_line[*i] == quote)
+				(*i)++;
+			tmp = ft_strjoin(tmp, ft_substr(cmd_line, start, *i - start));
+		}
+		else
+		{
+			int start = *i;
+			while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t'
+				&& !is_operator(cmd_line, *i) && cmd_line[*i] != '\'' && cmd_line[*i] != '"')
+				(*i)++;
+			tmp = ft_strjoin(tmp, ft_substr(cmd_line, start, *i - start));
+		}
 	}
-	if (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
-	{
-		while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
-			(*i)++;
-	}
-
-	*str = ft_malloc(*i - start + 1, 1);
-	ft_strlcpy(*str, &cmd_line[start], *i - start + 1);
+	*str = tmp;
 	return (1);
 }
 
