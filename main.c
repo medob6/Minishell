@@ -31,11 +31,11 @@ const char	*costruct_prompt(void)
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
-		tmp = ft_strjoin("\033[1;32m~\033[0m", cwd + ft_strlen(home));
-		prompt = ft_strjoin(tmp, "\033[1;34m$ \033[0m");
+		tmp = ft_strjoin("~", cwd + ft_strlen(home));
+		prompt = ft_strjoin(tmp, "$ ");
 	}
 	else
-		prompt = ft_strjoin(cwd, "\033[1;34m$ \033[0m");
+		prompt = ft_strjoin(cwd, "$ ");
 	return (prompt);
 }
 
