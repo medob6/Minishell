@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/16 11:13:04 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/24 18:17:25 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-int	check_the_string(char *s)
+int	check_string(char *s)
 {
 	int	i;
 
@@ -26,26 +26,31 @@ int	check_the_string(char *s)
 	return (1);
 }
 
-int	ft_echo(char **args)
+int	ft_echo(char **args,int fd)
 {
 	int	i;
 	int	new_line;
 
 	new_line = 1;
 	i = 1;
+		printf("out_fd = %d\n",fd);
 	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0
-		&& check_the_string(args[1]))
+		&& check_string(args[1]))
 	{
 		i = 2;
 		new_line = 0;
 	}
+	ft_print(args[i++], fd);
 	while (args && args[i])
 	{
-		ft_print(args[i], 1);
+		ft_print(" ", fd);
+		ft_print(args[i], fd);
 		i++;
 	}
 	if (new_line)
-		ft_print("\n", 1);
+		ft_print("\n", fd);
+	if (fd != 1)
+		close(fd);
 	return (0);
 }
 
