@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 18:12:43 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 09:28:09 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,13 +146,19 @@ char    *expand_wild(char *path, char *get)
 
 void expand_wildcard(t_array *child, int i, int flag)
 {
-    char *str = child->items[i];
+    char *str;
     char *path = NULL;
     char *pattern = NULL;
-    char *slash = ft_strchr(str, '/');
-    char *wild = ft_strchr(str, '*');
+    char *slash;
+    char *wild;
     char *new_str;
-
+    
+    if (flag)
+		str = child->items[i];
+	else
+		str = ((t_token *)child->items[i])->value;
+    slash = ft_strchr(str, '/');
+    wild = ft_strchr(str, '*');
     if (wild && (!slash || slash > wild))
         pattern = str;
     else
@@ -164,7 +170,6 @@ void expand_wildcard(t_array *child, int i, int flag)
             if (str[j] == '*')
                 break;
         }
-
         if (last_slash != -1) {
             path = ft_substr(str, 0, last_slash + 1);
             pattern = &str[last_slash + 1];
@@ -173,7 +178,6 @@ void expand_wildcard(t_array *child, int i, int flag)
             pattern = str;
         }
     }
-
     new_str = expand_wild(path, pattern);
     if (new_str)
     {
@@ -183,50 +187,6 @@ void expand_wildcard(t_array *child, int i, int flag)
             ((t_token *)child->items[i])->value = new_str;
     }
 }
-
-// void    expand_wildcard(t_array *child, int i)
-// {
-//     char    *str;
-//     char    *new_str;
-//     char    *old_str;
-//     char    *tmp;
-//     int     j;
-//     int     flag = 1;
-
-//     str = (char *)child->items[i];
-//     new_str = NULL;
-//     old_str = NULL;
-//     tmp = NULL;
-//     j = 0;
-//     printf("[%s]\n", str);
-//     while (str[j])
-//     {
-//         if (flag)
-//         {
-//             tmp = append_char(tmp, str[j]);
-//             j++;
-//         }
-//         if (str[j] != '*')
-//         {
-//             if (str[j] == '\'')
-//                 flag = 1;
-//             old_str = append_char(old_str, str[j]);
-//             j++;
-//         }
-//         if (str[j] == '*')
-//         {
-//             while (str[j])
-//             {
-//                 tmp = append_char(tmp, str[j]);
-//                 j++;
-//             }
-//             new_str = expand_wild(old_str, tmp);
-//         }
-//     }
-//     if (new_str)
-//         child->items[i] = new_str;
-// }
-
 
 void    expand_path_name_cmd(t_ast_node *node)
 {
