@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 09:47:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:49:58 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,30 @@ int     take_inside_qout(char **s, char *str, int j)
     char    c;
 
     c = str[j];
+    j++;
     while (str[j] && str[j] != c)
     {
         *s = append_char(*s, str[j]);
         j++;
     }
+    if (str[j] == c)
+        j++;
     return (j);
+}
+
+int     check_for_next_one(char *str, int j)
+{
+    char    c;
+
+    c = str[j];
+    j++;
+    while (str[j])
+    {
+        if (str[j] == c)
+            return (1);
+        j++;
+    }
+    return (0);
 }
 
 void    remove_q(t_array *child, size_t i)
@@ -36,16 +54,17 @@ void    remove_q(t_array *child, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
-        if (str[j] == '\'')
+        if (str[j] == '\'') //&& check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"')
+        else if (str[j] == '"') //&& check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
         else
             new_str = append_char(new_str, str[j]);
         if (str[j])
             j++;
     }
-    child->items[i] = new_str;
+    if (new_str[0] != '\0')
+        child->items[i] = new_str;
 }
 
 void    removes_qouts(t_ast_node *node)
