@@ -196,6 +196,8 @@ void	redirection_builtins(t_data *data, int n)
 	redir_lst = data->lst_cmd[n].redirlist;
 	if (n != data->cmd_nbr - 1)
 		close(data->fd[0]);
+	else if (data->lst_cmd[n].is_built_in && data->cmd_nbr == 1)
+		data->old_fd = data->fd[0];
 	if (data->old_fd != -1)
 	{
 		dup2(data->old_fd, STDIN_FILENO);
@@ -248,7 +250,8 @@ void	pipe_execution(t_data *prg_data)
 	{
 		if (i != prg_data->cmd_nbr - 1)
 			pipe(prg_data->fd);
-		prg_data->lst_cmd[i].pid = fork();
+		if (!prg_data->lst_cmd[i].is_built_in && (prg_data->cmd_nbr > 1))
+			prg_data->lst_cmd[i].pid = fork();
 		if (prg_data->lst_cmd[i].pid == 0)
 			child(prg_data, i);
 		else
@@ -272,6 +275,8 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	t_data	prg_data;
 	int		status;
 
+	// expansion must happen here
+	// export  will happen only if export is the only cmd in the pipeline  
 	init_program_data(&prg_data, pipeline, env);
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
@@ -317,7 +322,7 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 int	execution(t_ast_node *root, t_env *env)
 {
 	int	n;
-	// expand_ast(root); // maybe if could expand only what could be expanded
+	// expand_ast(root); // maybe if i could expand only what could be expanded
 	n = execute_cmd_line(root, env);
 	return (n);
 }
