@@ -187,6 +187,43 @@ void	execute_built_in(t_cmd cmd, t_data *data)
 	return ;
 }
 
+// void	redirection_builtins(t_data *data, int n)
+// {
+// 	size_t		i;
+// 	t_token	**redir_lst;
+
+// 	i = 0;
+// 	redir_lst = data->lst_cmd[n].redirlist;
+
+// 	// here where i conect the pipes
+// 	data->old_fd = data->fd[0];
+// 	/// up is very important
+// 	if (data->old_fd != -1)
+// 	{
+// 		// dup2(data->old_fd, STDIN_FILENO); // i dont use input inbuilt-ins
+// 		close(data->old_fd);
+// 	}
+
+// 	while (i < data->lst_cmd[n].redir_ars_nbr)
+// 	{
+// 		if (data->out_fd != 1)
+// 			close(data->out_fd);
+// 		// TODO I am here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 		if (redir_lst[i]->type == TOKEN_APPEND || redir_lst[i]->type == TOKEN_REDIRECT_OUT)
+// 			data->out_fd = open_file(redir_lst[i]);
+// 		i++;
+// 	}
+// 	if (n != data->cmd_nbr - 1)
+// 	{
+// 		if (data->out_fd != -1)
+// 			data->out_fd = data->fd[1]; // here if there was no
+// 		else
+// 			close(data->fd[1]);
+			
+// 	}
+// 	// parent(&data->old_fd, data->fd);
+// }
+
 void	redirection_builtins(t_data *data, int n)
 {
 	size_t	i;
@@ -196,8 +233,8 @@ void	redirection_builtins(t_data *data, int n)
 	redir_lst = data->lst_cmd[n].redirlist;
 	if (n != data->cmd_nbr - 1)
 		close(data->fd[0]);
-	else if (data->lst_cmd[n].is_built_in && data->cmd_nbr == 1)
-		data->old_fd = data->fd[0];
+	// else if (data->lst_cmd[n].is_built_in && data->cmd_nbr == 1)
+	// 	data->old_fd = data->fd[0];
 	if (data->old_fd != -1)
 	{
 		dup2(data->old_fd, STDIN_FILENO);
@@ -238,7 +275,8 @@ void	child(t_data *prg_data, int index)
 		redirection_builtins(prg_data, index);
 		execute_built_in(prg_data->lst_cmd[index], prg_data);
 	}
-	exit_status(prg_data, 1);
+	if (!prg_data->lst_cmd[index].is_built_in || (prg_data->cmd_nbr > 1))
+		exit_status(prg_data, 1);
 }
 
 void	pipe_execution(t_data *prg_data)
@@ -250,8 +288,12 @@ void	pipe_execution(t_data *prg_data)
 	{
 		if (i != prg_data->cmd_nbr - 1)
 			pipe(prg_data->fd);
-		if (!prg_data->lst_cmd[i].is_built_in && (prg_data->cmd_nbr > 1))
+		
+		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
+		{
+			printf("forked , built in = %d ,condition = %d \n",prg_data->lst_cmd[i].is_built_in ,(!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1)));
 			prg_data->lst_cmd[i].pid = fork();
+		}
 		if (prg_data->lst_cmd[i].pid == 0)
 			child(prg_data, i);
 		else
@@ -267,6 +309,7 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[0] = -1;
 	data->fd[1] = -1;
 	data->cmd_nbr = pipeline->children->length;
+	// expand here
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr,(t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
