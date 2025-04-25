@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 16:44:33 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 08:33:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,22 @@ int	check_the_last_arg(char *tmp)
 	return (i);
 }
 
+int skip_single_quotes(const char *s, int i)
+{
+	char c;
+
+	if (ft_strchr("'", s[i]) != NULL)
+	{
+		c = s[i];
+		i++;
+		while (s[i] && s[i] != c)
+			i++;
+		if (s[i] == c)
+			i++;
+	}
+	return (i);
+}
+
 int     check_for_field_split(char *tmp)
 {
     int     i;
@@ -80,6 +96,8 @@ int     check_for_field_split(char *tmp)
     dollar = 0;
     while (tmp[i])
     {
+        if (tmp[i] == '\'')
+            i = skip_single_quotes(tmp, i);
         if (tmp[i] == '"')
         {
             i++;
@@ -93,6 +111,8 @@ int     check_for_field_split(char *tmp)
         }
         if (tmp[i] == '$')
             dollar = 1;
+        if (!tmp[i])
+            break ;
         i++;
     }
     return (dollar);
