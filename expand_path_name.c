@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 15:40:28 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:10:44 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,9 +163,6 @@ char    *expand_wild(char *path, char *get)
     tmp = ft_strjoin(path, line->d_name);
     if (check_string_get(get))
         get = check_string_get(get);
-    printf("[%s]\n", get);
-    if (access(tmp, F_OK))
-        return (path);
     while (line)
     {
         help_expand_wild(line, path, get, &new_str);
@@ -305,6 +302,12 @@ void get_pattern_and_path(char *str, char **path, char **pattern)
 }
 void set_expanded_value(t_array *child, int i, int flag, char *new_str)
 {
+    int len;
+
+    len = ft_strlen(new_str);
+    while (len > 0 && new_str[len - 1] == ' ')
+        len--;
+    new_str[len] = '\0';
     if (flag)
         child->items[i] = new_str;
     else
