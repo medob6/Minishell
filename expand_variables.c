@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 15:47:03 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:17:01 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
 	int		var_len;
-	int		index;
+	//int		index;
 	char	next;
+	char	*old_str;
 
+	old_str = str;
 	str = &str[1];
 	tmp = *env;
 	while (tmp)
@@ -64,12 +66,12 @@ char  *expand_the_value(char *str, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	index = is_valid_length(str, 1);
-	if (index)
-		str = ft_strjoin(ft_strdup(""), &str[index]);
-	else
-		str = ft_strdup("");
-	return (str);
+	//index = is_valid_length(str, 1);
+	//if (index)
+		//str = ft_strjoin(ft_strdup(""), &str[index]);
+	//else
+		//str = ft_strdup("");
+	return (old_str);
 }
 
 size_t	next_dollar(char *s)
@@ -260,7 +262,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(node,env);
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
-	removes_qouts(node);
+	//removes_qouts(node);
 	return (expand);
 }
 

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 15:49:58 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:53:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ void    remove_q(t_array *child, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
-        if (str[j] == '\'') //&& check_for_next_one(str, j))
+        if (str[j] == '\'' && check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"') //&& check_for_next_one(str, j))
+        else if (str[j] == '"' && check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
         else
             new_str = append_char(new_str, str[j]);
