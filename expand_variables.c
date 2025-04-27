@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 16:17:01 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 14:49:29 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
 	int		var_len;
-	//int		index;
+	int		index;
 	char	next;
 	char	*old_str;
 
@@ -66,11 +66,11 @@ char  *expand_the_value(char *str, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	//index = is_valid_length(str, 1);
-	//if (index)
-		//str = ft_strjoin(ft_strdup(""), &str[index]);
-	//else
-		//str = ft_strdup("");
+	index = is_valid_length(str, 1);
+	if (index)
+		str = ft_strdup(&str[index]);
+	else
+		str = ft_strdup("");
 	return (old_str);
 }
 
@@ -123,22 +123,16 @@ char *append_char(char *old_str, char c)
 	return (tmp);
 }
 
-int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
+char	*help_check_the_word(t_env **env, char *str, char *old_str, int index)
 {
-	char *old_str = ft_strdup("");
-	char *tmp;
-	int index = 0;
-	char *str;
-
-	if (flag)
-		str = child->items[i];
-	else
-		str = ((t_token *)child->items[i])->value;
+	int		start;
+	char	*tmp;
+	
 	while (str[index])
 	{
 		if (str[index] == '\'')
 		{
-			int start = index;
+			start = index;
 			index++;
 			while (str[index] && str[index] != '\'')
 				index++;
@@ -156,7 +150,23 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 		}
 		old_str = tmp;
 	}
-	if (flag)
+	return (old_str);
+}
+
+void	check_the_word(t_array *child, t_env **env, int i, int split)
+{
+	char *old_str;
+	int index;
+	char *str;
+
+	if (child)
+		str = child->items[i];
+	else
+		str = ((t_token *)child->items[i])->value;
+	old_str = ft_strdup("");
+	index = 0;
+	old_str = help_check_the_word(env, str, old_str, index);
+	if (child)
 	{
 		if (split)
 			child->items[i] = applicate_field_split(old_str);
@@ -170,7 +180,6 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 		else
 			((t_token *)child->items[i])->value = old_str;
 	}
-	return (1);
 }
 
 int	check_the_single_qout(char *s)
@@ -213,17 +222,35 @@ void expand_cmd(t_ast_node *node, t_env **env)
     			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
         			split = 0;
 			}
-            check_the_word(node->children, env, i, 1, split);
+            check_the_word(node->children, env, i, split);
         }
 		i++;
 	}
+}
+
+void	help_expand_redirection(t_ast_node *node, t_env **env, int i, int *split)
+{
+	char	*tmp;
+
+	tmp = ((t_token *)node->redirect_list->items[i])->value;
+	if (tmp)
+	{
+		if (check_for_field_split(tmp))
+		{
+			*split = 1;
+			if (check_for_last_exp_red(node) != -1)
+				tmp = ((t_token *)node->redirect_list->items[check_for_last_exp(node)])->value;
+    		if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+        		*split = 0;
+		}
+        check_the_word(node->redirect_list, env, i, *split);
+    }
 }
 
 void expand_redirection(t_ast_node *node, t_env **env)
 {
 	size_t		i;
 	int		split;
-	char	*tmp;
 	
 	i = 0;
 	split = 0;
@@ -236,22 +263,11 @@ void expand_redirection(t_ast_node *node, t_env **env)
 			i++;
 			continue;
 		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value;
-		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(node) != -1)
-					tmp = (char *)node->children->items[check_for_last_exp(node)];
-    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-        			split = 0;
-			}
-            check_the_word(node->redirect_list, env, i, 0, split);
-        }
+		help_expand_redirection(node, env, i, &split);
 		i++;
 	}
 }
+
 int	expand_variables(t_ast_node *node, t_env **env)
 {
 	int expand;
@@ -262,7 +278,8 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(node,env);
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
-	//removes_qouts(node);
+	removes_qouts_cmd(node);
+	removes_qouts_red(node);
 	return (expand);
 }
 

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 16:10:44 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 14:51:54 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ int match_pattern(const char *pattern, const char *name)
         {
             while (*pattern == '*')
                 pattern++;
-            if (*pattern == '\0')
-                return 1;
+            //if (*pattern == '\0')
+            //    return 1;
             while (*name)
             {
                 if (match_pattern(pattern, name))

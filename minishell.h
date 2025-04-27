@@ -135,10 +135,12 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 int	check_the_last_arg(char *tmp);
 int     check_for_last_exp(t_ast_node *node);
+int check_for_last_exp_red(t_ast_node *node);
 int     check_for_field_split(char *tmp);
 char    *applicate_field_split(char *str);
 char *append_char(char *old_str, char c);
 void    expand_path_name_cmd(t_ast_node *node);
 void    expand_path_name_red(t_ast_node *node);
-void    removes_qouts(t_ast_node *node);
+void    removes_qouts_cmd(t_ast_node *node);
+void    removes_qouts_red(t_ast_node *node);
 #endif
