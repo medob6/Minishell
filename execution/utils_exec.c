@@ -59,7 +59,7 @@ void	free_garbeg(t_data *prg_data)
 		i++;
 	}
 	ft_free(prg_data->lst_cmd);
-	get_next_line(-1);
+	// get_next_line(-1);
 }
 void	exit_status(t_data *prg_data, int status)
 {

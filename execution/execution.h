@@ -36,6 +36,8 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+t_token	**create_tokens(char **str)
+;
 char	**extract_envp(t_env *env)
 ;
 int			ft_strcmp(char *s1, char *s2);

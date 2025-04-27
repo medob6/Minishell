@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 11:11:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/25 09:51:47 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -411,15 +411,3 @@ char **lexer(char *cmd_line)
 	str = ft_malloc(sizeof(char *), (total + 1));
 	return (help_lexer(str, cmd_line));
 }
-
-// int main(void)
-// {
-// 	char **s = lexer("$ls");
-// 	int i = 0;
-// 	while (s[i])
-// 	{
-// 		printf("lexer[%d]: [%s]\n", i, s[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
