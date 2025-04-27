@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 15:53:13 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/26 16:53:57 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,24 @@ void    remove_q(t_array *child, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
-        if (str[j] == '\'' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
+        if (str[j] == '\'' || str[j] == '"')
+        {
+            if (check_for_next_one(str, j))
+                j = take_inside_qout(&new_str, str, j);
+        }
+        // else if (str[j] == '"' && check_for_next_one(str, j))
+        //     j = take_inside_qout(&new_str, str, j);
         else
+		{
             new_str = append_char(new_str, str[j]);
-        if (str[j])
             j++;
+		}
     }
     if (new_str[0] != '\0')
         child->items[i] = new_str;
 }
 
-void    removes_qouts(t_ast_node *node)
+void    removes_qouts_cmd(t_ast_node *node)
 {
     size_t  i;
     char    *tmp;
@@ -82,4 +86,25 @@ void    removes_qouts(t_ast_node *node)
             remove_q(node->children, i);
         i++;
     }
+}
+void    removes_qouts_red(t_ast_node *node)
+{
+    size_t  i;
+    char    *tmp;
+
+    i = 0;
+    if (!node->redirect_list)
+		return ;
+	while (i < node->redirect_list->length)
+	{
+		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+		{
+			i++;
+			continue;
+		}
+		tmp = ((t_token *)node->redirect_list->items[i])->value;
+		if (tmp)
+            remove_q(node->children, i);
+		i++;
+	}
 }

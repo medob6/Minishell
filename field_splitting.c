@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 08:33:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 14:41:44 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ int check_for_last_exp(t_ast_node *node)
 
     last_index = -1;
     i = 0;
+    if (!node->children)
+        return (-1);
     while (i < node->children->length)
     {
         tmp = (char *)node->children->items[i];
@@ -173,7 +175,34 @@ int check_for_last_exp(t_ast_node *node)
     }
     return (last_index);
 }
+int check_for_last_exp_red(t_ast_node *node)
+{
+    size_t i;
+    int j;
+    int last_index;
+    char *tmp;
 
+    last_index = -1;
+    i = 0;
+    if (!node->redirect_list)
+        return (-1);
+    while (i < node->redirect_list->length)
+    {
+        tmp = ((t_token *)node->redirect_list->items[i])->value;
+        j = 0;
+        while (tmp[j])
+        {
+            if (tmp[j] == '$')
+            {
+                last_index = i;
+                break;
+            }
+            j++;
+        }
+        i++;
+    }
+    return (last_index);
+}
 
 // int field_splitting(t_ast_node *node)
 // {
