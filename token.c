@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 16:35:57 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:47:30 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,6 @@ void	process_input(int fd1, char *delemeter)
 			free(tmp);
 		}
 		line = readline("> ");
-		printf("line = %s", line);
 		if (!line)
 			break ;
 	}
