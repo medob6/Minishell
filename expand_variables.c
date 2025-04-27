@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:10:20 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:50:30 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,9 +182,9 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 	else
 	{
 		if (split)
-			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str); // "kk kk"
+			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
-			((t_token *)child->items[i])->value.str_value = old_str;// "kk hh "
+			((t_token *)child->items[i])->value.str_value = old_str;
 		if (check_for_spaces(((t_token *)child->items[i])->value.str_value))
 			((t_token *)child->items[i])->value.fd_value = AMBIGUSE_REDIRECTION;
 	}
