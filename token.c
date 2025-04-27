@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 16:47:30 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:06:53 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,27 @@ char	check_for_operations(char *cmd_line, int i)
 	return ('\0');
 }
 
+char    *removes_qouts_heredoc(char *str)
+{
+    char    *new_str;
+    int     j;
+
+    j = 0;
+    new_str = ft_strdup("");
+    while (str[j])
+    {
+        if (str[j] == '\'' && check_for_next_one(str, j))
+            j = take_inside_qout(&new_str, str, j);
+        else if (str[j] == '"' && check_for_next_one(str, j))
+            j = take_inside_qout(&new_str, str, j);
+        else
+            new_str = append_char(new_str, str[j]);
+        if (str[j])
+            j++;
+    }
+	return (new_str);
+}
+
 t_token	*create_token(char *value, t_token_type type)
 {
 	t_token	*new;
@@ -43,6 +64,7 @@ t_token	*create_token(char *value, t_token_type type)
 	// printf("%s\n",value);
 	new->value.str_value = ft_strdup(value);
 	new->value.fd_value = -1;
+	new->value.theres_qouts = 0;
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;
@@ -235,6 +257,20 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 	return (0);
 }
 
+int		check_for_q(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' || str[i] == '"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 {
 	t_token	*new_token;
@@ -242,6 +278,11 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 
 	if (next && check_for_operations(next, 0) == '\0')
 	{
+		if (check_for_q(next))
+		{
+			new_token->value.theres_qouts = 1;
+			next = removes_qouts_heredoc(next);
+		}
 		fd = handle_herdoc(next);
 		new_token = create_token(next, TOKEN_HEREDOC);
 		new_token->value.fd_value = fd;
