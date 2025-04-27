@@ -1,2 +1,0 @@
-create_the_main_list.c
-main.c
