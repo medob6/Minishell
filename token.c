@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:06:53 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 18:14:28 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,17 +275,29 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 {
 	t_token	*new_token;
 	int		fd;
+	int		qouts;
+	static int		heredoc;
 
+	qouts = 0;
+	heredoc++;
+	//if (heredoc > 16)
+	//{
+	//	ft_print("bash: maximum here-document count exceeded\n", 2);
+	//	heredoc = 0;
+	//	return (2);
+	//}
 	if (next && check_for_operations(next, 0) == '\0')
 	{
 		if (check_for_q(next))
 		{
-			new_token->value.theres_qouts = 1;
+			qouts = 1;
 			next = removes_qouts_heredoc(next);
 		}
 		fd = handle_herdoc(next);
 		new_token = create_token(next, TOKEN_HEREDOC);
 		new_token->value.fd_value = fd;
+		if (qouts)
+			new_token->value.theres_qouts = 1;
 		append_token(head, tail, new_token);
 		return (1);
 	}
@@ -293,7 +305,7 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	return (0);
 }
 
-void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
+int  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
@@ -306,24 +318,29 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		if (s[*index][i] == '\'' || s[*index][i] == '\"')
 		{
 			create_simple_token(head, tail, s[*index]);
-			return ;
+			return (0);
 		}
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
 			if (c == 'h')
+			{
+				if (handle_heredoc_case(head, tail, next) == 2)
+					return (2);
 				*index += handle_heredoc_case(head, tail, next);
+			}
 			else
 			{
 				i += handle_operator(head, tail, c);
 				if (c == '>' || c == '<' || c == 'a')
 					*index += handle_redirection(head, tail, c, next);
 			}
-			return ;
+			return (0);
 		}
 		i++;
 	}
 	create_simple_token(head, tail, s[*index]);
+	return (0);
 }
 
 int	counter(char **s)
@@ -351,7 +368,8 @@ t_token	**create_tokens(char **str)
 	i = 0;
 	while (str[i])
 	{
-		check_the_string(&head, &tail, str, &i);
+		if (check_the_string(&head, &tail, str, &i) == 2)
+			return (NULL);
 		i++;
 	}
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
