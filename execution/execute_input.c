@@ -291,7 +291,7 @@ void	pipe_execution(t_data *prg_data)
 		
 		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
 		{
-			printf("forked , built in = %d ,condition = %d \n",prg_data->lst_cmd[i].is_built_in ,(!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1)));
+			// printf("forked , built in = %d ,condition = %d \n",prg_data->lst_cmd[i].is_built_in //,(!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1)));
 			prg_data->lst_cmd[i].pid = fork();
 		}
 		if (prg_data->lst_cmd[i].pid == 0)
