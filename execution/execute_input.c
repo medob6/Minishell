@@ -394,9 +394,9 @@ int	execution(t_ast_node *root, t_env *env)
 // 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"  
 //! DONE
 // check if file descriptors are closed and only needed ones opened
-// 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //? in-progress
+// 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
 // 3- extract envp before rederection //! DONE
-// 4- check for imbiguse rederictions
+// 4- check for imbiguse rederictions 
 // 5- check for save derefrencing
 // 6- implement subshell				!!!!!!!!!! tomorow //TODO today
 // 7- handel exit status code we have five (also in built-in);

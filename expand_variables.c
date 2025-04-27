@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 13:04:56 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:42:16 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char  *expand_the_value(char *str, t_env **env)
 	}
 	index = is_valid_length(str, 1);
 	if (index)
-		str = ft_strjoin(ft_strdup(""), &str[index]);
+		str = ft_strdup(&str[index]);
 	else
 		str = ft_strdup("");
 	return ("");
