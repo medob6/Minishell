@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 16:42:16 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:10:20 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,20 @@ char *append_char(char *old_str, char c)
 	return (tmp);
 }
 
+int	check_for_spaces(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 {
 	char *old_str = ft_strdup("");
@@ -168,9 +182,11 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 	else
 	{
 		if (split)
-			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
+			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str); // "kk kk"
 		else
-			((t_token *)child->items[i])->value.str_value = old_str;
+			((t_token *)child->items[i])->value.str_value = old_str;// "kk hh "
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value))
+			((t_token *)child->items[i])->value.fd_value = AMBIGUSE_REDIRECTION;
 	}
 	return (1);
 }
