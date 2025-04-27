@@ -372,7 +372,7 @@ int	execution(t_ast_node *root, t_env *env)
 
 // TODO
 
-// i should pull new tokenizer code
+// i should pull new tokenizer code : //!DONE
 // what i should do now :
 // 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"
 // check if file descriptors are closed and only needed ones opened
