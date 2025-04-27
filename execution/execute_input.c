@@ -116,7 +116,7 @@ void	redirect(t_token *file_obj)
 	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
 	{
 		// print_err("ambiguous redirect", file_obj->value.str_value);
-		ft_putstr_fd("ambiguous redirect\n",2);
+		ft_putstr_fd("ambiguous redirection\n",2);
 		// TODO  FIX heredoc value is not  a path
 		exit(1);
 	}
@@ -253,7 +253,7 @@ void	redirection_builtins(t_data *data, int n)
 			close(data->out_fd);
 		if (redir_lst[i]->value.fd_value == AMBIGUOUS_REDIRECTION)
 		{
-			ft_putstr_fd("ambiguous redirect\n",2);
+			ft_putstr_fd("ambiguous redirection\n",2);
 			data->out_fd = -1;
 			return;
 		}
@@ -439,6 +439,7 @@ int	execution(t_ast_node *root, t_env *env)
 // unset seems fine but need further testing and err handeling
 // env is fine , should be tested with unset , and export
 // last status need to be fixed in exit , testing with args
+//! DO in echo handell case if write fails perror("minishell: ");
 
 // in expansion if an expansion resulted a empthy string and nothing was linked to the arg expanded , it must be removed rather then stored as a empthy str , ask mahedi
-// if i expand a file name in redirections and 
+// if i expand a file name in redirections and
