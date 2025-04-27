@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:06:53 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:23:55 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,6 +276,7 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	t_token	*new_token;
 	int		fd;
 
+	new_token = NULL;
 	if (next && check_for_operations(next, 0) == '\0')
 	{
 		if (check_for_q(next))
