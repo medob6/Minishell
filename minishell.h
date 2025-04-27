@@ -14,6 +14,7 @@
 # include <sys/types.h>
 # include <unistd.h>
 
+# define AMBIGUSE_REDIRECTION -5
 // # include "env.h"
 // # include "token.h"
 // # include "array.h"
@@ -78,6 +79,7 @@ typedef struct s_value
 {
 	char *str_value;
     int fd_value;
+	int	theres_qouts;
 } t_value;
 
 // TODO USE THIS STUCT FOR TOKENS INSTEAD
@@ -153,4 +155,6 @@ char				*append_char(char *old_str, char c);
 void				expand_path_name_cmd(t_ast_node *node);
 void				expand_path_name_red(t_ast_node *node);
 void				removes_qouts(t_ast_node *node);
+int     check_for_next_one(char *str, int j);
+int     take_inside_qout(char **s, char *str, int j);
 #endif

@@ -428,3 +428,4 @@ int	execution(t_ast_node *root, t_env *env)
 // last status need to be fixed in exit , testing with args
 
 // in expansion if an expansion resulted a empthy string and nothing was linked to the arg expanded , it must be removed rather then stored as a empthy str , ask mahedi
+// if i expand a file name in redirections and 
