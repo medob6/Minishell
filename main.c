@@ -231,10 +231,11 @@ int	main(int ac, char **av, char **envp)
 	ast = NULL;
 	ft_error(1);
 	env = create_the_main_list(envp);
-	prompt = costruct_prompt();
+	
 	while (1)
 	{
 		ast = NULL;
+		prompt = costruct_prompt();
 		cmd_line = readline(prompt);
 		printf("\n");
 		printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",

@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 14:54:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/02/27 09:18:16 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 15:19:11 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ size_t	ft_strlen(const char *s)
 	size_t	n;
 
 	n = 0;
-	while (s && *s != '\0')
+	if (!s)
+		return (n);
+	while (*s != '\0')
 	{
 		n++;
 		s++;

@@ -68,7 +68,8 @@
     "utility": "c",
     "parser.h": "c",
     "array.h": "c",
-    "execution.h": "c"
+    "execution.h": "c",
+    "libft.h": "c"
   },
   "functionHeaderExtension.headerFilePath": "/home/mbousset/Desktop/Minishell/execution/execution.h"
 }

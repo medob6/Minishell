@@ -426,3 +426,5 @@ int	execution(t_ast_node *root, t_env *env)
 // unset seems fine but need further testing and err handeling
 // env is fine , should be tested with unset , and export
 // last status need to be fixed in exit , testing with args
+
+// in expansion if an expansion resulted a empthy string and nothing was linked to the arg expanded , it must be removed rather then stored as a empthy str , ask mahedi

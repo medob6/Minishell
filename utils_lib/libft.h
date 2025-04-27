@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 15:28:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/04/15 16:03:09 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:23:13 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
+# include "../minishell.h"
 # include <limits.h>
 # include <stdint.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-#include "../minishell.h"
 
+int		ft_strcmp(char *s1, char *s2);
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s1);
 char	*ft_strchr(const char *s, int c);
@@ -35,6 +36,6 @@ void	ft_putendl_fd(char *s, int fd);
 char	**split_tabs_spaces(char *str);
 char	*fill_word(const char *src, int start, int end);
 void	free_all(char **p);
-char    *ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif
