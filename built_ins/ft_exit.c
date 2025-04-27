@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 22:01:20 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 08:29:57 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ int	ft_exit(char **args, long last_status)
 	flag = 0;
 	if (args[1] && args[2])
 	{
+		num = ft_atoi(args[1], &flag);
+		if (flag)
+		{
+			ft_print("exit\nminishell: exit: numeric argument required\n", 2);
+			exit(2);
+		}
 		ft_print("exit\nminishell: exit: too many arguments\n", 2);
 		return (1);
 	}

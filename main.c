@@ -1,5 +1,5 @@
-#include "execution/execution.h"
-#include "parser.h"
+
+#include "minishell.h"
 
 void	ft_lstclear(t_gar **lst)
 {
@@ -181,10 +181,10 @@ void	print_ast(t_ast_node *node, int depth)
 		if (node->children)
 		{
 			for (size_t j = 0; j < node->children->length; j++)
-				printf(" \033[0;34m%s\033[0m",
+				printf("\033[0;34m%s\033[0m",
 					(char *)(node->children->items[j]));
 		}
-		printf(" ) ; ");
+		printf(") ; ");
 		printf("\033[0;36mredir_list:\033[0m (");
 		if (node->redirect_list)
 		{
@@ -221,6 +221,9 @@ int	main(int ac, char **av, char **envp)
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
+	t_env *env;
+	(void)ac;
+	(void)av;
 
 	(void)ac;
 	(void)av;
@@ -246,6 +249,11 @@ int	main(int ac, char **av, char **envp)
 			print_token(*h);
 			printf("\n\n");
 			ast = parse_tokens(*h);
+			env = create_the_main_list(envp);
+			if (expand_ast(ast, &env))
+				printf("all good\n");
+			else
+				printf("somthing not right\n");
 		}
 		if (!ast)
 		{
