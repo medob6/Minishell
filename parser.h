@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "array.h"
+# include "minishell.h"
 
 typedef enum e_ast_type
 {
@@ -36,4 +36,7 @@ t_ast_node		*compound_cmd(t_token **token, t_ast_type type);
 
 // debuging functions
 char			*get_value(int type);
+
+// me
+int				traverse_ast(t_ast_node *node, t_env **env);
 #endif
