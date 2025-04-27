@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 12:19:24 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:35:57 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_token	*create_token(char *value, t_token_type type)
 	new = ft_malloc(sizeof(t_token), 1);
 	// printf("%s\n",value);
 	new->value.str_value = ft_strdup(value);
-	// new->value.fd_value = -1;
+	new->value.fd_value = -1;
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;
@@ -89,31 +89,111 @@ void	create_simple_token(t_token **head, t_token **tail, char *s)
 	new = create_token(s, TOKEN_WORD);
 	append_token(head, tail, new);
 }
+void	print_err(char *err, char *str)
+{
+	char	*buffer;
+	char	*tmp;
+
+	buffer = ft_strjoin("minishell: ", err);
+	tmp = buffer;
+	buffer = ft_strjoin(tmp, ": ");
+	free(tmp);
+	tmp = buffer;
+	buffer = ft_strjoin(tmp, str);
+	free(tmp);
+	tmp = buffer;
+	buffer = ft_strjoin(tmp, "\n");
+	free(tmp);
+	ft_putstr_fd(buffer, 2);
+	free(buffer);
+}
+void	handle_error(void)
+{
+	print_err(strerror(errno), "/tmp/temp_file");
+	exit(1);
+}
+
+int	create_temp_file(int *old_fd)
+{
+	int	fd1;
+
+	fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	*old_fd = open("/tmp/temp_file", O_RDONLY);
+	unlink("/tmp/temp_file");
+	if (fd1 == -1 || *old_fd == -1)
+		handle_error();
+	return (fd1);
+}
+
+void	print_err1(char *err, char *str)
+{
+	char	*buffer;
+	char	*tmp;
+
+	buffer = ft_strjoin("\nMysh: ", err);
+	tmp = buffer;
+	buffer = ft_strjoin(tmp, str);
+	free(tmp);
+	tmp = buffer;
+	buffer = ft_strjoin(tmp, "')\n");
+	free(tmp);
+	ft_putstr_fd(buffer, 2);
+	free(buffer);
+}
+
+int	is_delemeter(char *line, char *delemeter)
+{
+	if (!ft_strcmp(line, delemeter))
+		return (1);
+	return (0);
+}
+
+void	process_input(int fd1, char *delemeter)
+{
+	char	*line;
+	char	*tmp;
+
+	line = NULL;
+	while (1)
+	{
+		if (line && is_delemeter(line, delemeter))
+			break ;
+		if (line)
+		{
+			tmp = ft_strjoin(line, "\n");
+			free(line);
+			write(fd1, tmp, ft_strlen(tmp));
+			free(tmp);
+		}
+		line = readline("> ");
+		printf("line = %s", line);
+		if (!line)
+			break ;
+	}
+	if (!line)
+		print_err1("warning: here-document delimited by end-of-file (wanted `",
+			delemeter);
+	free(line);
+}
+
+void	read_from_herdoc(char *delemeter, int *old_fd)
+{
+	int	fd1;
+
+	fd1 = create_temp_file(old_fd);
+	process_input(fd1, delemeter);
+	close(fd1);
+}
 
 int	handle_herdoc(char *delimiter)
 {
-	char	*line;
-	int		fd;
+	int	fd;
 
+	fd = -1;
 	if (!delimiter)
 		return (0);
-	fd = open("/tmp/apah", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (fd < 0)
-		return (0);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-			break ;
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0
-			&& ft_strlen(line) == ft_strlen(delimiter))
-			break ;
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
-	}
-	close(fd);
-	return (1);
+	read_from_herdoc(delimiter, &fd);
+	return (fd);
 }
 
 void	append_redirect_arg(t_token **head, t_token **tail, char c, char *next)
@@ -158,10 +238,15 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 
 int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 {
+	t_token	*new_token;
+	int		fd;
+
 	if (next && check_for_operations(next, 0) == '\0')
 	{
-		handle_herdoc(next);
-		append_token(head, tail, create_token(next, TOKEN_HEREDOC));
+		fd = handle_herdoc(next);
+		new_token = create_token(next, TOKEN_HEREDOC);
+		new_token->value.fd_value = fd;
+		append_token(head, tail, new_token);
 		return (1);
 	}
 	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));

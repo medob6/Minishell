@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   field_splitting.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 08:33:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 13:39:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ int check_for_last_exp(t_ast_node *node)
 
     last_index = -1;
     i = 0;
+    if (!node->children)
+        return (last_index);
     while (i < node->children->length)
     {
         tmp = (char *)node->children->items[i];

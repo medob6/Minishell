@@ -36,18 +36,15 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
-int	ft_exit(char **args, long last_status)
+int	ft_strcmp(char *s1, char *s2)
 ;
-int	ft_env(t_env **env)
-;
-int	ft_unset(char **args, t_env **env)
-;
-int	ft_pwd(t_env **env_list)
-;
-int	ft_cd(char *path, t_env **env_list)
-;
-void expand_pipeline(t_ast_node *node, t_env **env)
-;
+
+int			ft_exit(char **args, long last_status);
+int			ft_env(t_env **env);
+int			ft_unset(char **args, t_env **env);
+int			ft_pwd(t_env **env_list);
+int			ft_cd(char *path, t_env **env_list);
+void		expand_pipeline(t_ast_node *node, t_env **env);
 t_token		**create_tokens(char **str);
 char		**extract_envp(t_env *env);
 int			ft_strcmp(char *s1, char *s2);

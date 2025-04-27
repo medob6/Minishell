@@ -158,30 +158,30 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	}
 }
 
-void	handle_error(void)
-{
-	print_err(strerror(errno), "/tmp/temp_file");
-	exit(1);
-}
+// void	handle_error(void)
+// {
+// 	print_err(strerror(errno), "/tmp/temp_file");
+// 	exit(1);
+// }
 
-void	print_err(char *err, char *str)
-{
-	char	*buffer;
-	char	*tmp;
+// void	print_err(char *err, char *str)
+// {
+// 	char	*buffer;
+// 	char	*tmp;
 
-	buffer = ft_strjoin("Mysh: ", err);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, ": ");
-	ft_free(tmp);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, str);
-	ft_free(tmp);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, "\n");
-	ft_free(tmp);
-	ft_putstr_fd(buffer, 2);
-	ft_free(buffer);
-}
+// 	buffer = ft_strjoin("minishell: ", err);
+// 	tmp = buffer;
+// 	buffer = ft_strjoin(tmp, ": ");
+// 	ft_free(tmp);
+// 	tmp = buffer;
+// 	buffer = ft_strjoin(tmp, str);
+// 	ft_free(tmp);
+// 	tmp = buffer;
+// 	buffer = ft_strjoin(tmp, "\n");
+// 	ft_free(tmp);
+// 	ft_putstr_fd(buffer, 2);
+// 	ft_free(buffer);
+// }
 
 void	execute_cmd(t_cmd cmd, t_data *prg_data)
 {
@@ -194,7 +194,7 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 	if (!cmd.path)
 	{
 		if (!cmd.args)
-			ft_putstr_fd("Mysh: Command not found: \n", 2);
+			ft_putstr_fd("minishell: Command not found: \n", 2);
 		else
 			print_err("command not found", cmd.args[0]);
 		exit_status(prg_data, 127);
