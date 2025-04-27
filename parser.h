@@ -3,25 +3,6 @@
 
 # include "minishell.h"
 
-typedef enum e_ast_type
-{
-	AST_COMPOUNED_CMD,
-	AST_CMD,
-	AST_SIMPLE_CMD,
-	AST_PIPELINE,
-	AST_AND,
-	AST_OR,
-	AST_SUBSHELL,
-	AST_ERROR
-}				t_ast_type;
-
-typedef struct s_ast_node
-{
-	t_ast_type	type;
-	t_array		*children;
-	t_array		*redirect_list;
-	char		*error_message;
-}				t_ast_node;
 
 // parser functions
 void			print_token(t_token *head);

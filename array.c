@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "array.h"
 
 t_array	*creat_array(void)
 {
