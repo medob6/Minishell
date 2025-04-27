@@ -19,5 +19,5 @@ t_ast_node		*compound_cmd(t_token **token, t_ast_type type);
 char			*get_value(int type);
 
 // me
-int				traverse_ast(t_ast_node *node, t_env **env);
+// int				traverse_ast(t_ast_node *node, t_env **env);
 #endif

@@ -99,13 +99,13 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 int	open_file(t_token *file_token)
 {
 	if (file_token->type == TOKEN_REDIRECT_IN)
-		return (open(file_token->value, O_RDONLY));
+		return (open(file_token->value.str_value, O_RDONLY));
 	else if (file_token->type == TOKEN_REDIRECT_OUT)
-		return (open(file_token->value, O_WRONLY | O_CREAT | O_TRUNC, 0644));
+		return (open(file_token->value.str_value, O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else if (file_token->type == TOKEN_APPEND)
-		return (open(file_token->value, O_WRONLY | O_CREAT | O_APPEND, 0644));
+		return (open(file_token->value.str_value, O_WRONLY | O_CREAT | O_APPEND, 0644));
 	else if (file_token->type == TOKEN_HEREDOC)
-		return (atoi(file_token->value));
+		return (file_token->value.fd_value);
 	return (-1);
 }
 
@@ -124,7 +124,7 @@ void	redirect(t_token *file_obj)
 	}
 	else
 	{
-		print_err(strerror(errno), file_obj->value);
+		print_err(strerror(errno), file_obj->value.str_value);
 		// TODO  FIX heredoc value is not  a path
 		// exit_status(data,1);
 	}
@@ -171,20 +171,20 @@ void	execute_built_in(t_cmd cmd, t_data *data)
 {
 	(void)data;
 	if (!ft_strcmp(cmd.args[0], "export"))
-		return ;
+		ft_export(cmd.args,&data->env);
 	else if (!ft_strcmp(cmd.args[0], "echo"))
 		ft_echo(cmd.args, data->out_fd);
 	else if (!ft_strcmp(cmd.args[0], "cd"))
-		return ;
+		ft_cd(cmd.args[1],&data->env);
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
-		return ;
+		ft_pwd(&data->env);
 	else if (!ft_strcmp(cmd.args[0], "unset"))
-		return ;
+		ft_unset(cmd.args,&data->env);
 	else if (!ft_strcmp(cmd.args[0], "env"))
-		return ;
+		ft_env(&data->env);
 	else if (!ft_strcmp(cmd.args[0], "exit"))
-		return ;
-	return ;
+		ft_exit(cmd.args,cmd.exit_status); //  i dont know if it is last status or not
+	return;
 }
 
 // void	redirection_builtins(t_data *data, int n)
@@ -259,10 +259,7 @@ void	redirection_builtins(t_data *data, int n)
 }
 void	child(t_data *prg_data, int index)
 {
-	// TODO
-	// 1- extract envp
-	// 2- expand for this node
-	// 3- pars_cmd here
+	
 	if (!prg_data->lst_cmd[index].is_built_in)
 	{
 		// check imbeguis redir
@@ -290,10 +287,7 @@ void	pipe_execution(t_data *prg_data)
 			pipe(prg_data->fd);
 		
 		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
-		{
-			// printf("forked , built in = %d ,condition = %d \n",prg_data->lst_cmd[i].is_built_in //,(!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1)));
 			prg_data->lst_cmd[i].pid = fork();
-		}
 		if (prg_data->lst_cmd[i].pid == 0)
 			child(prg_data, i);
 		else
@@ -308,9 +302,10 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->out_fd = 1;
 	data->fd[0] = -1;
 	data->fd[1] = -1;
+	data->env = env;
 	data->cmd_nbr = pipeline->children->length;
-	// expand here
-	data->lst_cmd = parse_cmd_list(data->cmd_nbr,(t_ast_node **)pipeline->children->items, env);
+	expand_pipeline(pipeline, &data->env);// expand here// TODO
+	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
 int	execute_pipeline(t_ast_node *pipeline, t_env *env)
@@ -324,7 +319,7 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
-	free_garbeg(&prg_data);
+	// free_garbeg(&prg_data); //TODO when freeing farbeg i do lost some data , like envp
 	return (status);
 }
 
@@ -361,11 +356,33 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	}
 	return (status);
 }
+// // ? testing function
 
+// static void	print_lst(t_env **env)
+// {
+// 	t_env	*head;
+
+// 	head = *env;
+// 	while (head)
+// 	{
+// 		if (!strcmp(head->key, "var"))
+// 		{
+// 			printf("\033[0;32mvalue added succesfully \033[0m\n");
+// 			printf("key2 = %s , value = %s \n", head->key, head->value);
+// 		}
+// 		else
+// 			printf("key2 = %s , value = %s \n", head->key, head->value);
+// 		head = head->next;
+// 	}
+// 	if (head)
+// 		printf("\033[0;32mkey was not added\033[0m\n");
+// 	return ;
+// }
 int	execution(t_ast_node *root, t_env *env)
 {
 	int	n;
 	// expand_ast(root); // maybe if i could expand only what could be expanded
+	// print_lst(&env);
 	n = execute_cmd_line(root, env);
 	return (n);
 }
@@ -374,18 +391,18 @@ int	execution(t_ast_node *root, t_env *env)
 
 // i should pull new tokenizer code : //!DONE
 // what i should do now :
-// 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"
+// 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"  
+//! DONE
 // check if file descriptors are closed and only needed ones opened
-// 2- upgrade heredoc code				!!!!!!!!! have some errors and linked to 7
-// 3- extract envp before rederection
+// 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //? in-progress
+// 3- extract envp before rederection //! DONE
 // 4- check for imbiguse rederictions
 // 5- check for save derefrencing
-// 6- implement subshell				!!!!!!!!!! tomorow
+// 6- implement subshell				!!!!!!!!!! tomorow //TODO today
 // 7- handel exit status code we have five (also in built-in);
 // 8- test execuiton
 // 9- remove paranteses in parsing
 // 10- test everything //TODO when expansion is finished
-// 11- //TODO close arrays that was filled in parsing with null
 
 // PROBLEMS
 // we got a lot of problems that should be fixed
@@ -396,3 +413,16 @@ int	execution(t_ast_node *root, t_env *env)
 // first extract them enpv and let them in there linked list  then before runing export.... ,extract them to envp char ** ; then expand :::: this is a prblm soo
 // TODO i will expand for each node of simple_cmd alone ......................... tomorow cus it will take a lot of time
 // second export will add to the list , and we will do the same again
+
+// TODO FOR solaiman
+//! FIX built-ins  :
+// ignor comments as argments #somthin
+// -nnnn for echo should be ignored even after first flag
+// += append for export
+// should pass NULL to cat in case of empthy expansion not '' or ""
+// if runing export without args or with a comment it must show the env vars
+// for cd it must if given more the one arg show err "to many args" and do nothing // test more , and change terminal path
+// pwd doesnt work at all it must print out the current working dir path , and it must take a file descriptor in accoredens with the execution
+// unset seems fine but need further testing and err handeling
+// env is fine , should be tested with unset , and export
+// last status need to be fixed in exit , testing with args

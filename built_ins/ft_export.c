@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 15:14:15 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 10:49:28 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,12 +157,37 @@ void	add_or_update_env(char *arg, int sep, t_env **env)
 	}
 }
 
+// // ? testing function
+
+// static void	print_lst(t_env **env)
+// {
+// 	t_env	*head;
+
+// 	head = *env;
+// 	while (head)
+// 	{
+// 		if (!strcmp(head->key, "var"))
+// 		{
+// 			printf("\033[0;32mvalue added succesfully \033[0m\n");
+// 			printf("key = %s , value = %s \n", head->key, head->value);
+// 		}
+// 		// else
+// 		// 	printf("key = %s , value = %s \n", head->key, head->value);
+// 		head = head->next;
+// 	}
+// 	if (head)
+// 		printf("\033[0;32mkey was not added\033[0m\n");
+// 	return ;
+// }
+
 int	ft_export(char **args, t_env **env)
 {
 	int	i;
 	int	sep;
 
 	i = 1;
+	// if (!args[1])
+	// 	print_lst(env);
 	while (args[i])
 	{
 		if (!is_valid_identifier(args[i]))
@@ -175,5 +200,6 @@ int	ft_export(char **args, t_env **env)
 		add_or_update_env(args[i], sep, env);
 		i++;
 	}
+	
 	return (0);
 }

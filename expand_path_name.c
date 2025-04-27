@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_path_name.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 16:10:44 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:53:42 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ char    *expand_wild(char *path, char *get)
 //     if (flag)
 // 		str = child->items[i];
 // 	else
-// 		str = ((t_token *)child->items[i])->value;
+// 		str = ((t_token *)child->items[i])->value.str_value;
 //     slash = ft_strchr(str, '/');
 //     wild = ft_strchr(str, '*');
 //     path = NULL;
@@ -219,7 +219,7 @@ char    *expand_wild(char *path, char *get)
 //         if (flag)
 //             child->items[i] = new_str;
 //         else
-//             ((t_token *)child->items[i])->value = new_str;
+//             ((t_token *)child->items[i])->value.str_value = new_str;
 //     }
 // }
 
@@ -254,7 +254,7 @@ char    *get_string_from_child(t_array *child, int i, int flag)
 {
     if (flag)
         return (child->items[i]);
-    return (((t_token *)child->items[i])->value);
+    return (((t_token *)child->items[i])->value.str_value);
 }
 
 int find_last_slash_before_star(char *str)
@@ -311,7 +311,7 @@ void set_expanded_value(t_array *child, int i, int flag, char *new_str)
     if (flag)
         child->items[i] = new_str;
     else
-        ((t_token *)child->items[i])->value = new_str;
+        ((t_token *)child->items[i])->value.str_value = new_str;
 }
 
 void expand_wildcard(t_array *child, int i, int flag)
@@ -366,7 +366,7 @@ void    expand_path_name_red(t_ast_node *node)
 			i++;
 			continue;
 		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value;
+		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
 		if (tmp && search_wildcard(tmp))
             expand_wildcard(node->redirect_list, i, 0);
 		i++;

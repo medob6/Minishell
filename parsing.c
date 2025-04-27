@@ -21,12 +21,12 @@ t_ast_node	*simple_command(t_token **token)
 	{
 		if (is_redirction((*token)->type))
 		{
-			if (!(*token)->value)
+			if (!((*token)->value.str_value))
 				return (NULL);
 			add_redirect(simple_cmd, *token);
 		}
 		else if ((*token)->type == TOKEN_WORD)
-			add_child(simple_cmd, (*token)->value);
+			add_child(simple_cmd, (*token)->value.str_value);
 		else
 			break ;
 		advance_token(token);
@@ -73,7 +73,7 @@ t_ast_node	*subshell(t_token **token)
 	{
 		if (is_redirction((*token)->type))
 		{
-			if (!(*token)->value)
+			if (!(*token)->value.str_value)
 				return (NULL);
 			add_redirect(compouned, *token);
 		}

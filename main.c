@@ -1,5 +1,5 @@
 
-#include "minishell.h"
+#include "execution/execution.h"
 
 void	ft_lstclear(t_gar **lst)
 {
@@ -85,7 +85,7 @@ void	print_token(t_token *head)
 {
 	while (head)
 	{
-		printf("   \033[0;36m%-15s => %s\033[0m\n", head->value,
+		printf("   \033[0;36m%-15s => %s\033[0m\n", head->value.str_value,
 			get_value(head->type));
 		head = head->next;
 	}
@@ -154,7 +154,7 @@ void	print_redir(t_ast_node *node)
 	for (size_t d = 0; d < node->redirect_list->length; d++)
 	{
 		redir = (t_token *)node->redirect_list->items[d];
-		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",get_redir_value(redir->type), redir->value);
+		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",get_redir_value(redir->type), redir->value.str_value);
 	}
 	printf(")\n");
 }
@@ -192,7 +192,7 @@ void	print_ast(t_ast_node *node, int depth)
 			{
 				redir = (t_token *)node->redirect_list->items[d];
 				printf(" \033[0;36m{redir_type: %s, filename: %s}\033[0m ",
-					get_redir_value(redir->type), redir->value);
+					get_redir_value(redir->type), redir->value.str_value);
 			}
 		}
 		printf(")\n");
@@ -221,6 +221,7 @@ int	main(int ac, char **av, char **envp)
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
+
 	t_env *env;
 	(void)ac;
 	(void)av;
@@ -229,6 +230,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	ast = NULL;
 	ft_error(1);
+	env = create_the_main_list(envp);
 	prompt = costruct_prompt();
 	while (1)
 	{
@@ -249,11 +251,6 @@ int	main(int ac, char **av, char **envp)
 			print_token(*h);
 			printf("\n\n");
 			ast = parse_tokens(*h);
-			env = create_the_main_list(envp);
-			// if (expand_ast(ast, &env))
-			// 	printf("all good\n");
-			// else
-			// 	printf("somthing not right\n");
 		}
 		if (!ast)
 		{
@@ -265,12 +262,9 @@ int	main(int ac, char **av, char **envp)
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
 			print_ast(ast, 0);
-			// TODO here we should test rederiction first
-			t_env *env_lst = create_the_main_list(envp);
-				// should be created before
 			printf("\033[0;32m============================\033[0m\n\n");
 			printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
-			execution(ast, env_lst);
+			execution(ast, env);
 		}
 		free(cmd_line);
 		rl_on_new_line();

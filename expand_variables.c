@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 16:17:01 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:54:37 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ int	is_valid_length(char *tmp, int flag)
 	return (i);
 }
 
+
+// change made here  //? here
 char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
 	int		var_len;
-	//int		index;
+	int		index;
 	char	next;
 	char	*old_str;
 
@@ -66,12 +68,12 @@ char  *expand_the_value(char *str, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	//index = is_valid_length(str, 1);
-	//if (index)
-		//str = ft_strjoin(ft_strdup(""), &str[index]);
-	//else
-		//str = ft_strdup("");
-	return (old_str);
+	index = is_valid_length(str, 1);
+	if (index)
+		str = ft_strjoin(ft_strdup(""), &str[index]);
+	else
+		str = ft_strdup("");
+	return ("");
 }
 
 size_t	next_dollar(char *s)
@@ -133,7 +135,7 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 	if (flag)
 		str = child->items[i];
 	else
-		str = ((t_token *)child->items[i])->value;
+		str = ((t_token *)child->items[i])->value.str_value;
 	while (str[index])
 	{
 		if (str[index] == '\'')
@@ -166,9 +168,9 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 	else
 	{
 		if (split)
-			((t_token *)child->items[i])->value = applicate_field_split(old_str);
+			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
-			((t_token *)child->items[i])->value = old_str;
+			((t_token *)child->items[i])->value.str_value = old_str;
 	}
 	return (1);
 }
@@ -236,7 +238,7 @@ void expand_redirection(t_ast_node *node, t_env **env)
 			i++;
 			continue;
 		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value;
+		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
 		if (tmp)
 		{
 			if (check_for_field_split(tmp))
@@ -262,7 +264,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(node,env);
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
-	//removes_qouts(node);
+	// removes_qouts(node);
 	return (expand);
 }
 
