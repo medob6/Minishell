@@ -113,6 +113,12 @@ void	redirect(t_token *file_obj)
 {
 	int	fd;
 
+	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
+	{
+		print_err("minishell: $var: ambiguous redirect", file_obj->value.str_value);
+		// TODO  FIX heredoc value is not  a path
+		exit(1);
+	}
 	fd = open_file(file_obj);
 	if (fd != -1)
 	{
@@ -393,7 +399,7 @@ int	execution(t_ast_node *root, t_env *env)
 // what i should do now :
 // 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"  
 //! DONE
-// check if file descriptors are closed and only needed ones opened
+//TODO check if file descriptors are closed and only needed ones opened
 // 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
 // 3- extract envp before rederection //! DONE
 // 4- check for imbiguse rederictions 
