@@ -1,7 +1,7 @@
 #ifndef TOKEN_H
 # define TOKEN_H
 
-# include "../parser.h"
+# include "../minishell.h"
 
 // int			status = 0;
 
@@ -36,10 +36,8 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
-t_token	**create_tokens(char **str)
-;
-char	**extract_envp(t_env *env)
-;
+t_token		**create_tokens(char **str);
+char		**extract_envp(t_env *env);
 int			ft_strcmp(char *s1, char *s2);
 int			ft_echo(char **args, int fd);
 void		exit_status(t_data *prg_data, int status);
@@ -57,7 +55,6 @@ char		*get_cmd_path(char *cmd, char **envp);
 bool		cmd_is_path(char *s);
 int			execution(t_ast_node *root, t_env *env);
 char		*get_value(int type);
-t_token		**create_tokens(char **str);
 void		perforem_redirections(t_data *data, int n);
 
 #endif
