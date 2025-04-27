@@ -275,13 +275,13 @@ void	child(t_data *prg_data, int index)
 	
 	if (!prg_data->lst_cmd[index].is_built_in)
 	{
-		// check imbeguis redir
+		// check imbeguis redir // TODO recheck 
 		perforem_redirections(prg_data, index);
 		execute_cmd(prg_data->lst_cmd[index], prg_data);
 	}
 	else
 	{
-		// check imbeguis redir
+		// check imbeguis redir // TODO recheck 
 		redirection_builtins(prg_data, index);
 		execute_built_in(prg_data->lst_cmd[index], prg_data);
 	}
