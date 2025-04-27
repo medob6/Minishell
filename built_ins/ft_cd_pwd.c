@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 15:13:52 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:09:32 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	ft_pwd(t_env **env_list)
 	char	*cwd;
 	t_env	*cur;
 
+	// printf("pwd \n");
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

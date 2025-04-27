@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 08:45:30 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/27 12:19:24 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-	new->value = ft_strdup(value);
+	// printf("%s\n",value);
+	new->value.str_value = ft_strdup(value);
+	// new->value.fd_value = -1;
 	new->type = type;
 	new->next = NULL;
 	new->prev = NULL;

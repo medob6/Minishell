@@ -1,6 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "utils_lib/libft.h"
+# include "utils_lib/get_next_line.h"
 # include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
@@ -65,9 +66,23 @@ typedef enum e_token_type
 	TOKEN_EOF
 }					t_token_type;
 
+// typedef struct s_token
+// {
+// 	char *value; // The actual token string
+// 	t_token_type	type;
+// 	struct s_token *prev; // The type of token
+// 	struct s_token *next; // Linked list to store multiple tokens
+// }					t_token;
+
+
+// TODO USE THIS STUCT FOR TOKENS INSTEAD
 typedef struct s_token
 {
-	char *value; // The actual token string
+	union {
+        char *str_value;  // Regular value, for most tokens 
+        int fd_value;     // File descriptor for heredoc
+						
+    } value;// union is A way to store different types of data in the same space, but only one at a time.
 	t_token_type	type;
 	struct s_token *prev; // The type of token
 	struct s_token *next; // Linked list to store multiple tokens

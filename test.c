@@ -6,7 +6,7 @@ t_token	*new_token(t_token_type type, char *value)
 
 	tok = ft_calloc(1, sizeof(t_token));
 	tok->type = type;
-	tok->value = value ? strdup(value) : NULL;
+	tok->value.str_value = value ? strdup(value) : NULL;
 	tok->next = NULL;
 	return (tok);
 }
@@ -68,7 +68,7 @@ void	print_ast(t_ast_node *node, int depth)
 			redir = node->redirect_list->items[i];
 			for (int j = 0; j < depth + 1; j++)
 				printf("  ");
-			printf("Redirect: %s\n", redir->value);
+			printf("Redirect: %s\n", redir->value.str_value);
 		}
 	}
 	if (node->children)

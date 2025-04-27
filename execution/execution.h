@@ -36,6 +36,18 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+int	ft_exit(char **args, long last_status)
+;
+int	ft_env(t_env **env)
+;
+int	ft_unset(char **args, t_env **env)
+;
+int	ft_pwd(t_env **env_list)
+;
+int	ft_cd(char *path, t_env **env_list)
+;
+void expand_pipeline(t_ast_node *node, t_env **env)
+;
 t_token		**create_tokens(char **str);
 char		**extract_envp(t_env *env);
 int			ft_strcmp(char *s1, char *s2);
@@ -48,7 +60,6 @@ void		ft_free(void *address);
 t_gar		**garbage_list(void);
 t_env		*create_the_main_list(char **envp);
 void		wait_for_prc(t_cmd *cmd_list, int cmd_nbr);
-void		ft_exit(t_data *prg_data, int status);
 void		print_err(char *err, char *str);
 void		execute_cmd(t_cmd cmd, t_data *prg_data);
 char		*get_cmd_path(char *cmd, char **envp);
