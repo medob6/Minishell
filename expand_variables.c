@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:10:20 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:26:18 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 		else
 			((t_token *)child->items[i])->value.str_value = old_str;// "kk hh "
 		if (check_for_spaces(((t_token *)child->items[i])->value.str_value))
-			((t_token *)child->items[i])->value.fd_value = AMBIGUSE_REDIRECTION;
+			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
 	}
 	return (1);
 }

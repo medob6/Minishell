@@ -115,7 +115,8 @@ void	redirect(t_token *file_obj)
 
 	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
 	{
-		print_err("minishell: $var: ambiguous redirect", file_obj->value.str_value);
+		// print_err("ambiguous redirect", file_obj->value.str_value);
+		ft_putstr_fd("ambiguous redirect\n",2);
 		// TODO  FIX heredoc value is not  a path
 		exit(1);
 	}
@@ -250,6 +251,12 @@ void	redirection_builtins(t_data *data, int n)
 	{
 		if (data->out_fd != 1)
 			close(data->out_fd);
+		if (redir_lst[i]->value.fd_value == AMBIGUOUS_REDIRECTION)
+		{
+			ft_putstr_fd("ambiguous redirect\n",2);
+			data->out_fd = -1;
+			return;
+		}
 		if (redir_lst[i]->type == TOKEN_APPEND
 			|| redir_lst[i]->type == TOKEN_REDIRECT_OUT)
 			data->out_fd = open_file(redir_lst[i]);
