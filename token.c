@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 18:14:28 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/28 09:18:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,16 +276,8 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	t_token	*new_token;
 	int		fd;
 	int		qouts;
-	static int		heredoc;
 
 	qouts = 0;
-	heredoc++;
-	//if (heredoc > 16)
-	//{
-	//	ft_print("bash: maximum here-document count exceeded\n", 2);
-	//	heredoc = 0;
-	//	return (2);
-	//}
 	if (next && check_for_operations(next, 0) == '\0')
 	{
 		if (check_for_q(next))
@@ -305,10 +297,24 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	return (0);
 }
 
-int  check_the_string(t_token **head, t_token **tail, char **s, int *index)
+void	close_all_files(t_token **head)
+{
+	t_token *tmp;
+	
+	tmp = *head;
+	while (tmp)
+	{
+		if (tmp->value.fd_value > -1)
+			close(tmp->value.fd_value);
+		tmp = tmp->next;
+	}
+}
+
+void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
+	static int heredoc;
 	char	*next;
 
 	i = 0;
@@ -318,15 +324,23 @@ int  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		if (s[*index][i] == '\'' || s[*index][i] == '\"')
 		{
 			create_simple_token(head, tail, s[*index]);
-			return (0);
+			return ;
 		}
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
+			if (c == '|' || c == '(')
+				heredoc = 0;
 			if (c == 'h')
 			{
-				if (handle_heredoc_case(head, tail, next) == 2)
-					return (2);
+				heredoc++;
+				if (heredoc > 16)
+				{
+					ft_print("bash: maximum here-document count exceeded\n", 2);
+					heredoc = 0;
+					close_all_files(head);
+					exit(2);
+				}
 				*index += handle_heredoc_case(head, tail, next);
 			}
 			else
@@ -335,12 +349,11 @@ int  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 				if (c == '>' || c == '<' || c == 'a')
 					*index += handle_redirection(head, tail, c, next);
 			}
-			return (0);
+			return ;
 		}
 		i++;
 	}
 	create_simple_token(head, tail, s[*index]);
-	return (0);
 }
 
 int	counter(char **s)
@@ -368,8 +381,7 @@ t_token	**create_tokens(char **str)
 	i = 0;
 	while (str[i])
 	{
-		if (check_the_string(&head, &tail, str, &i) == 2)
-			return (NULL);
+		check_the_string(&head, &tail, str, &i);
 		i++;
 	}
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:50:30 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/28 15:03:59 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,107 @@ void expand_cmd(t_ast_node *node, t_env **env)
 	}
 }
 
+int	check_for_dollar_sign(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*expand_heredoc(t_env **env, char *str)
+{
+	int		index;
+	char	*old_str;
+	char	*tmp;
+
+	index = 0;
+	old_str = ft_strdup("");
+	while (str[index])
+	{
+		if (str[index] == '$')
+			tmp = handle_expansion(str, &index, env, old_str);
+		else
+		{
+			tmp = append_char(old_str, str[index]);
+			if (str[index] != '\0')
+				index++;
+		}
+		old_str = tmp;
+	}
+	return (old_str);
+}
+
+//void	handle_heredoc_expansion(t_env **env, t_value value)
+//{
+//	int	fd1;
+//	int	fd;
+//	char	*line;
+//	char	*new_str;
+	
+//	fd1 = open("/tmp/t_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//	fd = open("/tmp/t_file", O_RDONLY);
+//	unlink("/tmp/t_file");
+//	line = get_next_line(value.fd_value);
+//	new_str = NULL;
+//	while (line)
+//	{
+//		if (check_for_dollar_sign(line))
+//		{
+//			new_str = expand_heredoc(env, line);
+//			write(fd1, new_str, ft_strlen(new_str));
+//		}
+//		else
+//			write(fd1, line, ft_strlen(new_str));
+//		free(line);
+//		line = get_next_line(value.fd_value);
+//	}
+//	if (line)
+//		free(line);
+//	close(value.fd_value);
+//	close(fd1);
+//	value.fd_value = fd;
+//}
+
+void handle_heredoc_expansion(t_env **env, t_value value)
+{
+    int fd1;
+    int fd;
+    char *line;
+    char *new_str;
+
+    fd1 = open("/tmp/t_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd1 < 0)
+        return ;
+    line = get_next_line(value.fd_value);
+    new_str = NULL;
+    while (line)
+    {
+        if (check_for_dollar_sign(line))
+        {
+            new_str = expand_heredoc(env, line);
+            write(fd1, new_str, ft_strlen(new_str));
+            free(new_str);
+        }
+        else
+            write(fd1, line, ft_strlen(line));
+        free(line);
+        line = get_next_line(value.fd_value);
+    }
+    close(fd1);
+    fd = open("/tmp/t_file", O_RDONLY);
+    unlink("/tmp/t_file");
+    close(value.fd_value);
+    value.fd_value = fd;
+}
+
+
 void expand_redirection(t_ast_node *node, t_env **env)
 {
 	size_t		i;
@@ -251,6 +352,14 @@ void expand_redirection(t_ast_node *node, t_env **env)
 	{
 		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
+			handle_heredoc_expansion(env, ((t_token *)node->redirect_list->items[i])->value);
+			//char *line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
+			//printf("here: %s\n", line);
+			//while (line)
+			//{
+			//	printf("[%s]\n", line);
+			//	line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
+			//}
 			i++;
 			continue;
 		}
