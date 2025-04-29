@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 20:16:17 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:08:36 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	check_string(char *s)
 	return (1);
 }
 
-int	ft_echo(char **args,int fd)
+int	ft_echo(char **args, int fd)
 {
 	int	i;
 	int	new_line;
@@ -40,11 +40,19 @@ int	ft_echo(char **args,int fd)
 		i = 2;
 		new_line = 0;
 	}
-	ft_print(args[i++], fd);
+	//ft_print(args[i++], fd);
 	while (args && args[i])
 	{
-		ft_print(" ", fd);
-		ft_print(args[i], fd);
+		if (args[i][0] == '#')
+			break ;
+		else if (args[i] && ft_strncmp(args[i], "-n", 2) == 0
+			&& check_string(args[i]))
+			i++;
+		else
+		{
+			ft_print(args[i], fd);
+			ft_print(" ", fd);
+		}
 		i++;
 	}
 	if (new_line)
