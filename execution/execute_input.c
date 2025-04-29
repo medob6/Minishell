@@ -250,7 +250,8 @@ void	child(t_data *prg_data, int index)
 		prg_data->lst_cmd[index].exit_status = execute_built_in(prg_data->lst_cmd[index], prg_data);
 	}
 	if (!prg_data->lst_cmd[index].is_built_in || (prg_data->cmd_nbr > 1))
-		exit_status(prg_data, 1);
+		exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
+	
 }
 
 void close_here_docs(t_token **redir_list)
@@ -345,6 +346,7 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		else
 			break ;
 	}
+	printf("status = %d\n",status);
 	return (status);
 }
 
@@ -357,15 +359,14 @@ int	execution(t_ast_node *root, t_env *env)
 }
 
 // TODO
-
 // i should pull new tokenizer code : //!DONE
 // what i should do now :
-// 1- implement builting in execution !!!!!!!!!//! DONE
-// 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
-// 3- extract envp before rederection //! DONE
-// 4- check for imbiguse rederictions //! DONE
+// 1- implement builting in execution !!!!!!!!!	//! DONE
+// 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7	//! DONE
+// 3- extract envp before rederection	//! DONE
+// 4- check for imbiguse rederictions	//! DONE
 // 5- implement subshell				!!!!!!!!!! tomorow //TODO today
-// 6- handel exit status code we have five (also in built-in);
+// 6- handel exit status code we have five (also in built-in); //! DONE
 // 7- check for save derefrencing     //?  after claening the code 
 // 8- test execuiton
 // 9- remove paranteses in parsing 
