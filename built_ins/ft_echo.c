@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 10:08:36 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:28:29 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ int	ft_echo(char **args, int fd)
 
 	new_line = 1;
 	i = 1;
-	// printf("out_fd = %d\n",fd);
-	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0
-		&& check_string(args[1]))
+	//if (fd < 0)
+	//ft_print("bash: echo: write error: No space left on device\n", 2);
+	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0 && check_string(args[1]))
 	{
 		i = 2;
 		new_line = 0;
 	}
-	//ft_print(args[i++], fd);
 	while (args && args[i])
 	{
 		if (args[i][0] == '#')
@@ -62,20 +61,3 @@ int	ft_echo(char **args, int fd)
 	return (0);
 }
 
-// int main(void)
-// {
-// 	char *test1[] = {"echo", "hello", "world", NULL};
-// 	char *test2[] = {"echo", "-n", "no ", "newline", NULL};
-// 	char *test3[] = {"echo", NULL};
-
-// 	//printf("Test 1:\n");
-// 	//ft_echo(test1); // Output: hello world\n
-
-// 	printf("Test 2:\n");
-// 	ft_echo(test2); // Output: no newline
-
-// 	// printf("Test 3:\n");
-// 	// ft_echo(test3); // Output: \n
-
-// 	return (0);
-// }

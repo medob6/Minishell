@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 10:26:33 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:41:17 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,6 +286,8 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 		fd = handle_herdoc(next);
 		new_token = create_token(next, TOKEN_HEREDOC);
 		new_token->value.fd_value = fd;
+		// printf("fd = %d\n",fd);
+		// close(fd);
 		if (qouts)
 			new_token->value.theres_qouts = 1;
 		append_token(head, tail, new_token);

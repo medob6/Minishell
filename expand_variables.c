@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 10:14:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 10:40:28 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,11 +185,12 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
 			((t_token *)child->items[i])->value.str_value = old_str;
-		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) || ((t_token *)child->items[i])->value.str_value[0] == '\0')
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
+		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
 		{
 			if (((t_token *)child->items[i])->value.fd_value != -1)
 				close(((t_token *)child->items[i])->value.fd_value);
-			((t_token *)child->items[i])->value.fd_value = AMBIGUSE_REDIRECTION;
+			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
 		}
 	}
 	return (1);
@@ -369,7 +370,6 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     close(value->fd_value);
     value->fd_value = fd;
 }
-
 
 void expand_redirection(t_ast_node *node, t_env **env)
 {
