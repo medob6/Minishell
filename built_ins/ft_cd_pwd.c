@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_pwd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 11:09:32 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:40:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	ft_pwd(t_env **env_list)
 		return (0);
 	}
 	cur = *env_list;
+	ft_print(ft_strjoin(cwd, "\n"), 1);
 	while (cur)
 	{
 		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)

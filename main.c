@@ -97,6 +97,8 @@ int	ft_error(int a)
 
 	if (a != 0)
 		c = a;
+	//else
+	//	ft_print("bash: echo: write error: No space left on device\n", 2);
 	return (c);
 }
 

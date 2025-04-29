@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 10:49:28 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:46:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,14 +180,30 @@ void	add_or_update_env(char *arg, int sep, t_env **env)
 // 	return ;
 // }
 
+void	print_lst(t_env **env)
+{
+	t_env	*tmp;
+
+	tmp = *env;
+	while (tmp)
+	{
+		ft_print("declare -x ", 1);
+		ft_print(tmp->key, 1);
+		ft_print("=", 1);
+		ft_print(tmp->value, 1);
+		ft_print("\n", 1);
+		tmp = tmp->next;
+	}
+}
+
 int	ft_export(char **args, t_env **env)
 {
 	int	i;
 	int	sep;
 
 	i = 1;
-	// if (!args[1])
-	// 	print_lst(env);
+	 if (!args[1])
+	 	print_lst(env);
 	while (args[i])
 	{
 		if (!is_valid_identifier(args[i]))
