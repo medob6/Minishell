@@ -297,7 +297,7 @@ void close_here_docs(t_token **redir_list)
 {
 	int i;
 	i = 0;
-	while (redir_list[i])
+	while (redir_list && redir_list[i])
 	{
 		if (redir_list[i]->type == TOKEN_HEREDOC)
 			close(redir_list[i]->value.fd_value);
@@ -337,7 +337,7 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[1] = -1;
 	data->env = env;
 	data->cmd_nbr = pipeline->children->length;
-	expand_pipeline(pipeline, &data->env);// expand here// TODO
+	expand_pipeline(pipeline, &data->env);// expand here // TODO
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
@@ -389,33 +389,11 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	}
 	return (status);
 }
-// // ? testing function
 
-// static void	print_lst(t_env **env)
-// {
-// 	t_env	*head;
-
-// 	head = *env;
-// 	while (head)
-// 	{
-// 		if (!strcmp(head->key, "var"))
-// 		{
-// 			printf("\033[0;32mvalue added succesfully \033[0m\n");
-// 			printf("key2 = %s , value = %s \n", head->key, head->value);
-// 		}
-// 		else
-// 			printf("key2 = %s , value = %s \n", head->key, head->value);
-// 		head = head->next;
-// 	}
-// 	if (head)
-// 		printf("\033[0;32mkey was not added\033[0m\n");
-// 	return ;
-// }
 int	execution(t_ast_node *root, t_env *env)
 {
 	int	n;
-	// expand_ast(root); // maybe if i could expand only what could be expanded
-	// print_lst(&env);
+
 	n = execute_cmd_line(root, env);
 	return (n);
 }
@@ -429,14 +407,19 @@ int	execution(t_ast_node *root, t_env *env)
 //TODO check if file descriptors are closed and only needed ones opened
 // 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
 // 3- extract envp before rederection //! DONE
-// 4- check for imbiguse rederictions //? in progeress
-// 5- check for save derefrencing
+// 4- check for imbiguse rederictions //! DONE
+// 5- check for save derefrencing     //? in proggress
 // 6- implement subshell				!!!!!!!!!! tomorow //TODO today
 // 7- handel exit status code we have five (also in built-in);
 // 8- test execuiton
 // 9- remove paranteses in parsing
 // 10- test everything //TODO when expansion is finished
-
+//! handel
+// ```
+// /tmp/hey$ unset a
+// /tmp/hey$ $a ls
+// minishell: command not found: 
+// ```
 // PROBLEMS
 // we got a lot of problems that should be fixed
 
