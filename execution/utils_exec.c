@@ -144,10 +144,10 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	int	status;
 
 	i = 0;
+	if (cmd_nbr == 1 && cmd_list[0].is_built_in)
+		return ;
 	while (i < cmd_nbr)
 	{
-		if (!cmd_list[i].is_built_in)
-		{
 			waitpid(cmd_list[i].pid, &status, 0);
 			cmd_list[i].exit_status = 0;
 			if (WIFEXITED(status))
@@ -156,7 +156,6 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 				cmd_list[i].exit_status = WSTOPSIG(status);
 			else if (WIFSIGNALED(status))
 				cmd_list[i].exit_status = WTERMSIG(status);
-		}
 		i++;
 	}
 }
@@ -182,13 +181,10 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 	{
 		execve(cmd.path, cmd.args, envp);
 		print_err(strerror(errno), cmd.path);
-		status = 127;
 	}
 	else
-	{
 		print_err(strerror(21), cmd.path);
-		status = 126;
-	}
+
 	ft_free(new_path);
-	exit_status(prg_data, status);
+	exit_status(prg_data, 126);
 }
