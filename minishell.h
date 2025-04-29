@@ -144,7 +144,6 @@ char				*get_value(int type);
 int					expand_ast(t_ast_node *node, t_env **env);
 int					is_valid_identifier(char *s);
 int					ft_export(char **args, t_env **env);
-void				field_splitting(t_ast_node *node);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
 int					check_the_last_arg(char *tmp);
@@ -154,7 +153,8 @@ char				*applicate_field_split(char *str);
 char				*append_char(char *old_str, char c);
 void				expand_path_name_cmd(t_ast_node *node);
 void				expand_path_name_red(t_ast_node *node);
-void				removes_qouts(t_ast_node *node);
+void				removes_qouts_cmd(t_ast_node *node);
+void				removes_qouts_red(t_ast_node *node);
 int					check_for_next_one(char *str, int j);
 int					take_inside_qout(char **s, char *str, int j);
 #endif
