@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 10:40:28 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:02:52 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,7 +415,8 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(node,env);
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
-	removes_qouts(node);
+	removes_qouts_cmd(node);
+	removes_qouts_red(node);
 	return (expand);
 }
 
