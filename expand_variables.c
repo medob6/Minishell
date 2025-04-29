@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/28 15:03:59 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 08:43:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
 			((t_token *)child->items[i])->value.str_value = old_str;
-		if (check_for_spaces(((t_token *)child->items[i])->value.str_value))
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) || ((t_token *)child->items[i])->value.str_value[0] == '\0')
 			((t_token *)child->items[i])->value.fd_value = AMBIGUSE_REDIRECTION;
 	}
 	return (1);
@@ -312,7 +312,9 @@ void handle_heredoc_expansion(t_env **env, t_value value)
     char *line;
     char *new_str;
 
-    fd1 = open("/tmp/t_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    fd = open("/tmp/temp_file", O_RDONLY);
+    unlink("/tmp/temp_file");
     if (fd1 < 0)
         return ;
     line = get_next_line(value.fd_value);
@@ -331,8 +333,6 @@ void handle_heredoc_expansion(t_env **env, t_value value)
         line = get_next_line(value.fd_value);
     }
     close(fd1);
-    fd = open("/tmp/t_file", O_RDONLY);
-    unlink("/tmp/t_file");
     close(value.fd_value);
     value.fd_value = fd;
 }
