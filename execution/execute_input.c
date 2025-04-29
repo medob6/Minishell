@@ -46,6 +46,8 @@ bool	parse_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 {
 	char	**cmd_args;
 
+	if (!cmd || !node)
+		return (false);
 	cmd_args = NULL;
 	cmd->is_built_in = 0;
 	cmd->redir_ars_nbr = 0;
@@ -88,9 +90,9 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 			parse_cmd(&cmd_lst[i], cmd_node[i], envp);
 		// else if (cmd_node[i]->type = AST_SUBSHELL)
 		// {
-		// TODO: here i should fork for the subshell  ... I should
+		//// TODO: here i should fork for the subshell  ... I should
 		// 	execute_cmd_line(cmd_node, envp);
-		// TODO: perform redirections after subshell
+		//// TODO: perform redirections after subshell
 		// }
 		i++;
 	}
@@ -112,7 +114,7 @@ int	open_file(t_token *file_token)
 	return (-1);
 }
 
-void	redirect(t_token *file_obj)
+void	redirect(t_data *data,t_token *file_obj)
 {
 	int	fd;
 
@@ -120,7 +122,7 @@ void	redirect(t_token *file_obj)
 	{
 		ft_putstr_fd("minishell: ambiguous redirect\n",2);
 		// TODO  FIX heredoc value is not  a path
-		exit(1);
+		exit_status(data,1);
 	}
 	fd = open_file(file_obj);
 	if (fd != -1)
@@ -135,7 +137,7 @@ void	redirect(t_token *file_obj)
 	{
 		print_err(strerror(errno), file_obj->value.str_value);
 		// TODO  FIX heredoc value is not  a path
-		// exit_status(data,1);
+		exit_status(data,1);
 	}
 	close(fd);
 }
@@ -156,7 +158,7 @@ void	perforem_redirections(t_data *data, int n)
 	}
 	while (i < data->lst_cmd[n].redir_ars_nbr)
 	{
-		redirect(redir_lst[i]);
+		redirect(data,redir_lst[i]);
 		i++;
 	}
 	if (n != data->cmd_nbr - 1)
@@ -175,24 +177,23 @@ void	parent(int *old_fd, int *fd)
 }
 
 // TODO FIX built-ins runing
-void	execute_built_in(t_cmd cmd, t_data *data)
+int	execute_built_in(t_cmd cmd, t_data *data)
 {
-	(void)data;
 	if (!ft_strcmp(cmd.args[0], "export"))
-		ft_export(cmd.args,&data->env);
+		return ft_export(cmd.args,&data->env);
 	else if (!ft_strcmp(cmd.args[0], "echo"))
-		ft_echo(cmd.args, data->out_fd);
+		return ft_echo(cmd.args, data->out_fd);
 	else if (!ft_strcmp(cmd.args[0], "cd"))
-		ft_cd(cmd.args[1],&data->env);
+		return ft_cd(cmd.args[1],&data->env);
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
-		ft_pwd(&data->env);
+		return ft_pwd(&data->env);
 	else if (!ft_strcmp(cmd.args[0], "unset"))
-		ft_unset(cmd.args,&data->env);
+		return ft_unset(cmd.args,&data->env);
 	else if (!ft_strcmp(cmd.args[0], "env"))
-		ft_env(&data->env);
+		return ft_env(&data->env);
 	else if (!ft_strcmp(cmd.args[0], "exit"))
-		ft_exit(cmd.args,cmd.exit_status); //  i dont know if it is last status or not
-	return;
+		return ft_exit(cmd.args,cmd.exit_status);
+	return (0);
 }
 
 void	redirection_builtins(t_data *data, int n)
@@ -237,6 +238,7 @@ void	redirection_builtins(t_data *data, int n)
 void	child(t_data *prg_data, int index)
 {
 	
+	
 	if (!prg_data->lst_cmd[index].is_built_in)
 	{
 		perforem_redirections(prg_data, index);
@@ -245,7 +247,7 @@ void	child(t_data *prg_data, int index)
 	else
 	{
 		redirection_builtins(prg_data, index);
-		execute_built_in(prg_data->lst_cmd[index], prg_data);
+		prg_data->lst_cmd[index].exit_status = execute_built_in(prg_data->lst_cmd[index], prg_data);
 	}
 	if (!prg_data->lst_cmd[index].is_built_in || (prg_data->cmd_nbr > 1))
 		exit_status(prg_data, 1);
@@ -358,17 +360,15 @@ int	execution(t_ast_node *root, t_env *env)
 
 // i should pull new tokenizer code : //!DONE
 // what i should do now :
-// 1- implement builting in execution !!!!!!!!! // TODO   ===> "understand what i do"  
-//! DONE
-//TODO check if file descriptors are closed and only needed ones opened
+// 1- implement builting in execution !!!!!!!!!//! DONE
 // 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
 // 3- extract envp before rederection //! DONE
 // 4- check for imbiguse rederictions //! DONE
-// 5- check for save derefrencing     //? in proggress
-// 6- implement subshell				!!!!!!!!!! tomorow //TODO today
-// 7- handel exit status code we have five (also in built-in);
+// 5- implement subshell				!!!!!!!!!! tomorow //TODO today
+// 6- handel exit status code we have five (also in built-in);
+// 7- check for save derefrencing     //?  after claening the code 
 // 8- test execuiton
-// 9- remove paranteses in parsing
+// 9- remove paranteses in parsing 
 // 10- test everything //TODO when expansion is finished
 //! handel
 // ```

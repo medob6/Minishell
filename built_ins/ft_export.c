@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 17:11:54 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 17:45:07 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,9 @@ int	ft_export(char **args, t_env **env)
 {
 	int	i;
 	int	sep;
+	int status;
+
+	status = 0;
 
 	i = 1;
 	 if (!args[1])
@@ -210,12 +213,14 @@ int	ft_export(char **args, t_env **env)
 		{
 			ft_print("minishell: export: not a valid identifier\n", 2);
 			i++;
-			continue ;
+			status = 1;
+			continue;
 		}
+		status = 0;
 		sep = find_equal_pos(args[i]);
 		add_or_update_env(args[i], sep, env);
 		i++;
 	}
 	
-	return (0);
+	return (status);
 }

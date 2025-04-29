@@ -146,14 +146,17 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	i = 0;
 	while (i < cmd_nbr)
 	{
-		waitpid(cmd_list[i].pid, &status, 0);
-		cmd_list[i].exit_status = 0;
-		if (WIFEXITED(status))
-			cmd_list[i].exit_status = WEXITSTATUS(status);
-		else if (WIFSTOPPED(status))
-			cmd_list[i].exit_status = WSTOPSIG(status);
-		else if (WIFSIGNALED(status))
-			cmd_list[i].exit_status = WTERMSIG(status);
+		if (!cmd_list[i].is_built_in)
+		{
+			waitpid(cmd_list[i].pid, &status, 0);
+			cmd_list[i].exit_status = 0;
+			if (WIFEXITED(status))
+				cmd_list[i].exit_status = WEXITSTATUS(status);
+			else if (WIFSTOPPED(status))
+				cmd_list[i].exit_status = WSTOPSIG(status);
+			else if (WIFSIGNALED(status))
+				cmd_list[i].exit_status = WTERMSIG(status);
+		}
 		i++;
 	}
 }
