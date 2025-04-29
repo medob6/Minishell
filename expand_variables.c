@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 13:48:01 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 17:00:38 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ int	is_valid_length(char *tmp, int flag)
 	return (i);
 }
 
+
+// change made here  //? here
 char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
 	int		var_len;
-	//int		index;
+	int		index;
 	char	next;
 	char	*old_str;
 
@@ -66,12 +68,12 @@ char  *expand_the_value(char *str, t_env **env)
 		}
 		tmp = tmp->next;
 	}
-	//index = is_valid_length(str, 1);
-	//if (index)
-		//str = ft_strjoin(ft_strdup(""), &str[index]);
-	//else
-		//str = ft_strdup("");
-	return (old_str);
+	index = is_valid_length(str, 1);
+	if (index)
+		str = ft_strdup(&str[index]);
+	else
+		str = ft_strdup("");
+	return ("");
 }
 
 size_t	next_dollar(char *s)
@@ -123,6 +125,20 @@ char *append_char(char *old_str, char c)
 	return (tmp);
 }
 
+int	check_for_spaces(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (str[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 {
 	char *old_str = ft_strdup("");
@@ -169,6 +185,13 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
 			((t_token *)child->items[i])->value.str_value = old_str;
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
+		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
+		{
+			if (((t_token *)child->items[i])->value.fd_value != -1)
+				close(((t_token *)child->items[i])->value.fd_value);
+			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
+		}
 	}
 	return (1);
 }
@@ -219,6 +242,71 @@ void expand_cmd(t_ast_node *node, t_env **env)
 	}
 }
 
+int	check_for_dollar_sign(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*expand_heredoc(t_env **env, char *str)
+{
+	int		index;
+	char	*old_str;
+	char	*tmp;
+
+	index = 0;
+	old_str = ft_strdup("");
+	while (str[index])
+	{
+		if (str[index] == '$')
+			tmp = handle_expansion(str, &index, env, old_str);
+		else
+		{
+			tmp = append_char(old_str, str[index]);
+			if (str[index] != '\0')
+				index++;
+		}
+		old_str = tmp;
+	}
+	return (old_str);
+}
+
+void handle_heredoc_expansion(t_env **env, t_value *value)
+{
+    int fd1;
+    int fd;
+    char *line;
+    char *new_str;
+
+    fd1 = open("/tmp/temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    line = get_next_line(value->fd_value);
+    while (line)
+    {
+        if (check_for_dollar_sign(line))
+        {
+            new_str = expand_heredoc(env, line);
+            write(fd1, new_str, ft_strlen(new_str));
+        }
+        else
+            write(fd1, line, ft_strlen(line));
+        free(line);
+        line = get_next_line(value->fd_value);
+    }
+    close(fd1);
+    fd = open("/tmp/temp", O_RDONLY);
+    unlink("/tmp/temp");
+    close(value->fd_value);
+    value->fd_value = fd;
+}
+
 void expand_redirection(t_ast_node *node, t_env **env)
 {
 	size_t		i;
@@ -233,6 +321,7 @@ void expand_redirection(t_ast_node *node, t_env **env)
 	{
 		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
+			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
 			i++;
 			continue;
 		}
@@ -262,7 +351,8 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(node,env);
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
-	//removes_qouts(node);
+	removes_qouts_cmd(node);
+	removes_qouts_red(node);
 	return (expand);
 }
 

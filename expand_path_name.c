@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_path_name.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 12:18:52 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 17:12:40 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,7 @@ char **create_array(char *new_str)
     int     count = 0;
     char    **str;
 
-    // First count how many words (skip consecutive spaces)
-    while (new_str[i])
+    while (new_str && new_str[i])
     {
         while (new_str[i] == ' ')
             i++;
@@ -193,9 +192,9 @@ char **create_array(char *new_str)
         }
     }
 
-    str = ft_malloc(sizeof(char *), (count + 1)); // +1 for NULL terminator
+    str = ft_malloc(sizeof(char *), (count + 1));
     i = 0;
-    while (new_str[i] && j < count)
+    while (new_str && new_str[i] && j < count)
     {
         while (new_str[i] == ' ')
             i++;

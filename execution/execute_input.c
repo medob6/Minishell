@@ -22,11 +22,14 @@ char	**extract_envp(t_env *env)
 
 	head = env;
 	envp = ft_malloc(sizeof(char **), lst_size(env) + 1);
+	if (!env)
+		return NULL;
 	i = 0;
 	while (head)
 	{
 		tmp = ft_strjoin(head->key, "=");
 		envp[i++] = ft_strjoin(tmp, head->value);
+		ft_free(tmp);
 		head = head->next;
 	}
 	envp[i] = NULL;
@@ -96,6 +99,8 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 
 int	open_file(t_token *file_token)
 {
+	if (!file_token)
+    	return (-1);
 	if (file_token->type == TOKEN_REDIRECT_IN)
 		return (open(file_token->value.str_value, O_RDONLY));
 	else if (file_token->type == TOKEN_REDIRECT_OUT)
@@ -113,7 +118,6 @@ void	redirect(t_token *file_obj)
 
 	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
 	{
-		// print_err("ambiguous redirect", file_obj->value.str_value);
 		ft_putstr_fd("minishell: ambiguous redirect\n",2);
 		// TODO  FIX heredoc value is not  a path
 		exit(1);
@@ -133,7 +137,6 @@ void	redirect(t_token *file_obj)
 		// TODO  FIX heredoc value is not  a path
 		// exit_status(data,1);
 	}
-	// printf("fd = %d\n",fd);
 	close(fd);
 }
 
@@ -153,11 +156,9 @@ void	perforem_redirections(t_data *data, int n)
 	}
 	while (i < data->lst_cmd[n].redir_ars_nbr)
 	{
-		// data->old_fd = redir_lst[i]->value.fd_value;
 		redirect(redir_lst[i]);
 		i++;
 	}
-	// data->fd[1] = -5;
 	if (n != data->cmd_nbr - 1)
 	{
 		dup2(data->fd[1], STDOUT_FILENO);
@@ -167,7 +168,6 @@ void	perforem_redirections(t_data *data, int n)
 
 void	parent(int *old_fd, int *fd)
 {
-	// printf("%d\n",fd[1]);
 	close(fd[1]);
 	if (*old_fd >= 0)
 		close(*old_fd);
@@ -175,7 +175,6 @@ void	parent(int *old_fd, int *fd)
 }
 
 // TODO FIX built-ins runing
-
 void	execute_built_in(t_cmd cmd, t_data *data)
 {
 	(void)data;
@@ -196,43 +195,6 @@ void	execute_built_in(t_cmd cmd, t_data *data)
 	return;
 }
 
-// void	redirection_builtins(t_data *data, int n)
-// {
-// 	size_t		i;
-// 	t_token	**redir_lst;
-
-// 	i = 0;
-// 	redir_lst = data->lst_cmd[n].redirlist;
-
-// 	// here where i conect the pipes
-// 	data->old_fd = data->fd[0];
-// 	/// up is very important
-// 	if (data->old_fd != -1)
-// 	{
-// 		// dup2(data->old_fd, STDIN_FILENO); // i dont use input inbuilt-ins
-// 		close(data->old_fd);
-// 	}
-
-// 	while (i < data->lst_cmd[n].redir_ars_nbr)
-// 	{
-// 		if (data->out_fd != 1)
-// 			close(data->out_fd);
-// 		// TODO I am here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// 		if (redir_lst[i]->type == TOKEN_APPEND || redir_lst[i]->type == TOKEN_REDIRECT_OUT)
-// 			data->out_fd = open_file(redir_lst[i]);
-// 		i++;
-// 	}
-// 	if (n != data->cmd_nbr - 1)
-// 	{
-// 		if (data->out_fd != -1)
-// 			data->out_fd = data->fd[1]; // here if there was no
-// 		else
-// 			close(data->fd[1]);
-			
-// 	}
-// 	// parent(&data->old_fd, data->fd);
-// }
-
 void	redirection_builtins(t_data *data, int n)
 {
 	size_t	i;
@@ -242,8 +204,6 @@ void	redirection_builtins(t_data *data, int n)
 	redir_lst = data->lst_cmd[n].redirlist;
 	if (n != data->cmd_nbr - 1)
 		close(data->fd[0]);
-	// else if (data->lst_cmd[n].is_built_in && data->cmd_nbr == 1)
-	// 	data->old_fd = data->fd[0];
 	if (data->old_fd != -1)
 	{
 		dup2(data->old_fd, STDIN_FILENO);
@@ -279,13 +239,11 @@ void	child(t_data *prg_data, int index)
 	
 	if (!prg_data->lst_cmd[index].is_built_in)
 	{
-		// check imbeguis redir // TODO recheck 
 		perforem_redirections(prg_data, index);
 		execute_cmd(prg_data->lst_cmd[index], prg_data);
 	}
 	else
 	{
-		// check imbeguis redir // TODO recheck 
 		redirection_builtins(prg_data, index);
 		execute_built_in(prg_data->lst_cmd[index], prg_data);
 	}
@@ -337,7 +295,7 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[1] = -1;
 	data->env = env;
 	data->cmd_nbr = pipeline->children->length;
-	expand_pipeline(pipeline, &data->env);// expand here // TODO
+	expand_pipeline(pipeline, &data->env);
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
@@ -346,8 +304,6 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	t_data	prg_data;
 	int		status;
 
-	// expansion must happen here
-	// export  will happen only if export is the only cmd in the pipeline  
 	init_program_data(&prg_data, pipeline, env);
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
