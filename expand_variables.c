@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 09:46:34 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 09:55:36 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,13 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
 			((t_token *)child->items[i])->value.str_value = old_str;
-		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) || ((t_token *)child->items[i])->value.str_value[0] == '\0')
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
+		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
+		{
+			if (((t_token *)child->items[i])->value.fd_value != -1)
+				close(((t_token *)child->items[i])->value.fd_value);
 			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
+		}
 	}
 	return (1);
 }
@@ -305,39 +310,65 @@ char	*expand_heredoc(t_env **env, char *str)
 //	value.fd_value = fd;
 //}
 
-void handle_heredoc_expansion(t_env **env, t_value value)
+//void handle_heredoc_expansion(t_env **env, t_value value)
+//{
+//    int fd1;
+//    int fd;
+//    char *line;
+//    char *new_str;
+
+//    fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//    fd = open("/tmp/temp_file", O_RDONLY);
+//    unlink("/tmp/temp_file");
+//    if (fd1 < 0)
+//        return ;
+//    line = get_next_line(value.fd_value);
+//    new_str = NULL;
+//    while (line)
+//    {
+//        if (check_for_dollar_sign(line))
+//        {
+//            new_str = expand_heredoc(env, line);
+//            write(fd1, new_str, ft_strlen(new_str));
+//            free(new_str);
+//        }
+//        else
+//            write(fd1, line, ft_strlen(line));
+//        free(line);
+//        line = get_next_line(value.fd_value);
+//    }
+//    close(fd1);
+//    close(value.fd_value);
+//    value.fd_value = fd;
+//}
+
+
+void handle_heredoc_expansion(t_env **env, t_value *value)
 {
     int fd1;
     int fd;
     char *line;
     char *new_str;
 
-    fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    fd = open("/tmp/temp_file", O_RDONLY);
-    // unlink("/tmp/temp_file");
-    if (fd1 < 0)
-        return ;
-    line = get_next_line(value.fd_value);
-    new_str = NULL;
+    fd1 = open("/tmp/temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    line = get_next_line(value->fd_value);
     while (line)
     {
         if (check_for_dollar_sign(line))
         {
             new_str = expand_heredoc(env, line);
             write(fd1, new_str, ft_strlen(new_str));
-            free(new_str);
         }
         else
             write(fd1, line, ft_strlen(line));
         free(line);
-        line = get_next_line(value.fd_value);
+        line = get_next_line(value->fd_value);
     }
-	// printf("here \n");
-	close(fd1);
-	close(value.fd_value);
-    value.fd_value = fd;
-	// printf("line1 = %s",get_next_line(fd));
-	// printf("fd = %d\n",fd);
+    close(fd1);
+    fd = open("/tmp/temp", O_RDONLY);
+    unlink("/tmp/temp");
+    close(value->fd_value);
+    value->fd_value = fd;
 }
 
 void expand_redirection(t_ast_node *node, t_env **env)
@@ -354,14 +385,7 @@ void expand_redirection(t_ast_node *node, t_env **env)
 	{
 		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
-			handle_heredoc_expansion(env, ((t_token *)node->redirect_list->items[i])->value);
-			// char *line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
-			// printf("here: %s\n", line);
-			// while (line)
-			//{
-			//	printf("[%s]\n", line);
-			//	line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
-			// }
+			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
 			i++;
 			continue;
 		}
