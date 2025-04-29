@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:26:18 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 09:46:34 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,10 +182,10 @@ int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
 	else
 	{
 		if (split)
-			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str); // "kk kk"
+			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
 		else
-			((t_token *)child->items[i])->value.str_value = old_str;// "kk hh "
-		if (check_for_spaces(((t_token *)child->items[i])->value.str_value))
+			((t_token *)child->items[i])->value.str_value = old_str;
+		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) || ((t_token *)child->items[i])->value.str_value[0] == '\0')
 			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
 	}
 	return (1);
@@ -237,6 +237,109 @@ void expand_cmd(t_ast_node *node, t_env **env)
 	}
 }
 
+int	check_for_dollar_sign(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*expand_heredoc(t_env **env, char *str)
+{
+	int		index;
+	char	*old_str;
+	char	*tmp;
+
+	index = 0;
+	old_str = ft_strdup("");
+	while (str[index])
+	{
+		if (str[index] == '$')
+			tmp = handle_expansion(str, &index, env, old_str);
+		else
+		{
+			tmp = append_char(old_str, str[index]);
+			if (str[index] != '\0')
+				index++;
+		}
+		old_str = tmp;
+	}
+	return (old_str);
+}
+
+//void	handle_heredoc_expansion(t_env **env, t_value value)
+//{
+//	int	fd1;
+//	int	fd;
+//	char	*line;
+//	char	*new_str;
+	
+//	fd1 = open("/tmp/t_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//	fd = open("/tmp/t_file", O_RDONLY);
+//	unlink("/tmp/t_file");
+//	line = get_next_line(value.fd_value);
+//	new_str = NULL;
+//	while (line)
+//	{
+//		if (check_for_dollar_sign(line))
+//		{
+//			new_str = expand_heredoc(env, line);
+//			write(fd1, new_str, ft_strlen(new_str));
+//		}
+//		else
+//			write(fd1, line, ft_strlen(new_str));
+//		free(line);
+//		line = get_next_line(value.fd_value);
+//	}
+//	if (line)
+//		free(line);
+//	close(value.fd_value);
+//	close(fd1);
+//	value.fd_value = fd;
+//}
+
+void handle_heredoc_expansion(t_env **env, t_value value)
+{
+    int fd1;
+    int fd;
+    char *line;
+    char *new_str;
+
+    fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    fd = open("/tmp/temp_file", O_RDONLY);
+    // unlink("/tmp/temp_file");
+    if (fd1 < 0)
+        return ;
+    line = get_next_line(value.fd_value);
+    new_str = NULL;
+    while (line)
+    {
+        if (check_for_dollar_sign(line))
+        {
+            new_str = expand_heredoc(env, line);
+            write(fd1, new_str, ft_strlen(new_str));
+            free(new_str);
+        }
+        else
+            write(fd1, line, ft_strlen(line));
+        free(line);
+        line = get_next_line(value.fd_value);
+    }
+	// printf("here \n");
+	close(fd1);
+	close(value.fd_value);
+    value.fd_value = fd;
+	// printf("line1 = %s",get_next_line(fd));
+	// printf("fd = %d\n",fd);
+}
+
 void expand_redirection(t_ast_node *node, t_env **env)
 {
 	size_t		i;
@@ -251,6 +354,14 @@ void expand_redirection(t_ast_node *node, t_env **env)
 	{
 		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
+			handle_heredoc_expansion(env, ((t_token *)node->redirect_list->items[i])->value);
+			// char *line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
+			// printf("here: %s\n", line);
+			// while (line)
+			//{
+			//	printf("[%s]\n", line);
+			//	line = get_next_line(((t_token *)node->redirect_list->items[i])->value.fd_value);
+			// }
 			i++;
 			continue;
 		}

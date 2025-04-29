@@ -114,7 +114,7 @@ void	redirect(t_token *file_obj)
 	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
 	{
 		// print_err("ambiguous redirect", file_obj->value.str_value);
-		ft_putstr_fd("ambiguous redirection\n",2);
+		ft_putstr_fd("minishell: ambiguous redirect\n",2);
 		// TODO  FIX heredoc value is not  a path
 		exit(1);
 	}
@@ -133,6 +133,7 @@ void	redirect(t_token *file_obj)
 		// TODO  FIX heredoc value is not  a path
 		// exit_status(data,1);
 	}
+	// printf("fd = %d\n",fd);
 	close(fd);
 }
 
