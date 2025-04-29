@@ -153,9 +153,11 @@ void	perforem_redirections(t_data *data, int n)
 	}
 	while (i < data->lst_cmd[n].redir_ars_nbr)
 	{
+		// data->old_fd = redir_lst[i]->value.fd_value;
 		redirect(redir_lst[i]);
 		i++;
 	}
+	// data->fd[1] = -5;
 	if (n != data->cmd_nbr - 1)
 	{
 		dup2(data->fd[1], STDOUT_FILENO);
@@ -165,6 +167,7 @@ void	perforem_redirections(t_data *data, int n)
 
 void	parent(int *old_fd, int *fd)
 {
+	// printf("%d\n",fd[1]);
 	close(fd[1]);
 	if (*old_fd >= 0)
 		close(*old_fd);
@@ -259,6 +262,8 @@ void	redirection_builtins(t_data *data, int n)
 		if (redir_lst[i]->type == TOKEN_APPEND
 			|| redir_lst[i]->type == TOKEN_REDIRECT_OUT)
 			data->out_fd = open_file(redir_lst[i]);
+		else
+			close(open_file(redir_lst[i]));
 		i++;
 	}
 	if (n != data->cmd_nbr - 1)
@@ -288,6 +293,19 @@ void	child(t_data *prg_data, int index)
 		exit_status(prg_data, 1);
 }
 
+void close_here_docs(t_token **redir_list)
+{
+	int i;
+	i = 0;
+	while (redir_list[i])
+	{
+		if (redir_list[i]->type == TOKEN_HEREDOC)
+			close(redir_list[i]->value.fd_value);
+		i++;
+	}
+	return;
+}
+
 void	pipe_execution(t_data *prg_data)
 {
 	int	i;
@@ -303,7 +321,10 @@ void	pipe_execution(t_data *prg_data)
 		if (prg_data->lst_cmd[i].pid == 0)
 			child(prg_data, i);
 		else
+		{
 			parent(&prg_data->old_fd, prg_data->fd);
+			close_here_docs(prg_data->lst_cmd[i].redirlist);
+		}
 		i++;
 	}
 }
