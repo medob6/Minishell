@@ -297,7 +297,7 @@ void close_here_docs(t_token **redir_list)
 {
 	int i;
 	i = 0;
-	while (redir_list[i])
+	while (redir_list && redir_list[i])
 	{
 		if (redir_list[i]->type == TOKEN_HEREDOC)
 			close(redir_list[i]->value.fd_value);

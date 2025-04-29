@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_path_name.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 11:53:42 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:18:52 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,73 @@ char    *check_string_get(char *get)
     }
     return (tmp);
 }
-char    *expand_wild(char *path, char *get)
+//char    **create_array(char *new_str)
+//{
+//    int     i;
+//    int     j;
+//    int     start;
+//    int     count;
+//    char    **str;
+
+//    i = 0;
+//    count = 0;
+//    while (new_str[i])
+//    {
+//        if (new_str[i] == ' ')
+//            count++;
+//        i++;
+//    }
+//    str = ft_malloc(sizeof(char *), count);
+//    j = 0;
+//    i = 0;
+//    while (new_str[i])
+//    {
+//        start = i;
+//        while (new_str[i] != ' ')
+//            i++;
+//        str[j] = ft_substr(new_str, start, i - start);
+//        j++;
+//    }
+//}
+
+char **create_array(char *new_str)
+{
+    int     i = 0;
+    int     j = 0;
+    int     start;
+    int     count = 0;
+    char    **str;
+
+    // First count how many words (skip consecutive spaces)
+    while (new_str[i])
+    {
+        while (new_str[i] == ' ')
+            i++;
+        if (new_str[i])
+        {
+            count++;
+            while (new_str[i] && new_str[i] != ' ')
+                i++;
+        }
+    }
+
+    str = ft_malloc(sizeof(char *), (count + 1)); // +1 for NULL terminator
+    i = 0;
+    while (new_str[i] && j < count)
+    {
+        while (new_str[i] == ' ')
+            i++;
+        start = i;
+        while (new_str[i] && new_str[i] != ' ')
+            i++;
+        str[j++] = ft_substr(new_str, start, i - start);
+    }
+    str[j] = NULL;
+    return str;
+}
+
+
+char    **expand_wild(char *path, char *get)
 {
     struct dirent   *line;
     DIR     *dir;
@@ -168,8 +234,9 @@ char    *expand_wild(char *path, char *get)
         help_expand_wild(line, path, get, &new_str);
         line = readdir(dir);
     }
+    
     closedir(dir);
-    return (new_str);
+    return (create_array(new_str));
 }
 
 // void expand_wildcard(t_array *child, int i, int flag)
@@ -300,26 +367,45 @@ void get_pattern_and_path(char *str, char **path, char **pattern)
             *pattern = str;
     }
 }
-void set_expanded_value(t_array *child, int i, int flag, char *new_str)
-{
-    int len;
+//void set_expanded_value(t_array *child, int i, int flag, char **new_str)
+//{
+//    int len;
 
-    len = ft_strlen(new_str);
-    while (len > 0 && new_str[len - 1] == ' ')
-        len--;
-    new_str[len] = '\0';
+//    //len = ft_strlen(new_str);
+//    //while (len > 0 && new_str[len - 1] == ' ')
+//    //    len--;
+//    //new_str[len] = '\0';
+//    if (flag)
+//        child->items[i] = new_str;
+//    else
+//        ((t_token *)child->items[i])->value.str_value = new_str;
+//}
+
+void set_expanded_value(t_array *child, int i, int flag, char **new_str)
+{
+    //int len;
+
+    //if (new_str)
+    //{
+    //    len = ft_strlen(new_str);
+    //    while (len > 0 && new_str[len - 1] == ' ')
+    //        len--;
+    //    new_str[len] = '\0'; // cut off trailing spaces
+    //}
+
     if (flag)
-        child->items[i] = new_str;
+        child->items[i] = *new_str;
     else
-        ((t_token *)child->items[i])->value.str_value = new_str;
+        ((t_token *)child->items[i])->value.str_value = *new_str;
 }
+
 
 void expand_wildcard(t_array *child, int i, int flag)
 {
     char    *str;
     char    *path;
     char    *pattern;
-    char    *new_str;
+    char    **new_str;
 
     str = get_string_from_child(child, i, flag);
     path = NULL;
