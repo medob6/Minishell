@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 17:23:55 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 09:23:59 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,18 +275,23 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 {
 	t_token	*new_token;
 	int		fd;
+	int		qouts;
 
-	new_token = NULL;
+	qouts = 0;
 	if (next && check_for_operations(next, 0) == '\0')
 	{
 		if (check_for_q(next))
 		{
-			new_token->value.theres_qouts = 1;
+			qouts = 1;
 			next = removes_qouts_heredoc(next);
 		}
 		fd = handle_herdoc(next);
 		new_token = create_token(next, TOKEN_HEREDOC);
 		new_token->value.fd_value = fd;
+		// printf("fd = %d\n",fd);
+		// close(fd);
+		if (qouts)
+			new_token->value.theres_qouts = 1;
 		append_token(head, tail, new_token);
 		return (1);
 	}
@@ -294,10 +299,24 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	return (0);
 }
 
-void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
+void	close_all_files(t_token **head)
+{
+	t_token *tmp;
+	
+	tmp = *head;
+	while (tmp)
+	{
+		if (tmp->value.fd_value > -1)
+			close(tmp->value.fd_value);
+		tmp = tmp->next;
+	}
+}
+
+void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
+	static int heredoc;
 	char	*next;
 
 	i = 0;
@@ -312,8 +331,20 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
+			if (c == '|' || c == '(')
+				heredoc = 0;
 			if (c == 'h')
+			{
+				heredoc++;
+				if (heredoc > 16)
+				{
+					ft_print("bash: maximum here-document count exceeded\n", 2);
+					heredoc = 0;
+					close_all_files(head);
+					exit(2);
+				}
 				*index += handle_heredoc_case(head, tail, next);
+			}
 			else
 			{
 				i += handle_operator(head, tail, c);
