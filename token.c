@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 09:23:59 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 11:48:49 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,14 @@ char    *removes_qouts_heredoc(char *str)
 
     j = 0;
     new_str = ft_strdup("");
-    while (str[j])
+    while (str && str[j])
     {
         if (str[j] == '\'' && check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
         else if (str[j] == '"' && check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
         else
-            new_str = append_char(new_str, str[j]);
-        if (str[j])
-            j++;
+            new_str = append_char(new_str, str[j++]);
     }
 	return (new_str);
 }
