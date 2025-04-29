@@ -82,9 +82,7 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 	while (i < cmd_nbr)
 	{
 		if (cmd_node[i]->type == AST_SIMPLE_CMD)
-		{
 			parse_cmd(&cmd_lst[i], cmd_node[i], envp);
-		}
 		// else if (cmd_node[i]->type = AST_SUBSHELL)
 		// {
 		// TODO: here i should fork for the subshell  ... I should
@@ -253,7 +251,7 @@ void	redirection_builtins(t_data *data, int n)
 			close(data->out_fd);
 		if (redir_lst[i]->value.fd_value == AMBIGUOUS_REDIRECTION)
 		{
-			ft_putstr_fd("ambiguous redirection\n",2);
+			ft_putstr_fd("minishell: ambiguous redirect\n",2);
 			data->out_fd = -1;
 			return;
 		}
@@ -409,7 +407,7 @@ int	execution(t_ast_node *root, t_env *env)
 //TODO check if file descriptors are closed and only needed ones opened
 // 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7 //! DONE
 // 3- extract envp before rederection //! DONE
-// 4- check for imbiguse rederictions 
+// 4- check for imbiguse rederictions //? in progeress
 // 5- check for save derefrencing
 // 6- implement subshell				!!!!!!!!!! tomorow //TODO today
 // 7- handel exit status code we have five (also in built-in);
