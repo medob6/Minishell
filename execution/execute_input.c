@@ -338,8 +338,8 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[0] = -1;
 	data->fd[1] = -1;
 	data->env = env;
+	expand_pipeline(pipeline, &data->env);	
 	data->cmd_nbr = pipeline->children->length;
-	expand_pipeline(pipeline, &data->env);
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
