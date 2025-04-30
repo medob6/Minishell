@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 12:02:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:20:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ void    remove_q(t_array *child, size_t i, int flag)
     char    *str;
     char    *new_str;
     int     j;
-
+    //""*""
+    //if (child->expand_qout)
+        //return ;
     if (flag)
         str = child->items[i];
     else
@@ -64,9 +66,6 @@ void    remove_q(t_array *child, size_t i, int flag)
         else
             new_str = append_char(new_str, str[j++]);
     }
-    //if (new_str[0] != '\0')
-    //{
-    //    printf("here:[%s]\n", new_str);
     if (flag)
         child->items[i] = new_str;
     else

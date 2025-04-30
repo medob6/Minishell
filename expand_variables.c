@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 12:02:52 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/30 17:29:14 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ char  *expand_the_value(char *str, t_env **env)
 	if (index)
 		str = ft_strdup(&str[index]);
 	else
-		str = ft_strdup("");
-	return ("");
+		str = NULL;
+	return (str);
 }
 
 size_t	next_dollar(char *s)
@@ -139,62 +139,183 @@ int	check_for_spaces(char *str)
 	return (0);
 }
 
-int	check_the_word(t_array *child, t_env **env, int i, int flag, int split)
+int	check_if_qouted(char *str, int index)
 {
-	char *old_str = ft_strdup("");
-	char *tmp;
-	int index = 0;
-	char *str;
+	int		i;
 
-	if (flag)
-		str = child->items[i];
-	else
-		str = ((t_token *)child->items[i])->value.str_value;
-	while (str[index])
+	i = 0;
+	while (i < index)
 	{
-		if (str[index] == '\'')
-		{
-			int start = index;
-			index++;
-			while (str[index] && str[index] != '\'')
-				index++;
-			if (str[index] == '\'')
-				index++;
-			tmp = ft_strjoin(old_str, ft_substr(str, start, index - start));
-		}
-		else if (str[index] == '$')
-			tmp = handle_expansion(str, &index, env, old_str);
-		else
-		{
-			tmp = append_char(old_str, str[index]);
-			if (str[index] != '\0')
-				index++;
-		}
-		old_str = tmp;
-	}
-	if (flag)
-	{
-		if (split)
-			child->items[i] = applicate_field_split(old_str);
-		else
-			child->items[i] = old_str;
-	}
-	else
-	{
-		if (split)
-			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
-		else
-			((t_token *)child->items[i])->value.str_value = old_str;
-		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
-		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
-		{
-			if (((t_token *)child->items[i])->value.fd_value != -1)
-				close(((t_token *)child->items[i])->value.fd_value);
-			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
-		}
+		if (str[i] == '"')
+			return (0);
+		i++;
 	}
 	return (1);
 }
+
+//int	check_the_word(t_array *child, t_env **env, int i, int split)
+//{
+//	char *old_str = ft_strdup("");
+//	char *tmp;
+//	int index = 0;
+//	char *str;
+
+//	if (child)
+//		str = child->items[i];
+//	else
+//		str = ((t_token *)child->items[i])->value.str_value;
+//	while (str[index])
+//	{
+//		if (str[index] == '\'' && check_if_qouted(str, index))
+//		{
+//			int start = index;
+//			index++;
+//			while (str[index] && str[index] != '\'')
+//				index++;
+//			if (str[index] == '\'')
+//				index++;
+//			tmp = ft_strjoin(old_str, ft_substr(str, start, index - start));
+//		}
+//		else if (str[index] == '$')
+//			tmp = handle_expansion(str, &index, env, old_str);
+//		else
+//		{
+//			tmp = append_char(old_str, str[index]);
+//			if (str[index] != '\0')
+//				index++;
+//		}
+//		old_str = tmp;
+//	}
+
+//	if (child)
+//	{
+//		if (split)
+//			child->items[i] = applicate_field_split(old_str);
+//		else
+//			child->items[i] = old_str;
+//	}
+//	else
+//	{
+//		if (split)
+//			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
+//		else
+//			((t_token *)child->items[i])->value.str_value = old_str;
+//		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
+//		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
+//		{
+//			if (((t_token *)child->items[i])->value.fd_value != -1)
+//				close(((t_token *)child->items[i])->value.fd_value);
+//			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
+//		}
+//	}
+//	return (1);
+//}
+
+int		search_for(char *str, char c)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (1);
+	}
+	return (0);
+}
+
+static char	*handle_single_quote(char *str, int *index, char *old_str)
+{
+	int		start;
+	char	*tmp;
+
+	start = *index;
+	(*index)++;
+	while (str[*index] && str[*index] != '\'')
+		(*index)++;
+	if (str[*index] == '\'')
+		(*index)++;
+	tmp = ft_strjoin(old_str, ft_substr(str, start, *index - start));
+	return (tmp);
+}
+
+static char	*handle_other_char(char *str, int *index, char *old_str)
+{
+	char	*tmp;
+
+	tmp = append_char(old_str, str[*index]);
+	if (str[*index] != '\0')
+		(*index)++;
+	return (tmp);
+}
+
+static char	*expand_loop(t_array *child, char *str, t_env **env)
+{
+	int		index;
+	char	*old_str;
+	char	*tmp;
+
+	index = 0;
+	old_str = ft_strdup("");
+	while (str[index])
+	{
+		if (str[index] == '\'' && check_if_qouted(str, index))
+			tmp = handle_single_quote(str, &index, old_str);
+		else if (str[index] == '$')
+		{
+			tmp = handle_expansion(str, &index, env, old_str);
+			//printf("here\n");
+			//if (search_for(tmp, '"'))
+				//child->expand_qout = 1;
+		}
+		else
+			tmp = handle_other_char(str, &index, old_str);
+		old_str = tmp;
+	}
+	return (old_str);
+}
+
+static void	update_child_value(t_array *child, int i, char *expanded, int split)
+{
+	if (split)
+		child->items[i] = applicate_field_split(expanded);
+	else
+		child->items[i] = expanded;
+}
+
+static void	update_token_value(t_token *token, char *expanded, int split)
+{
+	if (split)
+		token->value.str_value = applicate_field_split(expanded);
+	else
+		token->value.str_value = expanded;
+
+	if (search_for(token->value.str_value, ' ') || token->value.str_value[0] == '\0')
+	{
+		if (token->value.fd_value != -1)
+			close(token->value.fd_value);
+		token->value.fd_value = AMBIGUOUS_REDIRECTION;
+	}
+}
+
+int	check_the_word(t_array *child, t_env **env, int i, int split)
+{
+	char	*str;
+	char	*expanded;
+
+	if (child)
+		str = child->items[i];
+	else
+		str = ((t_token *)child->items[i])->value.str_value;
+	
+	expanded = expand_loop(child, str, env);
+	if (child)
+		update_child_value(child, i, expanded, split);
+	else
+		update_token_value(((t_token *)child->items[i]), expanded, split);
+	return (1);
+}
+
 
 int	check_the_single_qout(char *s)
 {
@@ -233,14 +354,18 @@ void expand_cmd(t_ast_node *node, t_env **env)
 				split = 1;
 				if (check_for_last_exp(node) != -1)
 					tmp = (char *)node->children->items[check_for_last_exp(node)];
-    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+    			if (!check_the_last_arg(tmp))
+				{
+					//printf("%zu %zu\n", (size_t)check_the_last_arg(tmp), ft_strlen(tmp));
         			split = 0;
+				}
 			}
-            check_the_word(node->children, env, i, 1, split);
+            check_the_word(node->children, env, i, split);
         }
 		i++;
 	}
 }
+// $a ls => "" ls
 
 int	check_for_dollar_sign(char *s)
 {
@@ -279,132 +404,126 @@ char	*expand_heredoc(t_env **env, char *str)
 	return (old_str);
 }
 
-//void	handle_heredoc_expansion(t_env **env, t_value value)
-//{
-//	int	fd1;
-//	int	fd;
-//	char	*line;
-//	char	*new_str;
-	
-//	fd1 = open("/tmp/t_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//	fd = open("/tmp/t_file", O_RDONLY);
-//	unlink("/tmp/t_file");
-//	line = get_next_line(value.fd_value);
-//	new_str = NULL;
-//	while (line)
-//	{
-//		if (check_for_dollar_sign(line))
-//		{
-//			new_str = expand_heredoc(env, line);
-//			write(fd1, new_str, ft_strlen(new_str));
-//		}
-//		else
-//			write(fd1, line, ft_strlen(new_str));
-//		free(line);
-//		line = get_next_line(value.fd_value);
-//	}
-//	if (line)
-//		free(line);
-//	close(value.fd_value);
-//	close(fd1);
-//	value.fd_value = fd;
-//}
-
-//void handle_heredoc_expansion(t_env **env, t_value value)
-//{
-//    int fd1;
-//    int fd;
-//    char *line;
-//    char *new_str;
-
-//    fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//    fd = open("/tmp/temp_file", O_RDONLY);
-//    unlink("/tmp/temp_file");
-//    if (fd1 < 0)
-//        return ;
-//    line = get_next_line(value.fd_value);
-//    new_str = NULL;
-//    while (line)
-//    {
-//        if (check_for_dollar_sign(line))
-//        {
-//            new_str = expand_heredoc(env, line);
-//            write(fd1, new_str, ft_strlen(new_str));
-//            free(new_str);
-//        }
-//        else
-//            write(fd1, line, ft_strlen(line));
-//        free(line);
-//        line = get_next_line(value.fd_value);
-//    }
-//    close(fd1);
-//    close(value.fd_value);
-//    value.fd_value = fd;
-//}
-
-
 void handle_heredoc_expansion(t_env **env, t_value *value)
 {
     int fd1;
     int fd;
     char *line;
-    char *new_str;
+	char	*str;
 
-    fd1 = open("/tmp/temp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	str = get_name_heredoc();
+    fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     line = get_next_line(value->fd_value);
     while (line)
     {
-        if (check_for_dollar_sign(line))
-        {
-            new_str = expand_heredoc(env, line);
-            write(fd1, new_str, ft_strlen(new_str));
-        }
+        if (search_for(line, '$'))
+            write(fd1, expand_heredoc(env, line), ft_strlen(expand_heredoc(env, line)));
         else
             write(fd1, line, ft_strlen(line));
         free(line);
         line = get_next_line(value->fd_value);
     }
     close(fd1);
-    fd = open("/tmp/temp", O_RDONLY);
-    unlink("/tmp/temp");
+    fd = open(str, O_RDONLY);
+    unlink(str);
     close(value->fd_value);
     value->fd_value = fd;
 }
 
+//void expand_redirection(t_ast_node *node, t_env **env)
+//{
+//	size_t		i;
+//	int		split;
+//	char	*tmp;
+	
+//	i = 0;
+//	split = 0;
+//	if (!node->redirect_list)
+//		return ;
+//	while (i < node->redirect_list->length)
+//	{
+//		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+//		{
+//			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
+//			i++;
+//			continue;
+//		}
+//		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
+//		if (tmp)
+//		{
+//			if (check_for_field_split(tmp))
+//			{
+//				split = 1;
+//				if (check_for_last_exp(node) != -1)
+//					tmp = (char *)node->children->items[check_for_last_exp(node)];
+//    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+//        			split = 0;
+//			}
+//            check_the_word(node->redirect_list, env, i, split);
+//        }
+//		i++;
+//	}
+//}
+bool is_here_doc(void *item)
+{
+	t_token *token = (t_token *)item;
+	return (token->type == TOKEN_HEREDOC);
+}
+
+
+int should_disable_split(t_ast_node *node, int split)
+{
+	char *tmp;
+	int last_exp_index;
+
+	last_exp_index = check_for_last_exp(node);
+	if (last_exp_index != -1)
+	{
+		tmp = (char *)node->children->items[last_exp_index];
+		if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+			split = 0;
+	}
+	return (split);
+}
+
+void handle_redir_word(t_ast_node *node, t_env **env, size_t i)
+{
+	char *str;
+	int split;
+
+	split = 0;
+	str = ((t_token *)node->redirect_list->items[i])->value.str_value;
+	if (!str)
+		return ;
+	if (check_for_field_split(str))
+	{
+		split = 1;
+		split = should_disable_split(node, split);
+	}
+	check_the_word(node->redirect_list, env, i, split);
+}
+
+
 void expand_redirection(t_ast_node *node, t_env **env)
 {
-	size_t		i;
-	int		split;
-	char	*tmp;
-	
-	i = 0;
-	split = 0;
+	size_t i;
+
 	if (!node->redirect_list)
 		return ;
+	i = 0;
 	while (i < node->redirect_list->length)
 	{
-		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+		if (is_here_doc(node->redirect_list->items[i]))
 		{
 			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
 			i++;
 			continue;
 		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
-		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(node) != -1)
-					tmp = (char *)node->children->items[check_for_last_exp(node)];
-    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-        			split = 0;
-			}
-            check_the_word(node->redirect_list, env, i, 0, split);
-        }
+		handle_redir_word(node, env, i);
 		i++;
 	}
 }
+
 int	expand_variables(t_ast_node *node, t_env **env)
 {
 	int expand;
@@ -412,9 +531,10 @@ int	expand_variables(t_ast_node *node, t_env **env)
 		return (0);
 	expand = 0;
 	expand_redirection(node,env);
-	expand_cmd(node,env);
+	expand_cmd(node,env);// "*"
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
+	check_for_empty_strings(node);
 	removes_qouts_cmd(node);
 	removes_qouts_red(node);
 	return (expand);
@@ -423,6 +543,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 void expand_pipeline(t_ast_node *node, t_env **env)
 {
 	size_t i;
+	
 	i = 0;
 	while (i  < node->children->length)
 	{
@@ -435,8 +556,9 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 		}
 		i++;
 	}
-	
+	//node->children->length = 2;	
 }
+
 int	expand_ast(t_ast_node *node, t_env **env)
 {
 	size_t i;

@@ -82,7 +82,10 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 	while (i < cmd_nbr)
 	{
 		if (cmd_node[i]->type == AST_SIMPLE_CMD)
+		{
+			//printf("cmd_index = %d ;lenght = %zu \n",i,cmd_node[i]->children->length);
 			parse_cmd(&cmd_lst[i], cmd_node[i], envp);
+		}
 		// else if (cmd_node[i]->type = AST_SUBSHELL)
 		// {
 		// TODO: here i should fork for the subshell  ... I should
@@ -336,8 +339,9 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[0] = -1;
 	data->fd[1] = -1;
 	data->env = env;
-	data->cmd_nbr = pipeline->children->length;
 	expand_pipeline(pipeline, &data->env);// expand here// TODO
+	data->cmd_nbr = pipeline->children->length;
+	printf("cmd_nbr = %d\n",data->cmd_nbr);
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
