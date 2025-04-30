@@ -52,6 +52,7 @@ bool	parse_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 	cmd->is_built_in = 0;
 	cmd->redir_ars_nbr = 0;
 	cmd->redirlist = NULL;
+	cmd->is_subshell = false;
 	if ((t_token **)node->children)
 		cmd_args = (char **)node->children->items;
 	if ((t_token **)node->redirect_list)
@@ -88,12 +89,11 @@ t_cmd	*parse_cmd_list(int cmd_nbr, t_ast_node **cmd_node, t_env *envp)
 	{
 		if (cmd_node[i]->type == AST_SIMPLE_CMD)
 			parse_cmd(&cmd_lst[i], cmd_node[i], envp);
-		// else if (cmd_node[i]->type = AST_SUBSHELL)
-		// {
-		//// TODO: here i should fork for the subshell  ... I should
-		// 	execute_cmd_line(cmd_node, envp);
-		//// TODO: perform redirections after subshell
-		// }
+		else if (cmd_node[i]->type == AST_SUBSHELL)
+		{
+			cmd_lst[i].is_subshell = true;
+			cmd_lst[i].subshell_node = cmd_node[i];
+		}
 		i++;
 	}
 	return (cmd_lst);
@@ -121,7 +121,6 @@ void	redirect(t_data *data,t_token *file_obj)
 	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
 	{
 		ft_putstr_fd("minishell: ambiguous redirect\n",2);
-		// TODO  FIX heredoc value is not  a path
 		exit_status(data,1);
 	}
 	fd = open_file(file_obj);
@@ -136,7 +135,6 @@ void	redirect(t_data *data,t_token *file_obj)
 	else
 	{
 		print_err(strerror(errno), file_obj->value.str_value);
-		// TODO  FIX heredoc value is not  a path
 		exit_status(data,1);
 	}
 	close(fd);
@@ -156,16 +154,17 @@ void	perforem_redirections(t_data *data, int n)
 		dup2(data->old_fd, STDIN_FILENO);
 		close(data->old_fd);
 	}
-	while (i < data->lst_cmd[n].redir_ars_nbr)
-	{
-		redirect(data,redir_lst[i]);
-		i++;
-	}
 	if (n != data->cmd_nbr - 1)
 	{
 		dup2(data->fd[1], STDOUT_FILENO);
 		close(data->fd[1]);
 	}
+	while (i < data->lst_cmd[n].redir_ars_nbr)
+	{
+		redirect(data,redir_lst[i]);
+		i++;
+	}
+
 }
 
 void	parent(int *old_fd, int *fd)
@@ -209,6 +208,13 @@ void	redirection_builtins(t_data *data, int n)
 	{
 		dup2(data->old_fd, STDIN_FILENO);
 		close(data->old_fd);
+	}	
+	if (n != data->cmd_nbr - 1)
+	{
+		if (data->out_fd != -1)
+			data->out_fd = data->fd[1];
+		else
+			close(data->fd[1]);
 	}
 	while (i < data->lst_cmd[n].redir_ars_nbr)
 	{
@@ -227,19 +233,54 @@ void	redirection_builtins(t_data *data, int n)
 			close(open_file(redir_lst[i]));
 		i++;
 	}
+
+}
+
+int execute_subshell(t_ast_node *subshell,t_env *env)
+{
+	int status;
+	status = execute_cmd_line(subshell,env);
+	return (status);
+}
+void perforem_subshell_redirs(t_data *data, int n)
+{
+	size_t	i;
+	t_token	**redir_lst;
+
+	i = 0;
+	if (data->lst_cmd[n].subshell_node->redirect_list)
+	redir_lst = (t_token **)data->lst_cmd[n].subshell_node->redirect_list->items;
+	else
+		redir_lst = NULL;
+	if (n != data->cmd_nbr - 1)
+		close(data->fd[0]);
+	if (data->old_fd != -1)
+	{
+		dup2(data->old_fd, STDIN_FILENO);
+		close(data->old_fd);
+	}
 	if (n != data->cmd_nbr - 1)
 	{
-		if (data->out_fd != -1)
-			data->out_fd = data->fd[1];
-		else
-			close(data->fd[1]);
+		dup2(data->fd[1], STDOUT_FILENO);
+		close(data->fd[1]);
 	}
+	while (redir_lst && redir_lst[i])
+	{
+		redirect(data, redir_lst[i]);
+		i++;
+	}
+
 }
+
 void	child(t_data *prg_data, int index)
 {
 	
-	
-	if (!prg_data->lst_cmd[index].is_built_in)
+	if (prg_data->lst_cmd[index].is_subshell)
+	{
+		perforem_subshell_redirs(prg_data, index);
+		prg_data->lst_cmd[index].exit_status = execute_subshell(prg_data->lst_cmd[index].subshell_node,prg_data->env);
+	}
+	else if (!prg_data->lst_cmd[index].is_built_in)
 	{
 		perforem_redirections(prg_data, index);
 		execute_cmd(prg_data->lst_cmd[index], prg_data);
@@ -280,7 +321,7 @@ void	pipe_execution(t_data *prg_data)
 		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
 			prg_data->lst_cmd[i].pid = fork();
 		if (prg_data->lst_cmd[i].pid == 0)
-			child(prg_data, i);
+			child(prg_data, i);//TODO the subshell should be handeled her
 		else
 		{
 			parent(&prg_data->old_fd, prg_data->fd);
@@ -307,22 +348,23 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	t_data	prg_data;
 	int		status;
 
+	status = 0;
 	init_program_data(&prg_data, pipeline, env);
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
-	// free_garbeg(&prg_data); //TODO when freeing farbeg i do lost some data , like envp
+	// free_garbeg(&prg_data); //TODO when freeing garbeg i do lost some data , like envp
 	return (status);
 }
 
 
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
-	size_t		i;
+
 	int			status;
 	t_ast_node	*cmd;
 	t_ast_node	*op;
-
+	size_t		i;
 	i = 0;
 	status = 0;
 	if (!root || !root->children || root->children->length == 0)
@@ -346,7 +388,6 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		else
 			break ;
 	}
-	printf("status = %d\n",status);
 	return (status);
 }
 
@@ -365,11 +406,11 @@ int	execution(t_ast_node *root, t_env *env)
 // 2- upgrade heredoc code 			!!!!!!!!! have some errors and linked to 7	//! DONE
 // 3- extract envp before rederection	//! DONE
 // 4- check for imbiguse rederictions	//! DONE
-// 5- implement subshell				!!!!!!!!!!  //TODO tomorow
-// 6- handel exit status code we have five (also in built-in); //! DONE // but signel still need testing
-// 7- check for save derefrencing     //?  after claening the code 
-// 8- test execuiton
-// 9- remove paranteses in parsing 
+// 5- implement subshell				!!!!!!!!!!  //! DONE
+// 6- handel exit status code we have five (also in built-in); //! DONE
+// 7- remove paranteses in parsing 
+// 8- check for save derefrencing     //?  after claening the code 
+// 9- test execuiton
 // 10- test everything //TODO when expansion is finished
 //! handel
 // ```

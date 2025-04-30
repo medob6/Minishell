@@ -18,8 +18,10 @@ typedef struct s_cmd
 	int		exit_status;
 	t_token	**redirlist;
 	size_t	redir_ars_nbr;
-	int		is_built_in;
-}			t_cmd;
+	t_ast_node *subshell_node;
+	int is_built_in;
+	bool	is_subshell;
+} t_cmd;
 
 // TODO: from data struct remove uneccesery data like out_fd
 /// should preserv old_fd
@@ -36,9 +38,7 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
-int	ft_strcmp(char *s1, char *s2)
-;
-
+int	ft_strcmp(char *s1, char *s2);
 int			ft_exit(char **args, long last_status);
 int			ft_env(t_env **env);
 int			ft_unset(char **args, t_env **env);
