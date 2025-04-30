@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 17:00:38 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/29 19:21:48 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ int	is_valid_length(char *tmp, int flag)
 	return (i);
 }
 
-
-// change made here  //? here
 char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;

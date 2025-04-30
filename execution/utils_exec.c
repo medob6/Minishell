@@ -59,7 +59,7 @@ void	free_garbeg(t_data *prg_data)
 		i++;
 	}
 	ft_free(prg_data->lst_cmd);
-	get_next_line(-1);
+	// get_next_line(-1);
 }
 void	exit_status(t_data *prg_data, int status)
 {
@@ -153,9 +153,9 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 			if (WIFEXITED(status))
 				cmd_list[i].exit_status = WEXITSTATUS(status);
 			else if (WIFSTOPPED(status))
-				cmd_list[i].exit_status = WSTOPSIG(status);
+				cmd_list[i].exit_status = WSTOPSIG(status) + 128;
 			else if (WIFSIGNALED(status))
-				cmd_list[i].exit_status = WTERMSIG(status);
+				cmd_list[i].exit_status = WTERMSIG(status) + 128;
 		i++;
 	}
 }
@@ -166,6 +166,7 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 	int status;
 	char **envp;
 
+	status = 126;
 	envp = extract_envp(prg_data->env);
 	// HERE : EXPAND FOR THIS SINGAL CMD
 	if (!cmd.path)
@@ -177,7 +178,12 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 		exit_status(prg_data, 127);
 	}
 	new_path = ft_strjoin(cmd.path, "/");
-	if (access(new_path, F_OK) != 0)
+	if (access(cmd.path, F_OK) != 0)
+	{
+		print_err(strerror(errno), cmd.path);
+		status = 127;
+	}
+	else if (access(new_path, F_OK) != 0)
 	{
 		execve(cmd.path, cmd.args, envp);
 		print_err(strerror(errno), cmd.path);
@@ -186,5 +192,5 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 		print_err(strerror(21), cmd.path);
 
 	ft_free(new_path);
-	exit_status(prg_data, 126);
+	exit_status(prg_data, status);
 }
