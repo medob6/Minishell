@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   field_splitting.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 13:39:00 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:38:18 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,30 @@ int	check_the_last_arg(char *tmp)
 {
 	int i;
 
-	i = (tmp[0] == '$');
-	if (!check_first_char(tmp[i]))
-		return (0);
-	i++;
-	while (tmp[i])
-	{
-		if (!((tmp[i] >= '0' && tmp[i] <= '9') ||
-			(tmp[i] >= 'A' && tmp[i] <= 'Z') ||
-			(tmp[i] >= 'a' && tmp[i] <= 'z') ||
-			tmp[i] == '_'))
-			break;
-		i++;
-	}
-	return (i);
+    i = 0;
+    while (tmp && tmp[i] != '$')
+        i++;
+    if (tmp[i] == '$')
+    {
+	    if (!check_first_char(tmp[i + 1]))
+		    return (0);
+    }
+    else
+    {
+        if (!check_first_char(tmp[i]))
+		    return (0);
+    }
+	//i++;
+	//while (tmp && tmp[i])
+	//{
+	//	if (!((tmp[i] >= '0' && tmp[i] <= '9') ||
+	//		(tmp[i] >= 'A' && tmp[i] <= 'Z') ||
+	//		(tmp[i] >= 'a' && tmp[i] <= 'z') ||
+	//		tmp[i] == '_'))
+	//		break;
+	//	i++;
+	//}
+	return (1);
 }
 
 int skip_single_quotes(const char *s, int i)

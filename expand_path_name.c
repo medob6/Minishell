@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 12:18:52 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/30 09:57:26 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@ char    *handle_dir(struct dirent *dir, char *get, char *path, char *new_str)
     tmp = ft_strjoin(dir->d_name, &get[i]);
     if (header)
     {
-        if (get[i] == '/' && get[i + 1] == '\0' && dir->d_name[0] == '.')
+        //if (get[i] == '/' && get[i + 1] == '\0' &&
+        if (dir->d_name[0] == '.')
             return (ft_strjoin(new_str, ft_strjoin(ft_strjoin(path, tmp), " ")));
     }
     else
@@ -143,73 +144,8 @@ char    *check_string_get(char *get)
     }
     return (tmp);
 }
-//char    **create_array(char *new_str)
-//{
-//    int     i;
-//    int     j;
-//    int     start;
-//    int     count;
-//    char    **str;
 
-//    i = 0;
-//    count = 0;
-//    while (new_str[i])
-//    {
-//        if (new_str[i] == ' ')
-//            count++;
-//        i++;
-//    }
-//    str = ft_malloc(sizeof(char *), count);
-//    j = 0;
-//    i = 0;
-//    while (new_str[i])
-//    {
-//        start = i;
-//        while (new_str[i] != ' ')
-//            i++;
-//        str[j] = ft_substr(new_str, start, i - start);
-//        j++;
-//    }
-//}
-
-char **create_array(char *new_str)
-{
-    int     i = 0;
-    int     j = 0;
-    int     start;
-    int     count = 0;
-    char    **str;
-
-    // First count how many words (skip consecutive spaces)
-    while (new_str[i])
-    {
-        while (new_str[i] == ' ')
-            i++;
-        if (new_str[i])
-        {
-            count++;
-            while (new_str[i] && new_str[i] != ' ')
-                i++;
-        }
-    }
-
-    str = ft_malloc(sizeof(char *), (count + 1)); // +1 for NULL terminator
-    i = 0;
-    while (new_str[i] && j < count)
-    {
-        while (new_str[i] == ' ')
-            i++;
-        start = i;
-        while (new_str[i] && new_str[i] != ' ')
-            i++;
-        str[j++] = ft_substr(new_str, start, i - start);
-    }
-    str[j] = NULL;
-    return str;
-}
-
-
-char    **expand_wild(char *path, char *get)
+char    *expand_wild(char *path, char *get)
 {
     struct dirent   *line;
     DIR     *dir;
@@ -236,59 +172,9 @@ char    **expand_wild(char *path, char *get)
     }
     
     closedir(dir);
-    return (create_array(new_str));
+    return (new_str);
 }
 
-// void expand_wildcard(t_array *child, int i, int flag)
-// {
-//     char *str;
-//     char *path;
-//     char *pattern;
-//     char *slash;
-//     char *wild;
-//     char *new_str;
-//     int last_slash;
-//     int j;
-    
-//     if (flag)
-// 		str = child->items[i];
-// 	else
-// 		str = ((t_token *)child->items[i])->value.str_value;
-//     slash = ft_strchr(str, '/');
-//     wild = ft_strchr(str, '*');
-//     path = NULL;
-//     pattern = NULL;
-//     if (wild && (!slash || slash > wild))
-//         pattern = str;
-//     else
-//     {
-//         last_slash = -1;
-//         j = 0;
-//         while (str[j]) 
-//         {
-//             if (str[j] == '/')
-//                 last_slash = j;
-//             if (str[j] == '*')
-//                 break;
-//             j++;
-//         }
-//         if (last_slash != -1)
-//         {
-//             path = ft_substr(str, 0, last_slash + 1);
-//             pattern = &str[last_slash + 1];
-//         }
-//         else
-//             pattern = str;
-//     }
-//     new_str = expand_wild(path, pattern);
-//     if (new_str)
-//     {
-//         if (flag)
-//             child->items[i] = new_str;
-//         else
-//             ((t_token *)child->items[i])->value.str_value = new_str;
-//     }
-// }
 
 int check_pattern(char *s)
 {
@@ -367,36 +253,18 @@ void get_pattern_and_path(char *str, char **path, char **pattern)
             *pattern = str;
     }
 }
-//void set_expanded_value(t_array *child, int i, int flag, char **new_str)
-//{
-//    int len;
-
-//    //len = ft_strlen(new_str);
-//    //while (len > 0 && new_str[len - 1] == ' ')
-//    //    len--;
-//    //new_str[len] = '\0';
-//    if (flag)
-//        child->items[i] = new_str;
-//    else
-//        ((t_token *)child->items[i])->value.str_value = new_str;
-//}
-
-void set_expanded_value(t_array *child, int i, int flag, char **new_str)
+void set_expanded_value(t_array *child, int i, int flag, char *new_str)
 {
-    //int len;
+    int len;
 
-    //if (new_str)
-    //{
-    //    len = ft_strlen(new_str);
-    //    while (len > 0 && new_str[len - 1] == ' ')
-    //        len--;
-    //    new_str[len] = '\0'; // cut off trailing spaces
-    //}
-
+    len = ft_strlen(new_str);
+    while (len > 0 && new_str[len - 1] == ' ')
+        len--;
+    new_str[len] = '\0';
     if (flag)
-        child->items[i] = *new_str;
+        child->items[i] = new_str;
     else
-        ((t_token *)child->items[i])->value.str_value = *new_str;
+        ((t_token *)child->items[i])->value.str_value = new_str;
 }
 
 
@@ -405,7 +273,7 @@ void expand_wildcard(t_array *child, int i, int flag)
     char    *str;
     char    *path;
     char    *pattern;
-    char    **new_str;
+    char    *new_str;
 
     str = get_string_from_child(child, i, flag);
     path = NULL;
@@ -458,3 +326,7 @@ void    expand_path_name_red(t_ast_node *node)
 		i++;
 	}
 }
+
+// export a='*' && export b='"' && echo $b$a$b 
+// echo "'$err'" --> '$err' but we need this ''
+// expo''rt

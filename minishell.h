@@ -39,6 +39,15 @@
 // 	int		ac;
 // }			t_data;
 
+# define EXPANDE_EMPTHY_STR 7
+
+typedef struct s_str
+{
+	char *value;
+	int	 information;
+} t_str;
+
+
 typedef struct s_garbag
 {
 	void			*addr;
@@ -109,13 +118,13 @@ typedef enum e_ast_type
 	AST_SUBSHELL,
 	AST_ERROR
 }					t_ast_type;
-
+// ls | fk && kd | ls -l -e
 typedef struct s_ast_node
 {
 	t_ast_type		type;
-	t_array			*children;
+	t_array			*children; // {ls , -l , -e}
 	t_array			*redirect_list;
-	char			*error_message;
+	char			*dup_str; // null
 }					t_ast_node;
 
 // void print_ast(t_ast_node *node, int depth);
@@ -157,4 +166,10 @@ void				removes_qouts_cmd(t_ast_node *node);
 void				removes_qouts_red(t_ast_node *node);
 int					check_for_next_one(char *str, int j);
 int					take_inside_qout(char **s, char *str, int j);
+char	*get_name_heredoc(void);
+void	check_for_empty_strings(t_ast_node *node);
+
+
+//export a='"'  export b='*'  echo "$a$b$a"
+// error message = "$a$b$a" and i get ""*"" --> "*"
 #endif

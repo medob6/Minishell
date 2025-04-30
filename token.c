@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 10:41:17 by salahian         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:21:55 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,19 @@ char	check_for_operations(char *cmd_line, int i)
 	else if (cmd_line[i] == ')')
 		return (')');
 	return ('\0');
+}
+
+char	*get_name_heredoc(void)
+{
+	char	*new;
+	int		fd;
+
+	fd = open("/dev/random", O_RDONLY);
+	new = ft_malloc(1, 11);
+	read(fd, new, 10);
+	new[10] = '\0';
+	new = ft_strjoin("/tmp/", new);
+	return (new);
 }
 
 char    *removes_qouts_heredoc(char *str)
@@ -127,21 +140,23 @@ void	print_err(char *err, char *str)
 	ft_putstr_fd(buffer, 2);
 	free(buffer);
 }
-void	handle_error(void)
+void	handle_error(char	*str)
 {
-	print_err(strerror(errno), "/tmp/temp_file");
+	print_err(strerror(errno), str);
 	exit(1);
 }
 
 int	create_temp_file(int *old_fd)
 {
 	int	fd1;
+	char	*str;
 
-	fd1 = open("/tmp/temp_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	*old_fd = open("/tmp/temp_file", O_RDONLY);
-	unlink("/tmp/temp_file");
+	str = get_name_heredoc();
+	fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	*old_fd = open(str, O_RDONLY);
+	unlink(str);
 	if (fd1 == -1 || *old_fd == -1)
-		handle_error();
+		handle_error(str);
 	return (fd1);
 }
 
