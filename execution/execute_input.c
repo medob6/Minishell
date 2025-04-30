@@ -282,6 +282,8 @@ void	child(t_data *prg_data, int index)
 	}
 	else if (!prg_data->lst_cmd[index].is_built_in)
 	{
+		if (prg_data->lst_cmd[index].path == NULL || prg_data->lst_cmd[index].args == NULL) //TODO this is linked to after expansion (test : ls | $gfgvbh | cat) if the only thing resulted after expansion is null we just exit
+			exit_status(prg_data, 0);
 		perforem_redirections(prg_data, index);
 		execute_cmd(prg_data->lst_cmd[index], prg_data);
 	}
