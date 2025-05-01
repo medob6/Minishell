@@ -216,6 +216,7 @@ void	redirection_builtins(t_data *data, int n)
 		else
 			close(data->fd[1]);
 	}
+	int last_not_atty = -1;
 	while (i < data->lst_cmd[n].redir_ars_nbr)
 	{
 		if (data->out_fd != 1)
@@ -226,14 +227,35 @@ void	redirection_builtins(t_data *data, int n)
 			data->out_fd = -1;
 			return;
 		}
-		if (redir_lst[i]->type == TOKEN_APPEND
-			|| redir_lst[i]->type == TOKEN_REDIRECT_OUT)
+		if (redir_lst[i]->type == TOKEN_APPEND || redir_lst[i]->type == TOKEN_REDIRECT_OUT)
+		{
 			data->out_fd = open_file(redir_lst[i]);
+			if (data->out_fd < 0)
+			{
+				print_err(strerror(errno), redir_lst[i]->value.str_value);
+				exit_status(data,1);
+			}
+			if (!isatty(data->out_fd))
+				last_not_atty = i;
+		}
 		else
-			close(open_file(redir_lst[i]));
+		{
+			data->out_fd = open_file(redir_lst[i]);
+			if (data->out_fd  < 0)
+			{
+				print_err(strerror(errno), redir_lst[i]->value.str_value);
+				exit_status(data,1);
+			}
+			close(data->out_fd);
+		}
 		i++;
 	}
 
+	if (last_not_atty != -1)
+	{
+		close(data->out_fd);
+		data->out_fd = open_file(redir_lst[last_not_atty]);
+	}
 }
 
 int execute_subshell(t_ast_node *subshell,t_env *env)
@@ -275,16 +297,11 @@ void perforem_subshell_redirs(t_data *data, int n)
 void	child(t_data *prg_data, int index)
 {
 	
-	if (prg_data->lst_cmd[index].is_subshell)
+	if (!prg_data->lst_cmd[index].is_built_in)
 	{
-		perforem_subshell_redirs(prg_data, index);
-		prg_data->lst_cmd[index].exit_status = execute_subshell(prg_data->lst_cmd[index].subshell_node,prg_data->env);
-	}
-	else if (!prg_data->lst_cmd[index].is_built_in)
-	{
-		if (prg_data->lst_cmd[index].path == NULL || prg_data->lst_cmd[index].args == NULL) //TODO this is linked to after expansion (test : ls | $gfgvbh | cat) if the only thing resulted after expansion is null we just exit
-			exit_status(prg_data, 0);
 		perforem_redirections(prg_data, index);
+		// if (prg_data->lst_cmd[index].path == NULL || prg_data->lst_cmd[index].args == NULL) //TODO this is linked to after expansion (test : ls | $gfgvbh | cat) if the only thing resulted after expansion is null we just exit
+		// 	exit_status(prg_data, 0);
 		execute_cmd(prg_data->lst_cmd[index], prg_data);
 	}
 	else
