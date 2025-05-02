@@ -341,7 +341,7 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->env = env;
 	expand_pipeline(pipeline, &data->env);// expand here// TODO
 	data->cmd_nbr = pipeline->children->length;
-	printf("cmd_nbr = %d\n",data->cmd_nbr);
+	//printf("cmd_nbr = %d\n",data->cmd_nbr);
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }

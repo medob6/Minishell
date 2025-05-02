@@ -6,7 +6,7 @@ t_ast_node	*creat_ast_node(int node_type)
 
 	new_node = ft_calloc(1, sizeof(t_ast_node));
 	new_node->children = NULL;
-	new_node->dup_str = NULL;
+	new_node->field = NULL;
 	new_node->redirect_list = NULL;
 	new_node->type = node_type;
 	return (new_node);

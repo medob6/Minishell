@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/30 17:29:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/02 09:49:30 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,29 +90,94 @@ size_t	next_dollar(char *s)
 	return (0);
 }
 
-char *handle_expansion(char *str, int *index, t_env **env, char *old_str)
+void	print_field(t_bit_mask *field, char *str)
+{
+	for (int i = 0; str[i]; i++)
+		printf("%c (%d) ", str[i], field[i]);
+	printf("\n");
+}
+void	update_field_expansion(t_bit_mask **field, char *old_str, char *exp, int old_field_len, int qtype)
+{
+	int new_len = ft_strlen(old_str);
+	int exp_len = ft_strlen(exp);
+	t_bit_mask *new_field = ft_malloc(sizeof(t_bit_mask), (new_len + 1));
+	int i = 0;
+
+	// Copy old field values
+	while (i < old_field_len)
+	{
+		new_field[i] = (*field)[i];
+		i++;
+	}
+	// Set new field values for expansion
+	while (i < new_len)
+	{
+		if (qtype == DOUBLE_QOUT)
+			new_field[i] = DOUBLE_QOUT | EXPANDED;
+		else
+			new_field[i] = EXPANDED;
+		i++;
+	}
+	new_field[i] = ORIGINAL;
+	*field = new_field;
+}
+
+
+//int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
+//{
+//	int var_len;
+//	//char *tmp;
+//	char *exp;
+//	char *var;
+//	char buf[2];
+//	(void)field;
+
+//	var_len = is_valid_length(&str[1], 0);
+//	if (var_len == 0)
+//	{
+//		buf[0] = '$';
+//		buf[1] = '\0';
+//		*old_str = ft_strjoin(*old_str, buf);
+//		return (1);
+//	}
+//	var = ft_substr(str, 0, var_len + 1);
+//	exp = expand_the_value(var, env);
+//	*old_str = ft_strjoin(*old_str, exp);
+//	return (var_len + 1);
+//}
+
+int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
 {
 	int var_len;
-	char *tmp;
 	char *exp;
 	char *var;
 	char buf[2];
+	int old_len;
+	int quote_type;
 
-	var_len = is_valid_length(&str[*index + 1], 0);
+	var_len = is_valid_length(&str[1], 0);
 	if (var_len == 0)
 	{
 		buf[0] = '$';
 		buf[1] = '\0';
-		tmp = ft_strjoin(old_str, buf);
-		(*index)++;
-		return (tmp);
+		*old_str = ft_strjoin(*old_str, buf);
+		return (1);
 	}
-	var = ft_substr(str, *index, var_len + 1);
+
+	var = ft_substr(str, 0, var_len + 1);
 	exp = expand_the_value(var, env);
-	tmp = ft_strjoin(old_str, exp);
-	*index += var_len + 1;
-	return (tmp);
+
+	old_len = ft_strlen(*old_str);
+	*old_str = ft_strjoin(*old_str, exp);
+
+	// Determine quoting context
+	quote_type = (*field && (*field)[old_len - 1] & DOUBLE_QOUT) ? DOUBLE_QOUT : 0;
+
+	update_field_expansion(field, *old_str, exp, old_len, quote_type);
+	print_field(*field, *old_str);
+	return (var_len + 1);
 }
+
 
 char *append_char(char *old_str, char c)
 {
@@ -193,7 +258,7 @@ int	check_if_qouted(char *str, int index)
 //			child->items[i] = applicate_field_split(old_str);
 //		else
 //			child->items[i] = old_str;
-//	}
+//	} *
 //	else
 //	{
 //		if (split)
@@ -220,58 +285,117 @@ int		search_for(char *str, char c)
 	{
 		if (str[i] == c)
 			return (1);
+		i++;
 	}
 	return (0);
 }
 
-static char	*handle_single_quote(char *str, int *index, char *old_str)
+static int	handle_single_quote(char *str, char **old_str)
 {
 	int		start;
-	char	*tmp;
+	//char	*tmp;
 
-	start = *index;
-	(*index)++;
-	while (str[*index] && str[*index] != '\'')
-		(*index)++;
-	if (str[*index] == '\'')
-		(*index)++;
-	tmp = ft_strjoin(old_str, ft_substr(str, start, *index - start));
-	return (tmp);
+	start = 0;
+	start++;
+	while (str[start] && str[start] != '\'')
+		start++;
+	if (str[start] == '\'')
+		start++;
+	*old_str = ft_strjoin(*old_str, ft_substr(str, 0, start));
+	return (start);
 }
 
-static char	*handle_other_char(char *str, int *index, char *old_str)
+static int handle_other_char(char *str, char **old_str)
 {
-	char	*tmp;
+	//char	*tmp;
 
-	tmp = append_char(old_str, str[*index]);
-	if (str[*index] != '\0')
-		(*index)++;
-	return (tmp);
+	*old_str = append_char(*old_str, str[0]);
+	if (str[0] != '\0')
+		return (1);
+	return (0);
 }
 
-static char	*expand_loop(t_array *child, char *str, t_env **env)
+//void	update_field(t_bit_mask **field, char *old_str, char *new_str, int len)
+//{
+//	int		i;
+//	int		old_i;
+//	t_bit_mask	*new_field;
+
+//	i = 0;
+//	new_field = ft_malloc(sizeof(t_bit_mask), ft_strlen(new_str) + 1);
+//	while (new_str[i])
+//	{
+//		if (new_str[i] == old_str[i])
+//			new_field[i] = (*field)[i];
+//		else
+//		{
+//			old_i = i;
+//			while (new_str[i] != old_str[len])
+//			{
+//				if ((*field)[old_i] == 0)
+//					new_field[i] = EXPANDED;
+//				else
+//					new_field[i] = DOUBLE_QOUT | EXPANDED;
+//				i++;
+//			}
+//			while (old_str && old_str[len])
+//				new_field[i++] = (*field)[len++];
+//		}
+//		if (new_str[i] && old_str[len])
+//			i++;
+//	}
+//	new_field[i] = ORIGINAL;
+//	*field = new_field;
+//}
+
+//void	update_field(t_bit_mask **field, int old_len, int insert_start, int insert_len, char *new_str)
+//{
+//	t_bit_mask	*new_field;
+//	int			i;
+
+//	new_field = ft_malloc(sizeof(t_bit_mask), ft_strlen(new_str) + 1);
+//	i = 0;
+
+//	while (new_str[i])
+//	{
+//		if (i >= insert_start && i < insert_start + insert_len)
+//			new_field[i] = DOUBLE_QOUT | EXPANDED;
+//		else if (i < old_len)
+//			new_field[i] = (*field)[i];
+//		else
+//			new_field[i] = ORIGINAL;
+//		i++;
+//	}
+//	new_field[i] = ORIGINAL;
+//	*field = new_field;
+//}
+
+
+
+
+static char	*expand_loop(t_bit_mask **field, char *str, t_env **env)
 {
 	int		index;
 	char	*old_str;
-	char	*tmp;
+	//char	*tmp;
 
 	index = 0;
 	old_str = ft_strdup("");
 	while (str[index])
 	{
-		if (str[index] == '\'' && check_if_qouted(str, index))
-			tmp = handle_single_quote(str, &index, old_str);
+		if ((*field)[index] == 2)
+			index += handle_single_quote(&str[index], &old_str);
 		else if (str[index] == '$')
 		{
-			tmp = handle_expansion(str, &index, env, old_str);
-			//printf("here\n");
-			//if (search_for(tmp, '"'))
-				//child->expand_qout = 1;
+			index += handle_expansion(&str[index], env, &old_str, field);
+			//if (tmp)
+			//	update_field(field, str, tmp, index - old_index);
+			//printf("%s\n", old_str);
 		}
 		else
-			tmp = handle_other_char(str, &index, old_str);
-		old_str = tmp;
+			index += handle_other_char(&str[index], &old_str);
 	}
+	//print_field(*field, str);
 	return (old_str);
 }
 
@@ -298,41 +422,41 @@ static void	update_token_value(t_token *token, char *expanded, int split)
 	}
 }
 
-int	check_the_word(t_array *child, t_env **env, int i, int split)
+int	check_the_word(t_ast_node *node, t_env **env, int i, int split)
 {
 	char	*str;
 	char	*expanded;
 
-	if (child)
-		str = child->items[i];
+	if (node->children)
+		str = node->children->items[i];
 	else
-		str = ((t_token *)child->items[i])->value.str_value;
+		str = ((t_token *)node->children->items[i])->value.str_value;
 	
-	expanded = expand_loop(child, str, env);
-	if (child)
-		update_child_value(child, i, expanded, split);
+	expanded = expand_loop(&(node->field[i]), str, env);
+	if (node->children)
+		update_child_value(node->children, i, expanded, split);
 	else
-		update_token_value(((t_token *)child->items[i]), expanded, split);
+		update_token_value(((t_token *)node->children->items[i]), expanded, split);
 	return (1);
 }
 
 
-int	check_the_single_qout(char *s)
-{
-	int		i;
+//int	check_the_single_qout(char *s)
+//{
+//	int		i;
 
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '\'')
-		{
-			if (ft_strchr(&s[i], '$') != NULL)
-				return (0);
-		}
-		i++;
-	}
-	return (1);
-}
+//	i = 0;
+//	while (s[i])
+//	{
+//		if (s[i] == '\'')
+//		{
+//			if (ft_strchr(&s[i], '$') != NULL)
+//				return (0);
+//		}
+//		i++;
+//	}
+//	return (1);
+//}
 
 void expand_cmd(t_ast_node *node, t_env **env)
 {
@@ -344,6 +468,7 @@ void expand_cmd(t_ast_node *node, t_env **env)
 	split = 0;
 	if (!node->children)
 		return ;
+	node->field = create_field(node);
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
@@ -355,12 +480,9 @@ void expand_cmd(t_ast_node *node, t_env **env)
 				if (check_for_last_exp(node) != -1)
 					tmp = (char *)node->children->items[check_for_last_exp(node)];
     			if (!check_the_last_arg(tmp))
-				{
-					//printf("%zu %zu\n", (size_t)check_the_last_arg(tmp), ft_strlen(tmp));
         			split = 0;
-				}
 			}
-            check_the_word(node->children, env, i, split);
+            check_the_word(node, env, i, split);
         }
 		i++;
 	}
@@ -381,7 +503,7 @@ int	check_for_dollar_sign(char *s)
 	return (0);
 }
 
-char	*expand_heredoc(t_env **env, char *str)
+char	*expand_heredoc(t_ast_node *node, t_env **env, char *str)
 {
 	int		index;
 	char	*old_str;
@@ -392,7 +514,7 @@ char	*expand_heredoc(t_env **env, char *str)
 	while (str[index])
 	{
 		if (str[index] == '$')
-			tmp = handle_expansion(str, &index, env, old_str);
+			index += handle_expansion(&str[index], env, &old_str, node->field);
 		else
 		{
 			tmp = append_char(old_str, str[index]);
@@ -404,7 +526,7 @@ char	*expand_heredoc(t_env **env, char *str)
 	return (old_str);
 }
 
-void handle_heredoc_expansion(t_env **env, t_value *value)
+void handle_heredoc_expansion(t_ast_node *node, t_env **env, t_value *value)
 {
     int fd1;
     int fd;
@@ -417,7 +539,7 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     while (line)
     {
         if (search_for(line, '$'))
-            write(fd1, expand_heredoc(env, line), ft_strlen(expand_heredoc(env, line)));
+            write(fd1, expand_heredoc(node, env, line), ft_strlen(expand_heredoc(node, env, line)));
         else
             write(fd1, line, ft_strlen(line));
         free(line);
@@ -430,99 +552,100 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     value->fd_value = fd;
 }
 
+void expand_redirection(t_ast_node *node, t_env **env)
+{
+	size_t		i;
+	int		split;
+	char	*tmp;
+	
+	i = 0;
+	split = 0;
+	if (!node->redirect_list)
+		return ;
+	node->field = create_field(node);
+	while (i < node->redirect_list->length)
+	{
+		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+		{
+			handle_heredoc_expansion(node, env, &(((t_token *)node->redirect_list->items[i])->value));
+			i++;
+			continue;
+		}
+		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
+		if (tmp)
+		{
+			if (check_for_field_split(tmp))
+			{
+				split = 1;
+				if (check_for_last_exp(node) != -1)
+					tmp = (char *)node->children->items[check_for_last_exp(node)];
+    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+        			split = 0;
+			}
+            check_the_word(node, env, i, split);
+        }
+		i++;
+	}
+}
+//bool is_here_doc(void *item)
+//{
+//	t_token *token = (t_token *)item;
+//	return (token->type == TOKEN_HEREDOC);
+//}
+
+
+//int should_disable_split(t_ast_node *node, int split)
+//{
+//	char *tmp;
+//	int last_exp_index;
+
+//	last_exp_index = check_for_last_exp(node);
+//	if (last_exp_index != -1)
+//	{
+//		tmp = (char *)node->children->items[last_exp_index];
+//		if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+//			split = 0;
+//	}
+//	return (split);
+//}
+
+//void handle_redir_word(t_ast_node *node, t_env **env, size_t i)
+//{
+//	char *str;
+//	int split;
+
+//	split = 0;
+//	str = ((t_token *)node->redirect_list->items[i])->value.str_value;
+//	if (!str)
+//		return ;
+//	if (check_for_field_split(str))
+//	{
+//		split = 1;
+//		split = should_disable_split(node, split);
+//	}
+//	check_the_word(node->redirect_list, env, i, split);
+//}
+
+
 //void expand_redirection(t_ast_node *node, t_env **env)
 //{
-//	size_t		i;
-//	int		split;
-//	char	*tmp;
-	
-//	i = 0;
-//	split = 0;
+//	size_t i;
+
 //	if (!node->redirect_list)
 //		return ;
+//	i = 0;
 //	while (i < node->redirect_list->length)
 //	{
-//		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+//		if (is_here_doc(node->redirect_list->items[i]))
 //		{
 //			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
 //			i++;
 //			continue;
 //		}
-//		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
-//		if (tmp)
-//		{
-//			if (check_for_field_split(tmp))
-//			{
-//				split = 1;
-//				if (check_for_last_exp(node) != -1)
-//					tmp = (char *)node->children->items[check_for_last_exp(node)];
-//    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-//        			split = 0;
-//			}
-//            check_the_word(node->redirect_list, env, i, split);
-//        }
+//		handle_redir_word(node, env, i);
 //		i++;
 //	}
 //}
-bool is_here_doc(void *item)
-{
-	t_token *token = (t_token *)item;
-	return (token->type == TOKEN_HEREDOC);
-}
-
-
-int should_disable_split(t_ast_node *node, int split)
-{
-	char *tmp;
-	int last_exp_index;
-
-	last_exp_index = check_for_last_exp(node);
-	if (last_exp_index != -1)
-	{
-		tmp = (char *)node->children->items[last_exp_index];
-		if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-			split = 0;
-	}
-	return (split);
-}
-
-void handle_redir_word(t_ast_node *node, t_env **env, size_t i)
-{
-	char *str;
-	int split;
-
-	split = 0;
-	str = ((t_token *)node->redirect_list->items[i])->value.str_value;
-	if (!str)
-		return ;
-	if (check_for_field_split(str))
-	{
-		split = 1;
-		split = should_disable_split(node, split);
-	}
-	check_the_word(node->redirect_list, env, i, split);
-}
-
-
-void expand_redirection(t_ast_node *node, t_env **env)
-{
-	size_t i;
-
-	if (!node->redirect_list)
-		return ;
-	i = 0;
-	while (i < node->redirect_list->length)
-	{
-		if (is_here_doc(node->redirect_list->items[i]))
-		{
-			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
-			i++;
-			continue;
-		}
-		handle_redir_word(node, env, i);
-		i++;
-	}
-}
 
 int	expand_variables(t_ast_node *node, t_env **env)
 {
@@ -530,13 +653,15 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	if (!node || !env || !*env)
 		return (0);
 	expand = 0;
+	//items = create_copy(node);
 	expand_redirection(node,env);
 	expand_cmd(node,env);// "*"
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
 	check_for_empty_strings(node);
 	removes_qouts_cmd(node);
-	removes_qouts_red(node);
+	//printf("here\n");
+	//removes_qouts_red(node);
 	return (expand);
 }
 
@@ -555,8 +680,7 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 			expand_ast((t_ast_node *)node->children->items[i],env);
 		}
 		i++;
-	}
-	//node->children->length = 2;	
+	}	
 }
 
 int	expand_ast(t_ast_node *node, t_env **env)
