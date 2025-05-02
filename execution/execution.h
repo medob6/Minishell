@@ -38,6 +38,12 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+char	*get_value_ast(int type)
+;
+void	print_token(t_token *head)
+;
+void	print_token(t_token *head)
+;
 int	ft_strcmp(char *s1, char *s2);
 int			ft_exit(char **args, long last_status);
 int			ft_env(t_env **env);
