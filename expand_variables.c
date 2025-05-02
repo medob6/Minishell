@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/02 09:49:30 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/02 15:06:05 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,30 +96,43 @@ void	print_field(t_bit_mask *field, char *str)
 		printf("%c (%d) ", str[i], field[i]);
 	printf("\n");
 }
-void	update_field_expansion(t_bit_mask **field, char *old_str, char *exp, int old_field_len, int qtype)
+void	update_field_expansion(t_bit_mask **field, char *old_str, char *exp, int len)
 {
-	int new_len = ft_strlen(old_str);
-	int exp_len = ft_strlen(exp);
-	t_bit_mask *new_field = ft_malloc(sizeof(t_bit_mask), (new_len + 1));
-	int i = 0;
+	int		size;
+	int		i;
+	int		j;
+	int		old_i;
+	t_bit_mask	*new_field;
 
-	// Copy old field values
-	while (i < old_field_len)
+	size = (ft_strlen(old_str) + ft_strlen(exp) - len);
+	new_field = ft_malloc(sizeof(t_bit_mask), size + 1);
+	i = 0;
+	j = 0;
+	while (old_str[i])
 	{
-		new_field[i] = (*field)[i];
+		if (old_str[i] == '$')
+			break ;
+		new_field[j] = (*field)[j];
+		j++;	
 		i++;
 	}
-	// Set new field values for expansion
-	while (i < new_len)
+	old_i = i;
+	i = 0;
+	while (exp[i])
 	{
-		if (qtype == DOUBLE_QOUT)
-			new_field[i] = DOUBLE_QOUT | EXPANDED;
-		else
-			new_field[i] = EXPANDED;
+		new_field[j] = (*field)[j] | EXPANDED;
+		j++;
 		i++;
 	}
-	new_field[i] = ORIGINAL;
-	*field = new_field;
+	old_i += len;
+	while (old_str[old_i])
+	{
+		new_field[j] = (*field)[old_i];
+		j++;
+		old_i++;
+	}
+	new_field[j] = ORIGINAL;
+	(*field) = new_field;
 }
 
 
@@ -153,7 +166,6 @@ int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
 	char *var;
 	char buf[2];
 	int old_len;
-	int quote_type;
 
 	var_len = is_valid_length(&str[1], 0);
 	if (var_len == 0)
@@ -163,18 +175,13 @@ int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
 		*old_str = ft_strjoin(*old_str, buf);
 		return (1);
 	}
-
+	//update_field_expansion(field, *old_str, exp, str, var_len);
 	var = ft_substr(str, 0, var_len + 1);
 	exp = expand_the_value(var, env);
-
-	old_len = ft_strlen(*old_str);
 	*old_str = ft_strjoin(*old_str, exp);
 
-	// Determine quoting context
-	quote_type = (*field && (*field)[old_len - 1] & DOUBLE_QOUT) ? DOUBLE_QOUT : 0;
-
-	update_field_expansion(field, *old_str, exp, old_len, quote_type);
-	print_field(*field, *old_str);
+	//print_field(*field, *old_str);
+	//printf("[%s]\n", *old_str);
 	return (var_len + 1);
 }
 
@@ -396,6 +403,7 @@ static char	*expand_loop(t_bit_mask **field, char *str, t_env **env)
 			index += handle_other_char(&str[index], &old_str);
 	}
 	//print_field(*field, str);
+	printf("[%s]\n", old_str);
 	return (old_str);
 }
 
@@ -659,7 +667,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_path_name_cmd(node);
 	expand_path_name_red(node);
 	check_for_empty_strings(node);
-	removes_qouts_cmd(node);
+	//removes_qouts_cmd(node);
 	//printf("here\n");
 	//removes_qouts_red(node);
 	return (expand);
