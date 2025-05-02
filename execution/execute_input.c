@@ -379,7 +379,6 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
-
 	int			status;
 	t_ast_node	*cmd;
 	t_ast_node	*op;
@@ -427,9 +426,10 @@ int	execution(t_ast_node *root, t_env *env)
 // 4- check for imbiguse rederictions	//! DONE
 // 5- implement subshell				!!!!!!!!!!  //! DONE
 // 6- handel exit status code we have five (also in built-in); //! DONE
-// 7- remove paranteses in parsing 
+// 7- remove paranteses in parsing  //! DONE
 // 8- check for save derefrencing     //?  after claening the code 
-// 9- test execuiton
+// 9- test execuiton  //? in progress
+
 // 10- test everything //TODO when expansion is finished
 //! handel
 // ```
@@ -437,7 +437,7 @@ int	execution(t_ast_node *root, t_env *env)
 // /tmp/hey$ $a ls
 // minishell: command not found: 
 // ```
-// PROBLEMS
+//! PROBLEMS
 // we got a lot of problems that should be fixed
 
 // if i have : export f="f" && echo $f
@@ -446,6 +446,8 @@ int	execution(t_ast_node *root, t_env *env)
 // first extract them enpv and let them in there linked list  then before runing export.... ,extract them to envp char ** ; then expand :::: this is a prblm soo
 // TODO i will expand for each node of simple_cmd alone ......................... tomorow cus it will take a lot of time
 // second export will add to the list , and we will do the same again
+//export output e.g env content must not be completely empthy after unset , it should have PWD and  SHLVL ...
+
 
 // TODO FOR solaiman
 //! FIX built-ins  :

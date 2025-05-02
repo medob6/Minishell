@@ -44,7 +44,7 @@ void	ft_free(void *address)
 		prev = cur;
 		cur = cur->next;
 	}
-	// Optionally, print a warning if not found // oe do something
+	// Optionally, print a warning if not found //do something
 	return ;
 }
 void	free_garbeg(t_data *prg_data)
@@ -168,7 +168,6 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 
 	status = 126;
 	envp = extract_envp(prg_data->env);
-	// HERE : EXPAND FOR THIS SINGAL CMD
 	if (!cmd.path)
 	{
 		if (!cmd.args)
