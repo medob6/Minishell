@@ -119,7 +119,9 @@ typedef struct s_ast_node
 }					t_ast_node;
 
 // void print_ast(t_ast_node *node, int depth);
-t_token				**create_tokens(char **str);
+char *get_value_ast(int type);
+void print_token(t_token *head);
+t_token **create_tokens(char **str);
 char				**lexer(char *cmd_line);
 void				*ft_malloc(int size, int bytes);
 t_gar				**garbage_list(void);

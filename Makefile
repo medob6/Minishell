@@ -4,12 +4,10 @@ SRC= array.c  create_the_main_list.c   garbage_collector.c  lexem.c  main.c  par
 CC= cc
 NAME=bash_prompt
 
-
 all: $(NAME)
 
 $(NAME):
 	@ $(CC) $(SRC) $(FLAFS)  -o $(NAME) 
-
 
 clean:
 	@rm -f $(NAME)

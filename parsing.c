@@ -57,6 +57,17 @@ bool	paranteses_symetric(t_token **token)
 		return (true);
 	return (false);
 }
+
+
+t_array *appned_redirections(t_array *redir_lst1,t_array *redir_lst2)
+{
+	size_t i;
+
+	i = 0;
+	while (i < redir_lst1->length)
+		array_push(&redir_lst2,redir_lst1->items[i++]);
+	return (redir_lst2);
+}
 t_ast_node	*subshell(t_token **token)
 {
 	t_ast_node	*compouned;
@@ -69,6 +80,7 @@ t_ast_node	*subshell(t_token **token)
 		return (NULL);
 	else
 		advance_token(token);
+
 	while (true)
 	{
 		if (is_redirction((*token)->type))
@@ -80,6 +92,34 @@ t_ast_node	*subshell(t_token **token)
 		else
 			break ;
 		advance_token(token);
+	}
+
+	//TODO optimize this trash code
+	if (compouned->children->length == 1 )
+	{
+		t_ast_node *pipeline = compouned->children->items[0];
+		if (pipeline->children->length == 1 && ((t_ast_node *)pipeline->children->items[0])->type == AST_SUBSHELL)
+		{
+			if (!compouned->redirect_list)
+					compouned = pipeline->children->items[0];
+			else
+			{
+				t_array *redir_list = appned_redirections(((t_ast_node *)pipeline->children->items[0])->redirect_list,compouned->redirect_list);
+				compouned = pipeline->children->items[0];
+				compouned->redirect_list = redir_list;
+			}
+		}
+		else if (pipeline->children->length == 1 && ((t_ast_node *)pipeline->children->items[0])->type == AST_SIMPLE_CMD)
+		{
+			if (!compouned->redirect_list)
+					compouned = pipeline->children->items[0];
+			else
+			{
+				t_array *redir_list = appned_redirections(((t_ast_node *)pipeline->children->items[0])->redirect_list,compouned->redirect_list);
+				compouned = pipeline->children->items[0];
+				compouned->redirect_list = redir_list;
+			}
+		}
 	}
 	return (compouned);
 }
@@ -159,13 +199,23 @@ t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 	return (compound);
 }
 
+// t_token *get_lst_tail(t_token **lst)
+// {
+// 	t_token *tail;
+// 	if (!lst || !*lst)
+// 		return (NULL);
+// 	tail = *lst;
+// 	while (tail->next)
+// 		tail = tail->next;
+// 	return (tail);
+// }
+
 t_ast_node	*parse_tokens(t_token *tokens)
 {
 	t_ast_node	*root;
 
 	if (!paranteses_symetric(&tokens))
 		return (NULL);
-	//TODO remove paranteses that are unecessery
 	root = compound_cmd(&tokens, AST_COMPOUNED_CMD);
 	if (!root)
 		return (NULL);
