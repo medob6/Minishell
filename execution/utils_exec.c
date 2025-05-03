@@ -58,7 +58,6 @@ void	free_garbeg(t_data *prg_data)
 		i++;
 	}
 	ft_free(prg_data->lst_cmd);
-	// get_next_line(-1);
 }
 void	exit_status(t_data *prg_data, int status)
 {
@@ -159,27 +158,57 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	}
 }
 
-void	execute_cmd(t_cmd cmd, t_data *prg_data)
-{
-	char *new_path;
-	int status;
-	char **envp;
+// void	execute_cmd(t_cmd cmd, t_data *prg_data)
+// {
+// 	char *new_path;
+// 	int status;
+// 	char **envp;
 
-	status = 126;
-	envp = extract_envp(prg_data->env);
-	if (!cmd.path)
-	{
-		if (!cmd.args)
-			ft_putstr_fd("minishell: Command not found: \n", 2);
-		else
-			print_err("command not found", cmd.args[0]);
-		exit_status(prg_data, 127);
-	}
-	new_path = ft_strjoin(cmd.path, "/");
+// 	status = 126;
+// 	envp = extract_envp(prg_data->env);
+// 	if (!cmd.path)
+// 	{
+// 		if (!cmd.args)
+// 			ft_putstr_fd("minishell: Command not found: \n", 2);
+// 		else
+// 			print_err("command not found", cmd.args[0]);
+// 		exit_status(prg_data, 127);
+// 	}
+// 	new_path = ft_strjoin(cmd.path, "/");
+// 	if (access(cmd.path, F_OK) != 0)
+// 	{
+// 		print_err(strerror(errno), cmd.path);
+// 		status = 127;
+// 	}
+// 	else if (access(new_path, F_OK) != 0)
+// 	{
+// 		execve(cmd.path, cmd.args, envp);
+// 		print_err(strerror(errno), cmd.path);
+// 	}
+// 	else
+// 		print_err(strerror(21), cmd.path);
+
+// 	ft_free(new_path);
+// 	exit_status(prg_data, status);
+// }
+
+
+
+static void	handle_missing_cmd(t_cmd cmd, t_data *prg_data)
+{
+	if (!cmd.args)
+		ft_putstr_fd("minishell: Command not found: \n", 2);
+	else
+		print_err("command not found", cmd.args[0]);
+	exit_status(prg_data, 127);
+}
+
+static int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
+{
 	if (access(cmd.path, F_OK) != 0)
 	{
 		print_err(strerror(errno), cmd.path);
-		status = 127;
+		return (127);
 	}
 	else if (access(new_path, F_OK) != 0)
 	{
@@ -188,7 +217,20 @@ void	execute_cmd(t_cmd cmd, t_data *prg_data)
 	}
 	else
 		print_err(strerror(21), cmd.path);
+	return (126);
+}
 
+void	execute_cmd(t_cmd cmd, t_data *prg_data)
+{
+	char	*new_path;
+	char	**envp;
+	int		status;
+
+	envp = extract_envp(prg_data->env);
+	if (!cmd.path)
+		handle_missing_cmd(cmd, prg_data);
+	new_path = ft_strjoin(cmd.path, "/");
+	status = exec_cmd(cmd, envp, new_path);
 	ft_free(new_path);
 	exit_status(prg_data, status);
 }

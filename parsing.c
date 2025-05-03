@@ -59,17 +59,40 @@ bool	paranteses_symetric(t_token **token)
 }
 
 
-t_array *appned_redirections(t_array *redir_lst1,t_array *redir_lst2)
+t_array	*append_redirections(t_array *redir1, t_array *redir2)
 {
-	size_t i;
+	size_t	i;
 
+	if (!redir1)
+		return (redir2);
 	i = 0;
-	if (!redir_lst1)
-		return (redir_lst2);
-	while (i < redir_lst1->length)
-		array_push(&redir_lst2,redir_lst1->items[i++]);
-	return (redir_lst2);
+	while (i < redir1->length)
+		array_push(&redir2, redir1->items[i++]);
+	return (redir2);
 }
+
+static t_ast_node	*flatten_compound_if_possible(t_ast_node *compouned)
+{
+	t_ast_node	*pipeline;
+	t_ast_node	*child;
+	t_array		*redir_list;
+
+	if (!compouned || compouned->children->length != 1)
+		return (compouned);
+	pipeline = compouned->children->items[0];
+	if (pipeline->children->length != 1)
+		return (compouned);
+	child = pipeline->children->items[0];
+	if (child->type != AST_SUBSHELL && child->type != AST_SIMPLE_CMD)
+		return (compouned);
+	if (!compouned->redirect_list)
+		return (child);
+	redir_list = append_redirections(child->redirect_list,
+			compouned->redirect_list);
+	child->redirect_list = redir_list;
+	return (child);
+}
+
 t_ast_node	*subshell(t_token **token)
 {
 	t_ast_node	*compouned;
@@ -80,42 +103,19 @@ t_ast_node	*subshell(t_token **token)
 	compouned = compound_cmd(token, AST_SUBSHELL);
 	if ((*token)->type != TOKEN_PARENTESIS_CLOSE)
 		return (NULL);
-	else
-		advance_token(token);
-
+	advance_token(token);
 	while (true)
 	{
-		if (is_redirction((*token)->type))
-		{
-			if (!(*token)->value.str_value)
-				return (NULL);
-			add_redirect(compouned, *token);
-		}
-		else
+		if (!is_redirction((*token)->type))
 			break ;
+		if (!(*token)->value.str_value)
+			return (NULL);
+		add_redirect(compouned, *token);
 		advance_token(token);
 	}
-
-	if (compouned->children->length == 1) {
-	t_ast_node *pipeline = compouned->children->items[0];
-
-	if (pipeline->children->length == 1) {
-		t_ast_node *child = pipeline->children->items[0];
-
-		if (child->type == AST_SUBSHELL || child->type == AST_SIMPLE_CMD) {
-			if (!compouned->redirect_list) {
-				compouned = child;
-			} else {
-				t_array *redir_list = appned_redirections(child->redirect_list, compouned->redirect_list);
-				compouned = child;
-				compouned->redirect_list = redir_list;
-			}
-		}
-	}
+	return (flatten_compound_if_possible(compouned));
 }
 
-	return (compouned);
-}
 
 t_ast_node	*command(t_token **token)
 {

@@ -372,17 +372,26 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
-	// free_garbeg(&prg_data); //TODO when freeing garbeg i do lost some data , like envp
+	free_garbeg(&prg_data); //TODO when freeing garbeg i do lost some data , like envp
 	return (status);
 }
 
-
+static int	should_continue(int status, t_ast_node *op)
+{
+	if ((status == 0 && op->type == AST_AND)
+		|| (status != 0 && op->type == AST_OR))
+		return (1);
+	return (0);
+}
+//!PROBLEM
+//TODO i have this problem in test and or skip instead of return : ls || ls && ls  or this : ls -%% && ls || ls
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
 	t_ast_node	*cmd;
 	t_ast_node	*op;
 	size_t		i;
+
 	i = 0;
 	status = 0;
 	if (!root || !root->children || root->children->length == 0)
@@ -394,17 +403,13 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		if (++i < root->children->length)
 		{
 			op = (t_ast_node *)root->children->items[i];
-			if ((status == 0 && op->type == AST_AND) || (status != 0
-					&& op->type == AST_OR))
+			if (should_continue(status, op))
 			{
-				++i;
-				continue ;
+				i++;
+				continue;
 			}
-			else
-				return (status);
+			return (status);
 		}
-		else
-			break ;
 	}
 	return (status);
 }
