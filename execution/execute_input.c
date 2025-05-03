@@ -402,10 +402,11 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	while (i < root->children->length)
 	{
 		cmd = (t_ast_node *)root->children->items[i];
-		status = execute_pipeline(cmd, env);
+		if (cmd->type == AST_PIPELINE)
+			status = execute_pipeline(cmd, env);
 		if (++i < root->children->length)
 		{
-			op = (t_ast_node *)root->children->items[i++];
+			op = (t_ast_node *)root->children->items[i];
 			if (should_continue(status, op))
 				i++; // go to next command
 			else
@@ -415,8 +416,8 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 					i += 2;// go to next operator
 					op = (t_ast_node *)root->children->items[i];
 					if (!op) // we are at NULL so finished
-						return status ;
-					if (should_continue(status, op))
+						return status ; // we return the last status
+					if (should_continue(status, op)) // if the next op and status are good run next cmd
 						break;
 				}
 				i++;
