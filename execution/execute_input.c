@@ -385,6 +385,7 @@ static int	should_continue(int status, t_ast_node *op)
 }
 //!PROBLEM
 //TODO i have this problem in test and or skip instead of return : ls || ls && ls  or this : ls -%% && ls || ls
+// Tow functions need norminnet fix
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
@@ -399,16 +400,25 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	while (i < root->children->length)
 	{
 		cmd = (t_ast_node *)root->children->items[i];
-		status = execute_pipeline(cmd, env);
+		printf("i = %zu\n",i);
+		if (cmd->type == AST_PIPELINE)
+			status = execute_pipeline(cmd, env);
 		if (++i < root->children->length)
 		{
 			op = (t_ast_node *)root->children->items[i];
 			if (should_continue(status, op))
 			{
 				i++;
-				continue;
+				// continue;
 			}
-			return (status);
+			else
+			{
+				
+				i++;
+				i++;
+				i++;
+			}
+			// printf("i = %d\n",i);
 		}
 	}
 	return (status);
