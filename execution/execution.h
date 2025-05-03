@@ -17,7 +17,6 @@ typedef struct s_cmd
 	pid_t	pid;
 	int		exit_status;
 	t_token	**redirlist;
-	size_t	redir_ars_nbr;
 	t_ast_node *subshell_node;
 	int is_built_in;
 	bool	is_subshell;
