@@ -260,10 +260,10 @@ int	main(int ac, char **av, char **envp)
 		}
 		else
 		{
-			printf("\033[0;32m============================\033[0m\n\n");
-			printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
-			print_ast(ast, 0);
-			printf("\033[0;32m============================\033[0m\n\n");
+			// printf("\033[0;32m============================\033[0m\n\n");
+			// printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
+			// print_ast(ast, 0);
+			// printf("\033[0;32m============================\033[0m\n\n");
 			// printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
 			execution(ast, env);
 		}
