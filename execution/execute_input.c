@@ -383,28 +383,9 @@ bool	should_continue(int status, t_ast_node *op)
 		return (true);
 	return (false);
 }
-//!PROBLEM
-//TODO i have this problem in test and or skip instead of return : ls || ls && ls  or this : ls -%% && ls || ls
 // Tow functions need norminnet fix
-
-//? this down function is correct
-
-
 //!FIX this shit
-// void skip_operators(int *i,int status, t_ast_node *root)
-// {
-// 	t_ast_node *op;
-// 	while (true)
-// 	{
-// 		*i += 2; // go to next operator
-// 		op = (t_ast_node *)root->children->items[*i];
-// 		if (!op)						 // we are at NULL so finished
-// 			break ;				 // we return the last status
-// 		if (should_continue(status, op)) // if the next op and status are good run next cmd
-// 			break;
-// 	}
-// 	*i++;
-// }
+
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
@@ -433,7 +414,11 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 					i += 2;// go to next operator
 					op = (t_ast_node *)root->children->items[i];
 					if (!op) // we are at NULL so finished
-						return status ;
+					{
+						break;
+						return status; // TODO this line should be removed but should test first 
+						//! OK
+					}
 					if (should_continue(status, op))
 						break;
 				}
