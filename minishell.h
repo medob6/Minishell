@@ -106,6 +106,14 @@ typedef struct s_array
 	size_t			capacity;
 }					t_array;
 
+typedef struct s_string
+{
+	void	**value;
+	void	*s;
+	int		flag;
+	int		fd;
+}	t_str;
+
 typedef enum e_ast_type
 {
 	AST_COMPOUNED_CMD,
@@ -124,6 +132,7 @@ typedef struct s_ast_node
 	t_array			*children; // {ls , -l , -e}
 	t_array			*redirect_list;
 	t_bit_mask			**field; // null
+	t_str				**str;
 }					t_ast_node;
 
 // void print_ast(t_ast_node *node, int depth);

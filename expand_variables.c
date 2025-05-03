@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/02 15:06:05 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/03 08:54:38 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,10 +297,10 @@ int		search_for(char *str, char c)
 	return (0);
 }
 
-static int	handle_single_quote(char *str, char **old_str)
+static char	*handle_single_quote(char *str, int *index, char *old_str)
 {
 	int		start;
-	//char	*tmp;
+	char	*tmp;
 
 	start = 0;
 	start++;
@@ -384,14 +384,14 @@ static char	*expand_loop(t_bit_mask **field, char *str, t_env **env)
 {
 	int		index;
 	char	*old_str;
-	//char	*tmp;
+	char	*tmp;
 
 	index = 0;
 	old_str = ft_strdup("");
 	while (str[index])
 	{
 		if ((*field)[index] == 2)
-			index += handle_single_quote(&str[index], &old_str);
+			tmp = handle_single_quote(str, &index, old_str);
 		else if (str[index] == '$')
 		{
 			index += handle_expansion(&str[index], env, &old_str, field);
@@ -477,6 +477,7 @@ void expand_cmd(t_ast_node *node, t_env **env)
 	if (!node->children)
 		return ;
 	node->field = create_field(node);
+	node->str = ft_malloc(sizeof(t_str *), node->children->length);
 	while (i < node->children->length)
 	{
 		tmp = (char *)node->children->items[i];
@@ -497,104 +498,104 @@ void expand_cmd(t_ast_node *node, t_env **env)
 }
 // $a ls => "" ls
 
-int	check_for_dollar_sign(char *s)
-{
-	int		i;
+//int	check_for_dollar_sign(char *s)
+//{
+//	int		i;
 
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (1);
-		i++;
-	}
-	return (0);
-}
+//	i = 0;
+//	while (s[i])
+//	{
+//		if (s[i] == '$')
+//			return (1);
+//		i++;
+//	}
+//	return (0);
+//}
 
-char	*expand_heredoc(t_ast_node *node, t_env **env, char *str)
-{
-	int		index;
-	char	*old_str;
-	char	*tmp;
+//char	*expand_heredoc(t_ast_node *node, t_env **env, char *str)
+//{
+//	int		index;
+//	char	*old_str;
+//	char	*tmp;
 
-	index = 0;
-	old_str = ft_strdup("");
-	while (str[index])
-	{
-		if (str[index] == '$')
-			index += handle_expansion(&str[index], env, &old_str, node->field);
-		else
-		{
-			tmp = append_char(old_str, str[index]);
-			if (str[index] != '\0')
-				index++;
-		}
-		old_str = tmp;
-	}
-	return (old_str);
-}
+//	index = 0;
+//	old_str = ft_strdup("");
+//	while (str[index])
+//	{
+//		if (str[index] == '$')
+//			index += handle_expansion(&str[index], env, &old_str, node->field);
+//		else
+//		{
+//			tmp = append_char(old_str, str[index]);
+//			if (str[index] != '\0')
+//				index++;
+//		}
+//		old_str = tmp;
+//	}
+//	return (old_str);
+//}
 
-void handle_heredoc_expansion(t_ast_node *node, t_env **env, t_value *value)
-{
-    int fd1;
-    int fd;
-    char *line;
-	char	*str;
+//void handle_heredoc_expansion(t_ast_node *node, t_env **env, t_value *value)
+//{
+//    int fd1;
+//    int fd;
+//    char *line;
+//	char	*str;
 
-	str = get_name_heredoc();
-    fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    line = get_next_line(value->fd_value);
-    while (line)
-    {
-        if (search_for(line, '$'))
-            write(fd1, expand_heredoc(node, env, line), ft_strlen(expand_heredoc(node, env, line)));
-        else
-            write(fd1, line, ft_strlen(line));
-        free(line);
-        line = get_next_line(value->fd_value);
-    }
-    close(fd1);
-    fd = open(str, O_RDONLY);
-    unlink(str);
-    close(value->fd_value);
-    value->fd_value = fd;
-}
+//	str = get_name_heredoc();
+//    fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//    line = get_next_line(value->fd_value);
+//    while (line)
+//    {
+//        if (search_for(line, '$'))
+//            write(fd1, expand_heredoc(node, env, line), ft_strlen(expand_heredoc(node, env, line)));
+//        else
+//            write(fd1, line, ft_strlen(line));
+//        free(line);
+//        line = get_next_line(value->fd_value);
+//    }
+//    close(fd1);
+//    fd = open(str, O_RDONLY);
+//    unlink(str);
+//    close(value->fd_value);
+//    value->fd_value = fd;
+//}
 
-void expand_redirection(t_ast_node *node, t_env **env)
-{
-	size_t		i;
-	int		split;
-	char	*tmp;
+//void expand_redirection(t_ast_node *node, t_env **env)
+//{
+//	size_t		i;
+//	int		split;
+//	char	*tmp;
 	
-	i = 0;
-	split = 0;
-	if (!node->redirect_list)
-		return ;
-	node->field = create_field(node);
-	while (i < node->redirect_list->length)
-	{
-		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
-		{
-			handle_heredoc_expansion(node, env, &(((t_token *)node->redirect_list->items[i])->value));
-			i++;
-			continue;
-		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
-		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(node) != -1)
-					tmp = (char *)node->children->items[check_for_last_exp(node)];
-    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-        			split = 0;
-			}
-            check_the_word(node, env, i, split);
-        }
-		i++;
-	}
-}
+//	i = 0;
+//	split = 0;
+//	if (!node->redirect_list)
+//		return ;
+//	node->field = create_field(node);
+//	while (i < node->redirect_list->length)
+//	{
+//		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+//		{
+//			handle_heredoc_expansion(node, env, &(((t_token *)node->redirect_list->items[i])->value));
+//			i++;
+//			continue;
+//		}
+//		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
+//		if (tmp)
+//		{
+//			if (check_for_field_split(tmp))
+//			{
+//				split = 1;
+//				if (check_for_last_exp(node) != -1)
+//					tmp = (char *)node->children->items[check_for_last_exp(node)];
+//    			if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
+//        			split = 0;
+//			}
+//            check_the_word(node, env, i, split);
+//        }
+//		i++;
+//	}
+//}
 //bool is_here_doc(void *item)
 //{
 //	t_token *token = (t_token *)item;
