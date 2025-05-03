@@ -376,16 +376,18 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	return (status);
 }
 
-static int	should_continue(int status, t_ast_node *op)
+bool	should_continue(int status, t_ast_node *op)
 {
 	if ((status == 0 && op->type == AST_AND)
 		|| (status != 0 && op->type == AST_OR))
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }
 //!PROBLEM
 //TODO i have this problem in test and or skip instead of return : ls || ls && ls  or this : ls -%% && ls || ls
 // Tow functions need norminnet fix
+
+//? this down function is correct
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
@@ -400,25 +402,26 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	while (i < root->children->length)
 	{
 		cmd = (t_ast_node *)root->children->items[i];
-		printf("i = %zu\n",i);
 		if (cmd->type == AST_PIPELINE)
 			status = execute_pipeline(cmd, env);
 		if (++i < root->children->length)
 		{
-			op = (t_ast_node *)root->children->items[i];
+			op = (t_ast_node *)root->children->items[i++];
 			if (should_continue(status, op))
-			{
-				i++;
-				// continue;
-			}
+				i++; // go to next command
 			else
 			{
-				
-				i++;
-				i++;
+				while (true)
+				{
+					i += 2;// go to next operator
+					op = (t_ast_node *)root->children->items[i];
+					if (!op) // we are at NULL so finished
+						return status ;
+					if (should_continue(status, op))
+						break;
+				}
 				i++;
 			}
-			// printf("i = %d\n",i);
 		}
 	}
 	return (status);
