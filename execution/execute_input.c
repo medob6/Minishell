@@ -402,8 +402,7 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	while (i < root->children->length)
 	{
 		cmd = (t_ast_node *)root->children->items[i];
-		if (cmd->type == AST_PIPELINE)
-			status = execute_pipeline(cmd, env);
+		status = execute_pipeline(cmd, env);
 		if (++i < root->children->length)
 		{
 			op = (t_ast_node *)root->children->items[i++];
