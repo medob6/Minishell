@@ -44,7 +44,6 @@ void	ft_free(void *address)
 		prev = cur;
 		cur = cur->next;
 	}
-	// Optionally, print a warning if not found //do something
 	return ;
 }
 void	free_garbeg(t_data *prg_data)

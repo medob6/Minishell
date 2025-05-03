@@ -64,6 +64,8 @@ t_array *appned_redirections(t_array *redir_lst1,t_array *redir_lst2)
 	size_t i;
 
 	i = 0;
+	if (!redir_lst1)
+		return (redir_lst2);
 	while (i < redir_lst1->length)
 		array_push(&redir_lst2,redir_lst1->items[i++]);
 	return (redir_lst2);
@@ -94,33 +96,24 @@ t_ast_node	*subshell(t_token **token)
 		advance_token(token);
 	}
 
-	//TODO optimize this trash code
-	if (compouned->children->length == 1 )
-	{
-		t_ast_node *pipeline = compouned->children->items[0];
-		if (pipeline->children->length == 1 && ((t_ast_node *)pipeline->children->items[0])->type == AST_SUBSHELL)
-		{
-			if (!compouned->redirect_list)
-					compouned = pipeline->children->items[0];
-			else
-			{
-				t_array *redir_list = appned_redirections(((t_ast_node *)pipeline->children->items[0])->redirect_list,compouned->redirect_list);
-				compouned = pipeline->children->items[0];
-				compouned->redirect_list = redir_list;
-			}
-		}
-		else if (pipeline->children->length == 1 && ((t_ast_node *)pipeline->children->items[0])->type == AST_SIMPLE_CMD)
-		{
-			if (!compouned->redirect_list)
-					compouned = pipeline->children->items[0];
-			else
-			{
-				t_array *redir_list = appned_redirections(((t_ast_node *)pipeline->children->items[0])->redirect_list,compouned->redirect_list);
-				compouned = pipeline->children->items[0];
+	if (compouned->children->length == 1) {
+	t_ast_node *pipeline = compouned->children->items[0];
+
+	if (pipeline->children->length == 1) {
+		t_ast_node *child = pipeline->children->items[0];
+
+		if (child->type == AST_SUBSHELL || child->type == AST_SIMPLE_CMD) {
+			if (!compouned->redirect_list) {
+				compouned = child;
+			} else {
+				t_array *redir_list = appned_redirections(child->redirect_list, compouned->redirect_list);
+				compouned = child;
 				compouned->redirect_list = redir_list;
 			}
 		}
 	}
+}
+
 	return (compouned);
 }
 

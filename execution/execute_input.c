@@ -50,16 +50,12 @@ bool	parse_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 		return (false);
 	cmd_args = NULL;
 	cmd->is_built_in = 0;
-	cmd->redir_ars_nbr = 0;
 	cmd->redirlist = NULL;
 	cmd->is_subshell = false;
 	if ((t_token **)node->children)
 		cmd_args = (char **)node->children->items;
 	if ((t_token **)node->redirect_list)
-	{
 		cmd->redirlist = (t_token **)node->redirect_list->items;
-		cmd->redir_ars_nbr = node->redirect_list->length;
-	}
 	if (!cmd_args || cmd_args[0] == NULL)
 	{
 		if (cmd_args && !cmd_args[0])
@@ -159,9 +155,10 @@ void	perforem_redirections(t_data *data, int n)
 		dup2(data->fd[1], STDOUT_FILENO);
 		close(data->fd[1]);
 	}
-	while (i < data->lst_cmd[n].redir_ars_nbr)
+	while (redir_lst && redir_lst[i])
 	{
-		redirect(data,redir_lst[i]);
+		
+		redirect(data, redir_lst[i]);
 		i++;
 	}
 
@@ -217,7 +214,7 @@ void	redirection_builtins(t_data *data, int n)
 			close(data->fd[1]);
 	}
 	int last_not_atty = -1;
-	while (i < data->lst_cmd[n].redir_ars_nbr)
+	while (redir_lst && redir_lst[i])
 	{
 		if (data->out_fd != 1)
 			close(data->out_fd);
@@ -296,8 +293,12 @@ void perforem_subshell_redirs(t_data *data, int n)
 
 void	child(t_data *prg_data, int index)
 {
-	
-	if (!prg_data->lst_cmd[index].is_built_in)
+	if (prg_data->lst_cmd[index].is_subshell)
+	{
+		perforem_subshell_redirs(prg_data, index);
+		prg_data->lst_cmd[index].exit_status = execute_subshell(prg_data->lst_cmd[index].subshell_node,prg_data->env);
+	}
+	else if (!prg_data->lst_cmd[index].is_built_in)
 	{
 		perforem_redirections(prg_data, index);
 		// if (prg_data->lst_cmd[index].path == NULL || prg_data->lst_cmd[index].args == NULL) //TODO this is linked to after expansion (test : ls | $gfgvbh | cat) if the only thing resulted after expansion is null we just exit
@@ -336,11 +337,10 @@ void	pipe_execution(t_data *prg_data)
 	{
 		if (i != prg_data->cmd_nbr - 1)
 			pipe(prg_data->fd);
-		
 		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
 			prg_data->lst_cmd[i].pid = fork();
 		if (prg_data->lst_cmd[i].pid == 0)
-			child(prg_data, i);//TODO the subshell should be handeled her
+			child(prg_data, i);
 		else
 		{
 			parent(&prg_data->old_fd, prg_data->fd);
@@ -357,7 +357,7 @@ static void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->fd[0] = -1;
 	data->fd[1] = -1;
 	data->env = env;
-	expand_pipeline(pipeline, &data->env);	
+	expand_pipeline(pipeline, &data->env);
 	data->cmd_nbr = pipeline->children->length;
 	data->lst_cmd = parse_cmd_list(data->cmd_nbr, (t_ast_node **)pipeline->children->items, env);
 	data->env = env;
