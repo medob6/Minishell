@@ -388,6 +388,23 @@ bool	should_continue(int status, t_ast_node *op)
 // Tow functions need norminnet fix
 
 //? this down function is correct
+
+
+//!FIX this shit
+// void skip_operators(int *i,int status, t_ast_node *root)
+// {
+// 	t_ast_node *op;
+// 	while (true)
+// 	{
+// 		*i += 2; // go to next operator
+// 		op = (t_ast_node *)root->children->items[*i];
+// 		if (!op)						 // we are at NULL so finished
+// 			break ;				 // we return the last status
+// 		if (should_continue(status, op)) // if the next op and status are good run next cmd
+// 			break;
+// 	}
+// 	*i++;
+// }
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
@@ -416,8 +433,8 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 					i += 2;// go to next operator
 					op = (t_ast_node *)root->children->items[i];
 					if (!op) // we are at NULL so finished
-						return status ; // we return the last status
-					if (should_continue(status, op)) // if the next op and status are good run next cmd
+						return status ;
+					if (should_continue(status, op))
 						break;
 				}
 				i++;
