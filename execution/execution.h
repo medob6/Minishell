@@ -99,4 +99,11 @@ void			ft_free(void *address);
 t_gar			**garbage_list(void);
 t_env			*create_the_main_list(char **envp);
 
+
+/* FUNCTIONS */
+t_ast_node	*subshell(t_token **token)
+;
+t_ast_node	*command(t_token **token)
+;
+
 #endif
