@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:58:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:58:23 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:10:50 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 bool	paranteses_symetric(t_token **token)
 {
 	t_token	*temp_head;
+	int		count_open;
+	int		count_close;
 
-	int count_open, count_close;
 	count_open = 0;
 	count_close = 0;
 	temp_head = *token;
