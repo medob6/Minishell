@@ -37,6 +37,10 @@ typedef struct s_data
 // here must be expansion func or header file
 
 /* FUNCTIONS */
+void	redirect(t_data *data, t_token *file_obj)
+;
+void	perforem_subshell_redirs(t_data *data, int n)
+;
 char	*get_value_ast(int type)
 ;
 void	print_token(t_token *head)

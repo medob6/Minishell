@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/01 09:06:49 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:51:33 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ int	ft_echo(char **args, int fd)
 
 	new_line = 1;
 	i = 1;
-	//if (fd < 0)
-	//ft_print("bash: echo: write error: No space left on device\n", 2);
+
+	if (fd < 0)// this check must be done if and only if write fails cus fd fails handeled in execution ok
+		ft_print("bash: echo: write error: No space left on device\n", 2);
 	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0 && check_string(args[1]))
 	{
 		i = 2;
