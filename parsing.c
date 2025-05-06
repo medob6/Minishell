@@ -8,6 +8,7 @@ t_ast_node	*creat_ast_node(int node_type)
 	new_node->children = NULL;
 	new_node->field = NULL;
 	new_node->redirect_list = NULL;
+	new_node->str = NULL;
 	new_node->type = node_type;
 	return (new_node);
 }

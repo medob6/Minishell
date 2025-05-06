@@ -143,20 +143,51 @@ char	*get_value_ast(int type)
 		return ("\033[1;90margment\033[0m");
 }
 
+//char	*get_redir_value(int type)
+//{
+//	if (type == TOKEN_REDIRECT_OUT)
+//		return ">";
+//	else if (type == TOKEN_APPEND)
+//		return ">>";
+//	else if (type == TOKEN_REDIRECT_IN)
+//		return "<";
+//	else if (type == TOKEN_HEREDOC)
+//		return "<<";
+//	else
+//		return "unknown";
+//}
+
+void	print_str_value(t_str *s)
+{
+	if (!s || !s->value)
+		return ;
+	if (s->value)
+	{
+		for (size_t i = 0; s->value[i]; i++)
+		{
+			printf("\033[0;34m%s\033[0m", s->value[i]);
+			if (s->value[i + 1])
+				printf(" ");
+		}
+	}
+}
+
 void	print_redir(t_ast_node *node)
 {
-	t_token	*redir;
-
 	if (!node || !node->redirect_list)
 	{
 		printf("\n");
 		return ;
 	}
-	printf("\033[0;36mredir_list:\033[0m (");
-	for (size_t d = 0; d < node->redirect_list->length; d++)
+	printf("\033[0;36mredir_list:\033[0m (\n");
+
+	for (size_t i = 0; i < node->redirect_list->length; i++)
 	{
-		redir = (t_token *)node->redirect_list->items[d];
-		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",get_redir_value(redir->type), redir->value.str_value);
+		t_str *file = (t_str *)node->redirect_list->items[i];
+		printf("\t  \033[0;36m{redir_type: \033[1;36m%s\033[0;36m, filename: \033[1;36m",
+			get_redir_value(file->type));
+		print_str_value(file);
+		printf("\033[0;36m, fd: \033[1;36m%d\033[0;36m}\033[0m\n", file->fd);
 	}
 	printf(")\n");
 }
@@ -169,35 +200,31 @@ void	print_tabs(int n)
 
 void	print_ast(t_ast_node *node, int depth)
 {
-	t_token	*redir;
-
 	if (!node)
 		return ;
+
 	for (int i = 0; i < depth; i++)
 		printf("\033[0;32m\t|\033[0m");
 	printf("\033[0;32m_______\033[0m");
+
 	if (node->type == AST_SIMPLE_CMD)
 	{
 		printf("\033[0;31mAST Node:\033[0m AST_SIMPLE_COMMAND ");
 		printf("\033[0;34marg_list:\033[0m (");
+
 		if (node->children)
 		{
 			for (size_t j = 0; j < node->children->length; j++)
-				printf("\033[0;34m%s\033[0m",
-					(char *)(node->children->items[j]));
-		}
-		printf(") ; ");
-		printf("\033[0;36mredir_list:\033[0m (");
-		if (node->redirect_list)
-		{
-			for (size_t d = 0; d < node->redirect_list->length; d++)
 			{
-				redir = (t_token *)node->redirect_list->items[d];
-				printf(" \033[0;36m{redir_type: %s, filename: %s}\033[0m ",
-					get_redir_value(redir->type), redir->value.str_value);
+				t_str *item = (t_str *)(node->children->items[j]);
+				print_str_value(item);
+				if (j < node->children->length - 1)
+					printf(" ");
 			}
 		}
-		printf(")\n");
+
+		printf(") ; ");
+		print_redir(node);
 		return ;
 	}
 	else
@@ -210,12 +237,14 @@ void	print_ast(t_ast_node *node, int depth)
 		}
 		printf("\n");
 	}
+
 	if (node->children)
 	{
 		for (size_t i = 0; i < node->children->length; i++)
-			print_ast(node->children->items[i], depth + 1);
+			print_ast((t_ast_node *)node->children->items[i], depth + 1);
 	}
 }
+
 
 int	main(int ac, char **av, char **envp)
 {
@@ -255,20 +284,21 @@ int	main(int ac, char **av, char **envp)
 			printf("\n\n");
 			ast = parse_tokens(*h);
 		}
-		if (!ast)
-		{
-			printf("\033[0;32m============================\033[0m\n\n");
-			printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
-		}
-		else
-		{
-			printf("\033[0;32m============================\033[0m\n\n");
-			printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
-			print_ast(ast, 0);
-			printf("\033[0;32m============================\033[0m\n\n");
-			printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
-			execution(ast, env);
-		}
+		//if (!ast)
+		//{
+		//	printf("\033[0;32m============================\033[0m\n\n");
+		//	printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
+		//}
+		//else
+		//{
+		//	printf("\033[0;32m============================\033[0m\n\n");
+		//	printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
+		//	print_ast(ast, 0);
+		//	printf("\033[0;32m============================\033[0m\n\n");
+		//	printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
+		//	//execution(ast, env);
+		//}
+		expand_ast(ast, &env);
 		free(cmd_line);
 		rl_on_new_line();
 	}
