@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/30 09:57:26 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/05 13:20:47 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,11 +203,9 @@ int check_pattern(char *s)
 	return (1);
 }
 
-char    *get_string_from_child(t_array *child, int i, int flag)
+char    **get_string_from_child(t_array *child, int i)
 {
-    if (flag)
-        return (child->items[i]);
-    return (((t_token *)child->items[i])->value.str_value);
+    return (((t_str *)child->items[i])->value);
 }
 
 int find_last_slash_before_star(char *str)
@@ -253,76 +251,82 @@ void get_pattern_and_path(char *str, char **path, char **pattern)
             *pattern = str;
     }
 }
-void set_expanded_value(t_array *child, int i, int flag, char *new_str)
+void set_expanded_value(t_array *child, int i, char *new_str)
 {
-    int len;
-
-    len = ft_strlen(new_str);
-    while (len > 0 && new_str[len - 1] == ' ')
-        len--;
-    new_str[len] = '\0';
-    if (flag)
-        child->items[i] = new_str;
-    else
-        ((t_token *)child->items[i])->value.str_value = new_str;
+    ((t_str *)child->items[i])->value = field_splitting(new_str, " ");
 }
 
 
-void expand_wildcard(t_array *child, int i, int flag)
+char *expand_wildcard(char *str)
 {
-    char    *str;
     char    *path;
     char    *pattern;
     char    *new_str;
 
-    str = get_string_from_child(child, i, flag);
     path = NULL;
     pattern = NULL;
     get_pattern_and_path(str, &path, &pattern);
     if (check_pattern(pattern))
-        return ;
+        return (NULL);
     new_str = expand_wild(path, pattern);
-    if (new_str)
-        set_expanded_value(child, i, flag, new_str);
+    return (new_str);
 }
 
-
-void    expand_path_name_cmd(t_ast_node *node)
+void    call_expand_wildcard(t_array *child, int i)
 {
-    char    *tmp;
+    char    **str;
+    char    *new;
+    int     j;
+
+    str = get_string_from_child(child, i);
+    j = 0;
+    new = NULL;
+    while (str && str[j])
+    {
+        if (search_wildcard(str[j]))
+            new = ft_strjoin(new, expand_wildcard(str[j]));
+        else
+            new = ft_strjoin(ft_strjoin(new, " "), str[j]);
+        j++;
+    }
+    set_expanded_value(child, i, new);
+}
+
+void    expand_path_name_cmd(t_expansion *expand)
+{
+    char    **tmp;
     size_t     i;
 
     i = 0;
-    if (!node->children)
+    if (!expand->node->children)
         return ;
-    while (i < node->children->length)
+    while (i < expand->node->children->length)
     {
-        tmp = node->children->items[i];
-        //printf("[%s]\n", tmp);
-        if (tmp && search_wildcard(tmp))
-            expand_wildcard(node->children, i, 1);
+        tmp = ((t_str *)expand->node->children->items[i])->value;
+        if (tmp && *tmp)
+            call_expand_wildcard(expand->node->children, i);
         i++;
     }
 }
 
-void    expand_path_name_red(t_ast_node *node)
+void    expand_path_name_red(t_expansion *expand)
 {
-    char    *tmp;
+    char    **tmp;
     size_t     i;
 
     i = 0;
-    if (!node->redirect_list)
+    if (!expand->node->redirect_list)
 		return ;
-	while (i < node->redirect_list->length)
+	while (i < expand->node->redirect_list->length)
 	{
-		if (((t_token *)node->redirect_list->items[i])->type == TOKEN_HEREDOC)
+		if (((t_str *)expand->node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
 			i++;
 			continue;
 		}
-		tmp = ((t_token *)node->redirect_list->items[i])->value.str_value;
-		if (tmp && search_wildcard(tmp))
-            expand_wildcard(node->redirect_list, i, 0);
+		tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
+		if (tmp && *tmp)
+            call_expand_wildcard(expand->node->redirect_list, i);
 		i++;
 	}
 }

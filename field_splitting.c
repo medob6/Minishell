@@ -6,43 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/30 15:38:18 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/03 15:44:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char    *applicate_field_split(char *str)
-{
-    char    *tmp;
-    char    *new_str;
-    int     j;
-    int     start;
-
-    j = 0;
-    new_str = NULL;
-    start = 0;
-    tmp = NULL;
-    if (!str[0])
-        new_str = str;
-    while (str && str[j])
-    {
-        while (str[j] && (str[j] == ' ' || str[j] == '\t' || str[j] == '\n'))
-            j++;
-        if (!str[j])
-            break;
-        start = j;
-        while (str[j] && str[j] != ' ' && str[j] != '\t' && str[j] != '\n')
-            j++;
-        tmp = ft_substr(str, start, j - start);
-        if (new_str)
-            new_str = ft_strjoin(ft_strjoin(new_str, " "), tmp);
-        else
-            new_str = ft_strdup(tmp);
-    }
-    return (new_str);
-}
-
 
 int	check_first_char(char c)
 {

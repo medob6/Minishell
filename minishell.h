@@ -75,13 +75,13 @@ typedef enum e_token_type
 // 	struct s_token *next; // Linked list to store multiple tokens
 // }					t_token;
 
-typedef enum s_bit_mask
-{
-	ORIGINAL = 0,
-	EXPANDED = 1,
-	SINGLE_QOUT = 2,
-	DOUBLE_QOUT = 4
-}	t_bit_mask;
+//typedef enum s_bit_mask
+//{
+//	ORIGINAL = 0,
+//	EXPANDED = 1,
+//	SINGLE_QOUT = 2,
+//	DOUBLE_QOUT = 4
+//}	t_bit_mask;
 
 typedef struct s_value
 {
@@ -108,11 +108,11 @@ typedef struct s_array
 
 typedef struct s_string
 {
-	void	**value;
-	void	*s;
-	int		flag;
+	char	**value;
 	int		fd;
+	t_token_type	type;
 }	t_str;
+
 
 typedef enum e_ast_type
 {
@@ -131,10 +131,17 @@ typedef struct s_ast_node
 	t_ast_type		type;
 	t_array			*children; // {ls , -l , -e}
 	t_array			*redirect_list;
-	t_bit_mask			**field; // null
-	t_str				**str;
+	char			**field; // null
+	t_str			**str;
 }					t_ast_node;
 
+typedef struct s_expansion
+{
+	t_ast_node		*node;
+	t_env			**env;
+	char			**field; // null
+	t_str			**str;
+}	t_expansion;
 // void print_ast(t_ast_node *node, int depth);
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
@@ -163,14 +170,13 @@ int					is_valid_identifier(char *s);
 int					ft_export(char **args, t_env **env);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 
-t_bit_mask **create_field(t_ast_node *node);
+char **create_field(t_ast_node *node);
 int					check_the_last_arg(char *tmp);
 int					check_for_last_exp(t_ast_node *node);
 int					check_for_field_split(char *tmp);
-char				*applicate_field_split(char *str);
 char				*append_char(char *old_str, char c);
-void				expand_path_name_cmd(t_ast_node *node);
-void				expand_path_name_red(t_ast_node *node);
+void				expand_path_name_cmd(t_expansion *expand);
+void				expand_path_name_red(t_expansion *expand);
 void				removes_qouts_cmd(t_ast_node *node);
 //void				removes_qouts_red(t_ast_node *node);
 int					check_for_next_one(char *str, int j);
@@ -179,7 +185,11 @@ char	*get_name_heredoc(void);
 void	check_for_empty_strings(t_ast_node *node);
 void	**create_copy(t_ast_node *node);
 int		search_for(char *str, char c);
+char	**field_splitting(char *str, char *charset);
+int	expand_ast(t_ast_node *node, t_env **env);
 
 //export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"
+
+
 #endif
