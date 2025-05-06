@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:28:35 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:48:31 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	skip_operators(size_t *i, int status, t_ast_node *root)
 	}
 	(*i)++;
 }
+
 int	execute_cmd_line(t_ast_node *root, t_env *env)
 {
 	int			status;
@@ -79,8 +80,9 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 
 int	execution(t_ast_node *root, t_env *env)
 {
-	int n;
+	int	n;
 
 	n = execute_cmd_line(root, env);
+	printf("status = %d\n",n);
 	return (n);
 }

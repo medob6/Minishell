@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:43:57 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:43:58 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:47:54 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	free_pointers(char **p)
 	}
 	ft_free(p);
 }
+
 void	ft_free(void *address)
 {
 	t_gar	**garbage_lst;
@@ -52,6 +53,7 @@ void	ft_free(void *address)
 	}
 	return ;
 }
+
 void	free_garbeg(t_data *prg_data)
 {
 	int	i;

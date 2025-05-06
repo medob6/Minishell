@@ -15,29 +15,11 @@
 # include <unistd.h>
 
 # define AMBIGUOUS_REDIRECTION -5
-// # include "env.h"
-// # include "token.h"
-// # include "array.h"
-// # include "parser.h"
-/* Structures */
-// typedef struct s_cmd
-// {
-// 	char	*path;
-// 	char	**args;
-// 	pid_t	pid;
-// 	int		exit_status;
-// }			t_cmd;
 
-// typedef struct s_data
-// {
-// 	int		old_fd;
-// 	int		out_fd;
-// 	int		fd[2];
-// 	t_cmd	*lst_cmd;
-// 	int		cmd_nbr;
-// 	char	**envp;
-// 	int		ac;
-// }			t_data;
+typedef struct s_g_data {
+    int status;
+    char *prompt;
+} GlobalData;
 
 typedef struct s_garbag
 {
@@ -66,14 +48,6 @@ typedef enum e_token_type
 	TOKEN_HEREDOC,      // <<
 	TOKEN_EOF
 }					t_token_type;
-
-// typedef struct s_token
-// {
-// 	char *value; // The actual token string
-// 	t_token_type	type;
-// 	struct s_token *prev; // The type of token
-// 	struct s_token *next; // Linked list to store multiple tokens
-// }					t_token;
 
 typedef struct s_value
 {

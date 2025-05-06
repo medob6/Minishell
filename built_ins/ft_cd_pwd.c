@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_pwd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 11:40:27 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:30:10 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	ft_pwd(t_env **env_list)
 	char	*cwd;
 	t_env	*cur;
 
-	// printf("pwd \n");
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
@@ -69,7 +68,7 @@ int	ft_cd(char *path, t_env **env_list)
 	if (!path)
 		return (ft_print("cd: path required\n", 2), 1);
 	if (chdir(path) != 0)
-		return (perror("cd"), 1);
+		return (perror(strerror(errno)), 1);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{

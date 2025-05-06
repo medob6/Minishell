@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:58:12 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 18:11:07 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:45:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,18 @@ static t_ast_node	*create_logic_node(t_token **token)
 	return (logic);
 }
 
+void	add_logic_node(t_token **token, t_ast_node *curr, t_ast_node *compound)
+{
+	curr = create_logic_node(token);
+	add_child(compound, curr);
+}
+
 t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 {
 	static int	depth;
+	t_ast_node	*compound;
+	t_ast_node	*current;
 
-	t_ast_node(*compound), (*current);
 	depth++;
 	compound = creat_ast_node(type);
 	while (*token && (*token)->type != TOKEN_EOF)
@@ -58,8 +65,7 @@ t_ast_node	*compound_cmd(t_token **token, t_ast_type type)
 		add_child(compound, current);
 		if ((*token)->type == TOKEN_AND || (*token)->type == TOKEN_OR)
 		{
-			current = create_logic_node(token);
-			add_child(compound, current);
+			add_logic_node(token, current, compound);
 			if ((*token)->type == TOKEN_EOF)
 				return (NULL);
 		}

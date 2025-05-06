@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:05:18 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:05:38 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:52:08 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,9 @@ bool	redirection_builtins(t_data *data, int n)
 	redir_lst = data->lst_cmd[n].redirlist;
 	reset_fds(data, n);
 	if (!process_redirections(data, redir_lst, &last_not_atty))
+	{
+		data->lst_cmd[n].exit_status = 1;
 		return (false);
+	}
 	return (reopen_last_output(data, redir_lst, last_not_atty));
 }
