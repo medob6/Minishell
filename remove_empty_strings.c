@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/01 11:11:15 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:01:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,19 @@ void	**remove_empty_string(t_array *child, int index)
 	return (new);
 }
 
-void	check_for_empty_strings(t_ast_node *node)
+void	check_for_empty_strings(t_expansion *expand)
 {
 	size_t		i;
-	char		*tmp;
+	char		**tmp;
 
-	if (!node->children)
+	if (!expand->node->children)
 		return ;
 	i = 0;
-	while (i < node->children->length)
+	while (i < expand->node->children->length)
 	{
-		tmp = (char *)node->children->items[i];
-		if (tmp && tmp[0] == '\0')
-			node->children->items = remove_empty_string(node->children, i);
+		tmp = ((t_str *)expand->node->children->items[i])->value;
+		if (tmp && *tmp[0] == '\0')
+			expand->node->children->items = remove_empty_string(expand->node->children, i);
 		i++;
 	}
 }

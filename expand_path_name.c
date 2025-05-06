@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/05 13:20:47 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:23:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,9 +138,9 @@ char    *check_string_get(char *get)
                 i++;
         }
         else
-            tmp = append_char(tmp, get[i]);
-        if (get[i])
-            i++;
+            tmp = append_char(tmp, get[i++]);
+        //if (get[i])
+            //i++;
     }
     return (tmp);
 }
@@ -170,38 +170,67 @@ char    *expand_wild(char *path, char *get)
         help_expand_wild(line, path, get, &new_str);
         line = readdir(dir);
     }
-    
     closedir(dir);
     return (new_str);
 }
 
 
-int check_pattern(char *s)
-{
-	int     i;
-    char    c;
+//int check_pattern(char *s)
+//{
+//	int     i;
+//    char    c;
 
-    if (!s)
-        return (0);
-    i = 0;
+//    if (!s)
+//        return (0);
+//    i = 0;
+//	while (s[i])
+//    {
+//        if (s[i] == '"' || s[i] == '\'')
+//        {
+//            c = s[i];
+//            i++;
+//            while (s[i] && s[i] != c)
+//                i++;
+//            if (s[i] == c)
+//                i++;
+//        }
+//        if (s[i] == '*')
+//            return (0);
+//        if (s[i])
+//		    i++;
+//    }
+//	return (1);
+//}
+
+int	check_pattern(char *s)
+{
+	int		i;
+	char	quote;
+
+	if (!s)
+		return (0);
+	i = 0;
+	quote = 0;
 	while (s[i])
-    {
-        if (s[i] == '"' || s[i] == '\'')
-        {
-            c = s[i];
-            i++;
-            while (s[i] && s[i] != c)
-                i++;
-            if (s[i] == c)
-                i++;
-        }
-        if (s[i] == '*')
-            return (0);
-        if (s[i])
-		    i++;
-    }
+	{
+		if (!quote && (s[i] == '"' || s[i] == '\''))
+			quote = s[i++];
+		while (quote && s[i] && s[i] != quote)
+			i++;
+		if (quote && s[i] == quote)
+		{
+			quote = 0;
+			i++;
+			continue;
+		}
+		if (!quote && s[i] == '*')
+			return (0);
+		if (s[i])
+			i++;
+	}
 	return (1);
 }
+
 
 char    **get_string_from_child(t_array *child, int i)
 {
@@ -267,8 +296,10 @@ char *expand_wildcard(char *str)
     pattern = NULL;
     get_pattern_and_path(str, &path, &pattern);
     if (check_pattern(pattern))
-        return (NULL);
+        return (str);
     new_str = expand_wild(path, pattern);
+    if (!new_str)
+        return (str);
     return (new_str);
 }
 

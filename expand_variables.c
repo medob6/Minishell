@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/05 14:31:07 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:24:23 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -577,7 +577,7 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 		hold = new;
 	}
 	*field = hold;
-	printf("[%s]\n", *field);
+	//printf("[%s]\n", *field);
 	return (old_str);
 }
 
@@ -924,9 +924,9 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(expand);// "*"
 	expand_path_name_cmd(expand);
 	expand_path_name_red(expand);
-	print_arguments(expand->node->children);
 	//check_for_empty_strings(node);
-	//removes_qouts_cmd(node);
+	removes_qouts_cmd(expand);
+	print_arguments(expand->node->children);
 	//printf("here\n");
 	//removes_qouts_red(node);
 	return (1);

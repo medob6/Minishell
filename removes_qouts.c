@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/01 17:10:46 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:25:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,55 +48,51 @@ int     check_for_next_one(char *str, int j)
     
 //}
 
-void    remove_q(t_ast_node *node, size_t i, int flag)
+char    *remove_q(char **field, char *str, size_t i)
 {
-    char    *str;
     char    *new_str;
     int     j;
-//"*"
-    if (flag)
-        str = node->children->items[i];
-    else
-        str = ((t_token *)node->children->items[i])->value.str_value;
+
     j = 0;
     new_str = ft_strdup("");
     while (str[j])
     {
-        if (str[j] == '\'' && check_for_next_one(str, j) && (node->field[i][j] != 5 && node->field[i][j] != 1))
+        if (str[j] == '\'' && field[i][j] == 0)//&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
             j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"' && check_for_next_one(str, j) && (node->field[i][j] != 5 && node->field[i][j] != 1))
-        {
-            printf("[%d]\n", node->field[i][j]);
+        else if (str[j] == '"' && field[i][j] == 0) //&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
             j = take_inside_qout(&new_str, str, j);
-        }
         else
             new_str = append_char(new_str, str[j++]);
     }
-    if (flag)
-        node->children->items[i] = new_str;
-    else
-        ((t_token *)node->children->items[i])->value.str_value = new_str;
+    return (new_str);
 }
 
 
-void    removes_qouts_cmd(t_ast_node *node)
+void    removes_qouts_cmd(t_expansion *expand)
 {
     size_t  i;
-    char    *tmp;
+    char    **tmp;
+    int     j;
 
-    if (!node->children)
+    if (!expand->node->children)
         return ;
     i = 0;
-    tmp = (char *)node->children->items[0];
     //if (ft_strncmp(tmp, "export", ft_strlen(tmp)) == 0)
     //    return ;
-    while (i < node->children->length)
+    while (i < expand->node->children->length)
     {
-        tmp = (char *)node->children->items[i];
-        if (tmp)
+        tmp = ((t_str *)expand->node->children->items[i])->value;
+        if (tmp && *tmp)
         {
-            remove_q(node, i, 1);
+            j = 0;
+            while (tmp && tmp[j])
+            {
+                tmp[j] = remove_q(expand->field, tmp[j], i);
+                //printf("[%s]\n", tmp[j]);
+                j++;
+            }
         }
+        ((t_str *)expand->node->children->items[i])->value = tmp;
         i++;
     }
 }
@@ -106,7 +102,7 @@ void    removes_qouts_cmd(t_ast_node *node)
 //    size_t  i;
 //    char    *tmp;
 
-//    if (!node->redirect_list)
+//    if (!expand->node->redirect_list)
 //        return ;
 //    i = 0;
 //    while (i < node->redirect_list->length)
