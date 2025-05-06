@@ -1,5 +1,17 @@
-#ifndef TOKEN_H
-# define TOKEN_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
+/*   Updated: 2025/05/06 13:50:00 by mbousset         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef EXECUTION_H
+# define EXECUTION_H
 
 # include "../minishell.h"
 # include <sys/types.h>
@@ -99,11 +111,8 @@ void			ft_free(void *address);
 t_gar			**garbage_list(void);
 t_env			*create_the_main_list(char **envp);
 
-
 /* FUNCTIONS */
-t_ast_node	*subshell(t_token **token)
-;
-t_ast_node	*command(t_token **token)
-;
+t_ast_node		*subshell(t_token **token);
+t_ast_node		*command(t_token **token);
 
 #endif

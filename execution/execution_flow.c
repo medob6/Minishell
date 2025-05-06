@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:29:30 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:53:40 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,27 +22,29 @@ int	execute_subshell(t_ast_node *subshell, t_env *env)
 
 void	child(t_data *prg_data, int index)
 {
-	if (prg_data->lst_cmd[index].is_subshell)
+	t_ast_node	*subshell_node;
+	t_cmd		cmd;
+
+	cmd = prg_data->lst_cmd[index];
+	if (cmd.is_subshell)
 	{
 		perforem_subshell_redirs(prg_data, index);
-		prg_data->lst_cmd[index].exit_status = execute_subshell(prg_data->lst_cmd[index].subshell_node,
-				prg_data->env);
+		subshell_node = cmd.subshell_node;
+		cmd.exit_status = execute_subshell(subshell_node, prg_data->env);
 	}
-	else if (!prg_data->lst_cmd[index].is_built_in)
+	else if (!cmd.is_built_in)
 	{
 		perforem_redirections(prg_data, index);
-		// if (prg_data->lst_cmd[index].path == NULL|| prg_data->lst_cmd[index].args == NULL)
-		// TODO this is linked to after expansion (test : ls | $gfgvbh | cat) if the only thing resulted after expansion is null we just exit
-		// 	exit_status(prg_data, 0);
-		execute_cmd(prg_data->lst_cmd[index], prg_data);
+		if (cmd.path == NULL || cmd.args == NULL)
+			exit_status(prg_data, 0);
+		execute_cmd(cmd, prg_data);
 	}
 	else
 	{
 		if (redirection_builtins(prg_data, index))
-			prg_data->lst_cmd[index].exit_status = execute_built_in(
-                    prg_data->lst_cmd[index], prg_data);
+			prg_data->lst_cmd[index].exit_status = execute_built_in(cmd, prg_data);
 	}
-	if (!prg_data->lst_cmd[index].is_built_in || (prg_data->cmd_nbr > 1))
+	if (!cmd.is_built_in || (prg_data->cmd_nbr > 1))
 		exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
 }
 
@@ -75,7 +77,10 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 	else if (!ft_strcmp(cmd.args[0], "echo"))
 		return (ft_echo(cmd.args, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "cd"))
-		return (ft_cd(cmd.args[1], &data->env));
+	{
+		if (!cmd.args[2])
+			return (ft_cd(cmd.args[1], &data->env));
+	}
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
 		return (ft_pwd(&data->env));
 	else if (!ft_strcmp(cmd.args[0], "unset"))
@@ -84,7 +89,7 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 		return (ft_env(&data->env));
 	else if (!ft_strcmp(cmd.args[0], "exit"))
 		return (ft_exit(cmd.args, cmd.exit_status));
-	return (0);
+	return (1);
 }
 
 int	execute_pipeline(t_ast_node *pipeline, t_env *env)
@@ -97,6 +102,7 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	pipe_execution(&prg_data);
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
-	free_garbeg(&prg_data); // TODO when freeing garbeg i do lost some data ,like envp
+	free_garbeg(&prg_data);
+	// TODO when freeing garbeg i do lost some data ,like envp
 	return (status);
 }

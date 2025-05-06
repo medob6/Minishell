@@ -26,8 +26,12 @@ const char	*costruct_prompt(void)
 	char	*prompt;
 	char	*tmp;
 
+	prompt = NULL;
 	cwd = ft_malloc(1, 100);
 	getcwd(cwd, 100);
+	// printf("cmd = '%s'\n",cwd);
+	if (cwd[0] =='\0')
+		return (prompt);
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
@@ -36,6 +40,7 @@ const char	*costruct_prompt(void)
 	}
 	else
 		prompt = ft_strjoin(cwd, "$ ");
+	// g_data.prompt = prompt;
 	return (prompt);
 }
 
@@ -226,8 +231,6 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 
-	(void)ac;
-	(void)av;
 	ast = NULL;
 	ft_error(1);
 	env = create_the_main_list(envp);

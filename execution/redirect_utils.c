@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:00:15 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:02:52 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:24:39 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,8 @@ void	redirect(t_data *data, t_token *file_obj)
 {
 	int	fd;
 
-	if (file_obj->value.fd_value == AMBIGUOUS_REDIRECTION)
-	{
-		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
+	if (is_ambiguous_redirect(file_obj))
 		exit_status(data, 1);
-	}
 	fd = open_file(file_obj);
 	if (fd != -1)
 	{

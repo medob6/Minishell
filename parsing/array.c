@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:59:16 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 18:06:36 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:47:11 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	array_extend(t_array *arr)
 		i++;
 	}
 	new_items[i] = NULL;
-	// ft_free(arr->items);
+	// ft_free(arr->items); //TODO
 	arr->items = new_items;
 }
 
