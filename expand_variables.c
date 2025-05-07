@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/06 16:24:23 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/07 09:15:48 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -584,7 +584,7 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 static void	update_child_value(t_expansion *expand, int i, char *expanded, int field_split)
 {
 	if (field_split)
-		expand->str[i]->value = field_splitting(expanded, " \t");
+		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
 	else
 	{
 		expand->str[i]->value[0] = expanded;
@@ -597,7 +597,7 @@ static void	update_token_value(t_expansion *expand, int i, char *expanded, int f
 {
 	if (field_split)
 	{
-		expand->str[i]->value = field_splitting(expanded, " \t");
+		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
 		expand->str[i]->fd = ((t_token *)expand->node->redirect_list->items[i])->value.fd_value;
 		expand->str[i]->type = ((t_token *)expand->node->redirect_list->items[i])->type;
 	}
@@ -768,7 +768,7 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     unlink(str);
     close(value->fd_value);
     value->fd_value = fd;
-}
+} 
 
 void expand_redirection(t_expansion *expand)
 {
@@ -924,11 +924,12 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	expand_cmd(expand);// "*"
 	expand_path_name_cmd(expand);
 	expand_path_name_red(expand);
-	//check_for_empty_strings(node);
+	check_for_empty_strings(expand);
+	check_for_empty_strings_red(expand);
 	removes_qouts_cmd(expand);
+	removes_qouts_red(expand);
 	print_arguments(expand->node->children);
 	//printf("here\n");
-	//removes_qouts_red(node);
 	return (1);
 }
 
