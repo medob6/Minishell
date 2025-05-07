@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 09:08:42 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/07 17:51:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,18 @@ int     take_inside_qout(char **s, char *str, int j)
 int     take_inside_qouts(char **s, char *field, char *str, int j)
 {
     char    c;
+    int     i;
 
     c = str[j];
     j++;
-    while (str[j] && (str[j] != c && field[j] != '0'))
+    i = 1;
+    while (str[j] && (str[j] != c && field[i] != '0'))
     {
         *s = append_char(*s, str[j]);
+        i++;
         j++;
     }
-    if (str[j] == c && field[j] == '0')
+    if (str[j] == c && field[i] == '0')
         j++;
     return (j);
 }
@@ -63,32 +66,49 @@ int     check_for_next_one(char *str, int j)
 //{
     
 //}
-
-char    *remove_q(char **field, char *str, size_t i)
+// i still i have aproblem i need to update the field in field splitting and expand path name
+// for field splitting i need to take string befor field splitting and the field and if i found space have 1 remove it
+// for expand path name i think i take the len of every string i get and update field with it by using num 6 i guess
+char    *remove_q(char **field, char *str, int *index, size_t i)
 {
     char    *new_str;
     int     j;
+    int     start;
 
     j = 0;
+    start = 0;
     new_str = ft_strdup("");
     while (str[j])
     {
-        if (str[j] == '\'' && field[i][j] == '0')//&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
-            j = take_inside_qouts(&new_str, field[i], str, j);
-        else if (str[j] == '"' && field[i][j] == '0') //&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
-            j = take_inside_qouts(&new_str, field[i], str, j);
+        printf("[str = %c]///////[field = %c]////[index = %d]\n", str[j], field[i][*index], *index);
+        if (str[j] == '\'' && field[i][*index] == '0')//&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
+        {
+            start = j;
+            j = take_inside_qouts(&new_str, &field[i][*index], str, j);
+            *index += j - start;
+        }
+        else if (str[j] == '"' && field[i][*index] == '0') //&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
+        {
+            start = j;
+            j = take_inside_qouts(&new_str, &field[i][*index], str, j);
+            *index += j - start;
+        }
         else
+        {
             new_str = append_char(new_str, str[j++]);
+            (*index)++;
+        }
     }
     return (new_str);
 }
-
+//"hello"$x"world"$x$HOME
 
 void    removes_qouts_cmd(t_expansion *expand)
 {
     size_t  i;
     char    **tmp;
     int     j;
+    int index;
 
     if (!expand->node->children)
         return ;
@@ -101,9 +121,10 @@ void    removes_qouts_cmd(t_expansion *expand)
         if (tmp && *tmp)
         {
             j = 0;
+            index = 0;
             while (tmp && tmp[j])
             {
-                tmp[j] = remove_q(expand->field, tmp[j], i);
+                tmp[j] = remove_q(expand->field, tmp[j], &index, i);
                 //printf("[%s]\n", tmp[j]);
                 j++;
             }
@@ -117,6 +138,7 @@ void    removes_qouts_red(t_expansion *expand)
 {
     size_t  i;
     int     j;
+    int     index;
     char    **tmp;
 
     if (!expand->node->redirect_list)
@@ -133,9 +155,10 @@ void    removes_qouts_red(t_expansion *expand)
         if (tmp && *tmp)
         {
             j = 0;
+            index = 0;
             while (tmp && tmp[j])
             {
-                tmp[j] = remove_q(expand->field, tmp[j], i);
+                tmp[j] = remove_q(expand->field, tmp[j], &index, i);
                 //printf("[%s]\n", tmp[j]);
                 j++;
             }
