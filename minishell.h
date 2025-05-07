@@ -178,7 +178,7 @@ char				*append_char(char *old_str, char c);
 void				expand_path_name_cmd(t_expansion *expand);
 void				expand_path_name_red(t_expansion *expand);
 void				removes_qouts_cmd(t_expansion *expand);
-//void				removes_qouts_red(t_ast_node *node);
+void				removes_qouts_red(t_expansion *expand);
 int					check_for_next_one(char *str, int j);
 int					take_inside_qout(char **s, char *str, int j);
 char	*get_name_heredoc(void);
@@ -187,6 +187,8 @@ void	**create_copy(t_ast_node *node);
 int		search_for(char *str, char c);
 char	**field_splitting(char *str, char *charset);
 int	expand_ast(t_ast_node *node, t_env **env);
+void	check_for_empty_strings_red(t_expansion *expand);
+char **applicate_splitting(char *str, char *field);
 
 //export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"
