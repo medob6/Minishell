@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/06 16:23:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:30:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,9 +280,9 @@ void get_pattern_and_path(char *str, char **path, char **pattern)
             *pattern = str;
     }
 }
-void set_expanded_value(t_array *child, int i, char *new_str)
+void set_expanded_value(t_array *child, int i, char **new_str)
 {
-    ((t_str *)child->items[i])->value = field_splitting(new_str, " ");
+    ((t_str *)child->items[i])->value = new_str;
 }
 
 
@@ -296,32 +296,97 @@ char *expand_wildcard(char *str)
     pattern = NULL;
     get_pattern_and_path(str, &path, &pattern);
     if (check_pattern(pattern))
-        return (str);
+        return (NULL);
     new_str = expand_wild(path, pattern);
-    if (!new_str)
-        return (str);
+    //if (!new_str)
+    //    return (str);
     return (new_str);
 }
+
+char    **append_to_arr(char **old, char *str, int flag)
+{
+    int     i = 0;
+    int     j = 0;
+    int     count = 0;
+    char    **new;
+    char    **words = NULL;
+
+    while (old && old[i])
+        i++;
+    if (flag)
+    {
+        words = ft_split(str, ' ');
+        while (words && words[count])
+            count++;
+    }
+    else
+        count = 1;
+    new = ft_calloc(sizeof(char *), i + count + 1);
+    if (!new)
+        return (NULL);
+    j = 0;
+    while (old && old[j])
+    {
+        new[j] = ft_strdup(old[j]);
+        j++;
+    }
+    if (flag)
+    {
+        int k = 0;
+        while (words && words[k])
+        {
+            new[j++] = ft_strdup(words[k]);
+            k++;
+        }
+    }
+    else
+        new[j++] = ft_strdup(str);
+
+    new[j] = NULL;
+    return (new);
+}
+
 
 void    call_expand_wildcard(t_array *child, int i)
 {
     char    **str;
-    char    *new;
+    char    **new;
     int     j;
 
     str = get_string_from_child(child, i);
     j = 0;
     new = NULL;
     while (str && str[j])
+        j++;
+    new = ft_calloc(sizeof(char *), j + 1);
+    j = 0;
+    while (str && str[j])
     {
         if (search_wildcard(str[j]))
-            new = ft_strjoin(new, expand_wildcard(str[j]));
+        {
+            if (expand_wildcard(str[j]))
+                new = append_to_arr(new, expand_wildcard(str[j]), 1);
+            else
+                new = append_to_arr(new, str[j], 0);
+        }
         else
-            new = ft_strjoin(ft_strjoin(new, " "), str[j]);
+            new = append_to_arr(new, str[j], 0);
         j++;
     }
     set_expanded_value(child, i, new);
 }
+
+//void	printl(char **s)
+//{
+//	int		i;
+
+//	i = 0;
+//	while (s[i])
+//	{
+//		printf("here[%s]\n", s[i]);
+//		i++;
+//	}
+//}
 
 void    expand_path_name_cmd(t_expansion *expand)
 {
@@ -335,7 +400,9 @@ void    expand_path_name_cmd(t_expansion *expand)
     {
         tmp = ((t_str *)expand->node->children->items[i])->value;
         if (tmp && *tmp)
+        {
             call_expand_wildcard(expand->node->children, i);
+        }
         i++;
     }
 }

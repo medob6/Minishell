@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 09:15:48 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:31:46 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -580,11 +580,24 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 	//printf("[%s]\n", *field);
 	return (old_str);
 }
+//void	printl(char **s)
+//{
+//	int		i;
+
+//	i = 0;
+//	while (s[i])
+//	{
+//		printf("[%s]\n", s[i]);
+//		i++;
+//	}
+//}
 
 static void	update_child_value(t_expansion *expand, int i, char *expanded, int field_split)
 {
 	if (field_split)
+	{
 		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
+	}
 	else
 	{
 		expand->str[i]->value[0] = expanded;
@@ -592,6 +605,7 @@ static void	update_child_value(t_expansion *expand, int i, char *expanded, int f
 	}
 		
 }
+
 
 static void	update_token_value(t_expansion *expand, int i, char *expanded, int field_split)
 {
@@ -899,7 +913,7 @@ void	print_arguments(t_array *args)
 			printf("  [%zu]: ", i);
 			for (size_t j = 0; arg->value[j]; j++)
 			{
-				printf("'%s'", arg->value[j]);
+				printf("|%s|", arg->value[j]);
 				if (arg->value[j + 1])
 					printf(", ");
 			}
