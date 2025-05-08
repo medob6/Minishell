@@ -16,10 +16,11 @@
 
 # define AMBIGUOUS_REDIRECTION -5
 
-typedef struct s_g_data {
-    int status;
-    char *prompt;
-} GlobalData;
+typedef struct s_g_data
+{
+	int				status;
+	char			*prompt;
+}					GlobalData;
 
 typedef struct s_garbag
 {
@@ -93,13 +94,13 @@ typedef struct s_ast_node
 }					t_ast_node;
 
 // void print_ast(t_ast_node *node, int depth);
-t_ast_node *subshell(t_token **token);
-t_ast_node *command(t_token **token);
-bool paranteses_symetric(t_token **token);
+t_ast_node			*subshell(t_token **token);
+t_ast_node			*command(t_token **token);
+bool				paranteses_symetric(t_token **token);
 
-char *get_value_ast(int type);
-void print_token(t_token *head);
-t_token **create_tokens(char **str);
+char				*get_value_ast(int type);
+void				print_token(t_token *head);
+t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
 void				*ft_malloc(int size, int bytes);
 t_gar				**garbage_list(void);
@@ -137,4 +138,7 @@ void				removes_qouts_cmd(t_ast_node *node);
 void				removes_qouts_red(t_ast_node *node);
 int					check_for_next_one(char *str, int j);
 int					take_inside_qout(char **s, char *str, int j);
+char				*expand_the_value(char *str, t_env **env);
+void				print_err(char *err, char *str);
+void				ft_free(void *address);
 #endif
