@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 16:19:12 by mbousset          #+#    #+#             */
-/*   Updated: 2025/04/24 20:56:19 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/08 09:04:35 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*fill_word(const char *src, int start, int end)
 	char	*res;
 	int		i;
 
-	res = (char *)malloc(sizeof(char) * (end - start + 1));
+	res = ft_malloc((end - start + 1),sizeof(char));
 	if (res == NULL)
 		return (NULL);
 	i = 0;
@@ -103,7 +103,7 @@ char	**ft_split(const char *str, char c)
 {
 	char	**arr;
 
-	arr = (char **)malloc(sizeof(char *) * (count_words(str, c) + 1));
+	arr = ft_malloc( (count_words(str, c) + 1),sizeof(char *));
 	if (!arr)
 		return (NULL);
 	arr = fill_arr(arr, str, c);

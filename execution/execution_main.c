@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/06 17:48:31 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/08 06:32:46 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,6 @@ int	execution(t_ast_node *root, t_env *env)
 	int	n;
 
 	n = execute_cmd_line(root, env);
-	printf("status = %d\n",n);
+	printf("status = %d\n", n);
 	return (n);
 }

@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/06 13:50:00 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/08 06:56:45 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,9 @@ t_gar			**garbage_list(void);
 t_env			*create_the_main_list(char **envp);
 
 /* FUNCTIONS */
+void			handle_missing_cmd(t_cmd cmd, t_data *prg_data);
+int				exec_cmd(t_cmd cmd, char **envp, char *new_path);
+char			*expand_the_value(char *str, t_env **env);
 t_ast_node		*subshell(t_token **token);
 t_ast_node		*command(t_token **token);
 

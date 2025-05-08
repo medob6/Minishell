@@ -19,7 +19,7 @@ void	ft_lstclear(t_gar **lst)
 	*lst = NULL;
 }
 
-const char	*costruct_prompt(void)
+const char	*costruct_prompt(t_env *env)
 {
 	char	*cwd;
 	char	*home;
@@ -27,11 +27,11 @@ const char	*costruct_prompt(void)
 	char	*tmp;
 
 	prompt = NULL;
-	cwd = ft_malloc(1, 100);
-	getcwd(cwd, 100);
+	tmp = NULL;
+	cwd = getcwd(NULL, 0);
 	// printf("cmd = '%s'\n",cwd);
-	if (cwd[0] =='\0')
-		return (prompt);
+	if (env && !cwd )
+		cwd = expand_the_value("$PWD", &env);
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
@@ -40,6 +40,8 @@ const char	*costruct_prompt(void)
 	}
 	else
 		prompt = ft_strjoin(cwd, "$ ");
+	ft_free(tmp);
+	ft_free(cwd);
 	// g_data.prompt = prompt;
 	return (prompt);
 }
@@ -238,7 +240,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		ast = NULL;
-		prompt = costruct_prompt();
+		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
 		// printf("\n");
 		// printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",

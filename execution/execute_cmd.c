@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_exec.c                                       :+:      :+:    :+:   */
+/*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 17:44:11 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/06 18:53:51 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	}
 }
 
-static int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
+int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
 {
 	if (access(cmd.path, F_OK) != 0)
 	{
