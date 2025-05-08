@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 14:31:46 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:49:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -577,7 +577,6 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 		hold = new;
 	}
 	*field = hold;
-	//printf("[%s]\n", *field);
 	return (old_str);
 }
 //void	printl(char **s)
@@ -592,11 +591,47 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 //	}
 //}
 
+char	*update_field_after_splitting(char *field, char *copy_exp)
+{
+	char	*new;
+	int		i;
+	int		j;
+	int		count;
+	
+	i = 0;
+	count = 0;
+	while (copy_exp[i])
+	{
+		if ((copy_exp[i] == ' ' || copy_exp[i] == '\t') && field[i] == '1')
+			count++;
+		i++;
+	}
+	new = ft_calloc(sizeof(char), (ft_strlen(field) - count) + 1);
+	j = 0;
+	i = 0;
+	while (copy_exp[i])
+	{
+		if ((copy_exp[i] == ' ' || copy_exp[i] == '\t') && field[i] == '1')
+			i++;
+		else
+		{
+			new[j] = field[i++];
+			j++;
+		}
+	}
+	new[j] = '\0';
+	return (new);
+}
+
 static void	update_child_value(t_expansion *expand, int i, char *expanded, int field_split)
 {
+	char	*copy_exp;
+
+	copy_exp = ft_strdup(expanded);
 	if (field_split)
 	{
 		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
+		expand->field[i] = update_field_after_splitting(expand->field[i], copy_exp);
 	}
 	else
 	{
@@ -609,9 +644,13 @@ static void	update_child_value(t_expansion *expand, int i, char *expanded, int f
 
 static void	update_token_value(t_expansion *expand, int i, char *expanded, int field_split)
 {
+	char	*copy_exp;
+
+	copy_exp = ft_strdup(expanded);
 	if (field_split)
 	{
 		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
+		expand->field[i] = update_field_after_splitting(expand->field[i], copy_exp);
 		expand->str[i]->fd = ((t_token *)expand->node->redirect_list->items[i])->value.fd_value;
 		expand->str[i]->type = ((t_token *)expand->node->redirect_list->items[i])->type;
 	}
@@ -942,7 +981,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	check_for_empty_strings_red(expand);
 	removes_qouts_cmd(expand);
 	removes_qouts_red(expand);
-	print_arguments(expand->node->children);
+	//print_arguments(expand->node->children);
 	//printf("here\n");
 	return (1);
 }
