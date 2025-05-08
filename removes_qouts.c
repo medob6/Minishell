@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 17:51:24 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:49:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ char    *remove_q(char **field, char *str, int *index, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
-        printf("[str = %c]///////[field = %c]////[index = %d]\n", str[j], field[i][*index], *index);
+        //printf("[str = %c]///////[field = %c]////[index = %d]\n", str[j], field[i][*index], *index);
         if (str[j] == '\'' && field[i][*index] == '0')//&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
         {
             start = j;

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 15:30:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/08 14:30:40 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,24 @@ void set_expanded_value(t_array *child, int i, char **new_str)
 {
     ((t_str *)child->items[i])->value = new_str;
 }
+char    *take_before_wildcard(char *field, char **org, int j, int *i)
+{
+    int     len = 0;
+    int     k = 0;
+    char    *res;
+
+    while (k < j)
+    {
+        len += ft_strlen(org[k]);
+        k++;
+    }
+    *i = len;
+    res = malloc(len + 1);
+    if (!res)
+        return (NULL);
+    ft_strlcpy(res, field, len + 1);
+    return (res);
+}
 
 
 char *expand_wildcard(char *str)
@@ -346,8 +364,86 @@ char    **append_to_arr(char **old, char *str, int flag)
     return (new);
 }
 
+//void    create_new_field(char **field, char **org, int j, char *exp)
+//{
+//    char    *new;
+//    int     i;
+//    int     count;
+    
+//    new = NULL;
+//    i = 0;
+//    new = ft_strjoin(new, take_before_wildcard(*field, org, j, &i));
+//    count = get_new_len(exp);
+//    new = ft_strjoin(new, update_new(count));
+//    new = ft_strjoin(new, take_after_wildcard(*field, org, j, &i));
+//    *field = new;
+//}
 
-void    call_expand_wildcard(t_array *child, int i)
+int get_new_len(const char *exp)
+{
+    int i = 0;
+    int count = 0;
+
+    while (exp && exp[i])
+    {
+        if (exp[i] != ' ')
+            count++;
+        i++;
+    }
+    return count;
+}
+
+
+char *update_new(int len)
+{
+    char *res = malloc(len + 1);
+    if (!res)
+        return NULL;
+
+    for (int i = 0; i < len; i++)
+        res[i] = '6';
+
+    res[len] = '\0';
+    return res;
+}
+
+char    *take_after_wildcard(char *field, char **org, int j, int *i)
+{
+    int     offset = *i + ft_strlen(org[j]);
+    int     total_len = ft_strlen(field);
+    char    *res;
+
+    if (offset >= total_len)
+        return (ft_strdup(""));
+
+    res = malloc(total_len - offset + 1);
+    if (!res)
+        return (NULL);
+    ft_strlcpy(res, field + offset, total_len - offset + 1);
+    return (res);
+}
+
+
+void create_new_field(char **field, char **org, int j, char *exp)
+{
+    char    *before;
+    char    *middle;
+    char    *after;
+    char    *new;
+    int     i;
+
+    i = 0;
+    before = take_before_wildcard(*field, org, j, &i);
+    middle = update_new(get_new_len(exp));
+    after = take_after_wildcard(*field, org, j, &i);
+    new = ft_strjoin(before, middle);
+    before = new;
+    new = ft_strjoin(before, after);
+    *field = new;
+}
+
+
+void    call_expand_wildcard(t_array *child, char **field, int i)
 {
     char    **str;
     char    **new;
@@ -365,7 +461,10 @@ void    call_expand_wildcard(t_array *child, int i)
         if (search_wildcard(str[j]))
         {
             if (expand_wildcard(str[j]))
+            {
                 new = append_to_arr(new, expand_wildcard(str[j]), 1);
+                create_new_field(&field[i], str, j, expand_wildcard(str[j]));
+            }
             else
                 new = append_to_arr(new, str[j], 0);
         }
@@ -401,7 +500,7 @@ void    expand_path_name_cmd(t_expansion *expand)
         tmp = ((t_str *)expand->node->children->items[i])->value;
         if (tmp && *tmp)
         {
-            call_expand_wildcard(expand->node->children, i);
+            call_expand_wildcard(expand->node->children, expand->field, i);
         }
         i++;
     }
@@ -424,7 +523,7 @@ void    expand_path_name_red(t_expansion *expand)
 		}
 		tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
 		if (tmp && *tmp)
-            call_expand_wildcard(expand->node->redirect_list, i);
+            call_expand_wildcard(expand->node->redirect_list, expand->field, i);
 		i++;
 	}
 }
