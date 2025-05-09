@@ -189,6 +189,7 @@ char	**field_splitting(char *str, char *charset);
 int	expand_ast(t_ast_node *node, t_env **env);
 void	check_for_empty_strings_red(t_expansion *expand);
 char **applicate_splitting(char *str, char *field);
+char **create_field_red(t_ast_node *node);
 
 //export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"

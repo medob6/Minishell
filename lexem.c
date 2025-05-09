@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/25 09:51:47 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/09 16:00:49 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,48 +146,56 @@ int skip_quotes(const char *s, int i, int *in_word)
 // 	return (count);
 // }
 
+void	help_count_words(char const *s, int *i, int *count, int *in_word)
+{
+	if (*in_word)
+	{
+		(*count)++;
+		*in_word = 0;
+	}
+	if ((s[*i] == '|' && s[*i + 1] == '|') || (s[*i] == '&' && s[*i + 1] == '&'))
+		(*i)++;
+	(*count)++;
+	(*i)++;
+}
+
+void	check_if_in_word(int *in_word, int *count, int *i)
+{
+	if (*in_word)
+	{
+		(*count)++;
+		*in_word = 0;
+	}
+	(*i)++;
+}
+
 int count_words(char const *s)
 {
-	int i = 0;
-	int count = 0;
-	int in_word = 0;
+	int i;
+	int count;
+	int in_word;
 
+	i = 0;
+	count = 0;
+	in_word = 0;
 	while (s[i])
 	{
-		// Handle whitespace
 		if (s[i] == ' ' || s[i] == '\t')
 		{
-			if (in_word)
-			{
-				count++;
-				in_word = 0;
-			}
-			i++;
+			check_if_in_word(&in_word, &count, &i);
 			continue;
 		}
-
-		// Handle operators (excluding single &)
 		if (is_operator(s, i))
 		{
-			if (in_word)
-			{
-				count++;
-				in_word = 0;
-			}
-			if ((s[i] == '|' && s[i + 1] == '|') || (s[i] == '&' && s[i + 1] == '&'))
-				i++;
-			count++;
-			i++;
+			help_count_words(s, &i, &count, &in_word);
 			continue;
 		}
 		in_word = 1;
 		i++;
 	}
-
 	if (in_word)
 		count++;
-
-	return count;
+	return (count);
 }
 
 
@@ -297,15 +305,17 @@ int handle_normal_words(char **str, char *cmd_line, int *i)
 
 int handle_word(char **str, char *cmd_line, int *i)
 {
-	char	*tmp = NULL;
+	char	*tmp;
 	char	quote;
+	int		start;
 
+	tmp = NULL;
 	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
 	{
 		if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
 		{
 			quote = cmd_line[*i];
-			int start = (*i)++;
+			start = (*i)++;
 			while (cmd_line[*i] && cmd_line[*i] != quote)
 				(*i)++;
 			if (cmd_line[*i] == quote)
@@ -314,7 +324,7 @@ int handle_word(char **str, char *cmd_line, int *i)
 		}
 		else
 		{
-			int start = *i;
+			start = *i;
 			while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t'
 				&& !is_operator(cmd_line, *i) && cmd_line[*i] != '\'' && cmd_line[*i] != '"')
 				(*i)++;
@@ -324,7 +334,6 @@ int handle_word(char **str, char *cmd_line, int *i)
 	*str = tmp;
 	return (1);
 }
-
 
 int handle_operators(char **str, char *cmd_line, int *i, int count)
 {
@@ -338,11 +347,9 @@ char **help_lexer(char **str, char *cmd_line)
 {
 	int i;
 	int j;
-	//int	flag;
 
 	i = 0;
 	j = 0;
-	//flag = 1;
 	while (cmd_line[i])
 	{
 		while (cmd_line[i] == ' ' || cmd_line[i] == '\t')
@@ -351,7 +358,6 @@ char **help_lexer(char **str, char *cmd_line)
 			break;
 		if (is_operator(cmd_line, i))
 		{
-			//flag = 1;
 			j += handle_par(&str[j], cmd_line, &i);
 			continue;
 		}

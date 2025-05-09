@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:14:20 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/03 17:15:18 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/09 16:43:04 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,23 @@ char **create_field(t_ast_node *node)
 	while (i < node->children->length)
 	{
 		create_single_field(field, (char **)node->children->items, i);
+		i++;
+	}
+	//printf("%zu\n", i);
+	field[i] = NULL;
+	return (field);
+}
+
+char **create_field_red(t_ast_node *node)
+{
+	char **field;
+	size_t		i;
+
+	i = 0;
+	field = ft_malloc(sizeof(char *), node->redirect_list->length + 1);
+	while (i < node->redirect_list->length)
+	{
+		create_single_field(field, (char **)(((t_token *)node->redirect_list->items)->value.str_value), i);
 		i++;
 	}
 	//printf("%zu\n", i);
