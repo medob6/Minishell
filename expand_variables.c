@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/08 15:49:19 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/09 18:05:52 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,27 @@ int	is_valid_length(char *tmp, int flag)
 	return (i);
 }
 
+char	*help_expand_the_value(char *str, char *value, int var_len)
+{
+	char	next;
 
-// change made here  //? here
+	next = str[var_len];
+	if (next == '\0' || !(next == '_' || (next >= '0' && next <= '9') ||
+		(next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z')))
+	{
+		if (str[var_len] != '\0')
+			str = ft_strjoin(ft_strdup(value), &str[var_len]);
+		else
+			str = ft_strdup(value);
+		return (str);
+	}
+	return (NULL);
+}
 char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
 	int		var_len;
 	int		index;
-	char	next;
 	char	*old_str;
 
 	old_str = str;
@@ -55,16 +68,8 @@ char  *expand_the_value(char *str, t_env **env)
 		var_len = ft_strlen(tmp->key);
 		if (ft_strncmp(str, tmp->key, var_len) == 0)
 		{
-			next = str[var_len];
-			if (next == '\0' || !(next == '_' || (next >= '0' && next <= '9') ||
-				(next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z')))
-			{
-				if (str[var_len] != '\0')
-					str = ft_strjoin(ft_strdup(tmp->value), &str[var_len]);
-				else
-					str = ft_strdup(tmp->value);
-				return (str);
-			}
+			if (help_expand_the_value(str, tmp->value, var_len))
+				return (help_expand_the_value(str, tmp->value, var_len));
 		}
 		tmp = tmp->next;
 	}
@@ -614,10 +619,7 @@ char	*update_field_after_splitting(char *field, char *copy_exp)
 		if ((copy_exp[i] == ' ' || copy_exp[i] == '\t') && field[i] == '1')
 			i++;
 		else
-		{
-			new[j] = field[i++];
-			j++;
-		}
+			new[j++] = field[i++];
 	}
 	new[j] = '\0';
 	return (new);
@@ -671,7 +673,7 @@ int	check_the_word(t_expansion *expand, int i, int split)
 	if (expand->node->children)
 		str = expand->node->children->items[i];
 	else
-		str = ((t_token *)expand->node->children->items[i])->value.str_value;
+		str = ((t_token *)expand->node->redirect_list->items[i])->value.str_value;
 	
 	expanded = help_check_the_word(&(expand->field[i]), expand->env, str);
 	if (expand->node->children)
@@ -729,39 +731,6 @@ t_str	*create_t_str(void)
 }
 
 
-void expand_cmd(t_expansion *expand)
-{
-	size_t		i;
-	int		split;
-	char	*tmp;
-	
-	i = 0;
-	split = 0;
-	if (!expand->node->children)
-		return ;
-	expand->field = create_field(expand->node);
-	expand->str = ft_malloc(sizeof(t_str *), expand->node->children->length + 1);
-	while (i < expand->node->children->length)
-	{
-		expand->str[i] = create_t_str();
-		tmp = (char *)expand->node->children->items[i];
-		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(expand->node) != -1)
-					tmp = (char *)expand->node->children->items[check_for_last_exp(expand->node)];
-    			if (!check_the_last_arg(tmp))
-        			split = 0;
-			}
-            check_the_word(expand, i, split);
-        }
-		i++;
-	}
-	expand->str[i] = NULL;
-	expand->node->children->items = (void **)expand->str;
-}
 // $a ls => "" ls
 
 //int	check_for_dollar_sign(char *s)
@@ -822,6 +791,39 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     close(value->fd_value);
     value->fd_value = fd;
 } 
+void expand_cmd(t_expansion *expand)
+{
+	size_t		i;
+	int		split;
+	char	*tmp;
+	
+	i = 0;
+	split = 0;
+	if (!expand->node->children)
+		return ;
+	expand->field = create_field(expand->node);
+	expand->str = ft_malloc(sizeof(t_str *), expand->node->children->length + 1);
+	while (i < expand->node->children->length)
+	{
+		expand->str[i] = create_t_str();
+		tmp = (char *)expand->node->children->items[i];
+		if (tmp)
+		{
+			if (check_for_field_split(tmp))
+			{
+				split = 1;
+				if (check_for_last_exp(expand->node) != -1)
+					tmp = (char *)expand->node->children->items[check_for_last_exp(expand->node)];
+    			if (!check_the_last_arg(tmp))
+        			split = 0;
+			}
+            check_the_word(expand, i, split);
+        }
+		i++;
+	}
+	expand->str[i] = NULL;
+	expand->node->children->items = (void **)expand->str;
+}
 
 void expand_redirection(t_expansion *expand)
 {
@@ -834,7 +836,7 @@ void expand_redirection(t_expansion *expand)
 	
 	if (!expand->node->redirect_list)
 		return ;
-	expand->field = create_field(expand->node);
+	expand->field = create_field_red(expand->node);
 	expand->str = ft_malloc(sizeof(t_str *), expand->node->redirect_list->length + 1);
 	while (i < expand->node->redirect_list->length)
 	{
@@ -981,7 +983,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	check_for_empty_strings_red(expand);
 	removes_qouts_cmd(expand);
 	removes_qouts_red(expand);
-	//print_arguments(expand->node->children);
+	print_arguments(expand->node->children);
 	//printf("here\n");
 	return (1);
 }

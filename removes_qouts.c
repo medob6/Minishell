@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/08 15:49:24 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/09 18:08:12 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,7 @@ int     check_for_next_one(char *str, int j)
 //{
     
 //}
-// i still i have aproblem i need to update the field in field splitting and expand path name
-// for field splitting i need to take string befor field splitting and the field and if i found space have 1 remove it
-// for expand path name i think i take the len of every string i get and update field with it by using num 6 i guess
+
 char    *remove_q(char **field, char *str, int *index, size_t i)
 {
     char    *new_str;
