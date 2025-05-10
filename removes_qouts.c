@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/09 18:08:12 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:40:45 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,6 @@ int     check_for_next_one(char *str, int j)
     return (0);
 }
 
-//int get_the_qout(char *str, char c)
-//{
-    
-//}
-
 char    *remove_q(char **field, char *str, int *index, size_t i)
 {
     char    *new_str;
@@ -78,14 +73,7 @@ char    *remove_q(char **field, char *str, int *index, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
-        //printf("[str = %c]///////[field = %c]////[index = %d]\n", str[j], field[i][*index], *index);
-        if (str[j] == '\'' && field[i][*index] == '0')//&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
-        {
-            start = j;
-            j = take_inside_qouts(&new_str, &field[i][*index], str, j);
-            *index += j - start;
-        }
-        else if (str[j] == '"' && field[i][*index] == '0') //&& check_for_next_one(str, j) && (field[i][j] != '5' && field[i][j] != '1'))
+        if ((str[j] == '\'' || str[j] == '"') && field[i][*index] == '0')
         {
             start = j;
             j = take_inside_qouts(&new_str, &field[i][*index], str, j);
@@ -111,8 +99,6 @@ void    removes_qouts_cmd(t_expansion *expand)
     if (!expand->node->children)
         return ;
     i = 0;
-    //if (ft_strncmp(tmp, "export", ft_strlen(tmp)) == 0)
-    //    return ;
     while (i < expand->node->children->length)
     {
         tmp = ((t_str *)expand->node->children->items[i])->value;
@@ -123,7 +109,6 @@ void    removes_qouts_cmd(t_expansion *expand)
             while (tmp && tmp[j])
             {
                 tmp[j] = remove_q(expand->field, tmp[j], &index, i);
-                //printf("[%s]\n", tmp[j]);
                 j++;
             }
         }
@@ -132,12 +117,29 @@ void    removes_qouts_cmd(t_expansion *expand)
     }
 }
 
+void    help_removes_qouts_red(t_expansion *expand, size_t i)
+{
+    char    **tmp;
+    int     j;
+    int     index;
+
+    tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
+    if (tmp && *tmp)
+    {
+        j = 0;
+        index = 0;
+        while (tmp && tmp[j])
+        {
+            tmp[j] = remove_q(expand->field, tmp[j], &index, i);
+            j++;
+        }
+    }
+    ((t_str *)expand->node->redirect_list->items[i])->value = tmp;
+}
+
 void    removes_qouts_red(t_expansion *expand)
 {
     size_t  i;
-    int     j;
-    int     index;
-    char    **tmp;
 
     if (!expand->node->redirect_list)
         return ;
@@ -149,19 +151,7 @@ void    removes_qouts_red(t_expansion *expand)
             i++;
             continue;
         }
-        tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
-        if (tmp && *tmp)
-        {
-            j = 0;
-            index = 0;
-            while (tmp && tmp[j])
-            {
-                tmp[j] = remove_q(expand->field, tmp[j], &index, i);
-                //printf("[%s]\n", tmp[j]);
-                j++;
-            }
-        }
-        ((t_str *)expand->node->redirect_list->items[i])->value = tmp;
+        help_removes_qouts_red(expand, i);
         i++;
     }
 }

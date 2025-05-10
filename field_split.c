@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 13:32:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/05 14:32:23 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:41:23 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	count_alpha(char *str, char *sep)
 //	return (s);
 //}
 
-char **allocate_string(char **s, char *str, char *charset, int count)
+char **allocate_string(char **s, char *str, char *charset)
 {
 	int	i = 0;
 	int	alpha = 0;
@@ -181,7 +181,7 @@ char	**field_splitting(char *str, char *charset)
 		return (s[1] = NULL, s);
 	}
 	tmp = str;
-	s = allocate_string(s, str, charset, count);
+	s = allocate_string(s, str, charset);
 	if (!s)
 		return (NULL);
 	s = concat(s, tmp, charset);
