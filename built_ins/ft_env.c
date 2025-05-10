@@ -6,28 +6,34 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:34:48 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 15:14:05 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:11:52 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_env(t_env **env)
+int	ft_env(t_env **env, int fd)
 {
 	t_env	*tmp;
+	char 	*str;
 
 	if (!env)
 		return (1);
 	tmp = *env;
 	while (tmp)
 	{
-		ft_print(tmp->key, 1);
-		ft_print(tmp->value, 1);
-		ft_print("\n", 1);
+		str = ft_strjoin(ft_strjoin(tmp->key, "="), tmp->value);
+		ft_print(str, fd);
+		ft_print("\n", fd);
 		tmp = tmp->next;
 	}
 	return (0);
 }
+
+//TODO : if SHLVL more the 0-999 or not int , the next shlvl must be 0
+//TODO : if env run in child it must must be shlvl 0 allways 
+//TODO: left one () for simple command  
+
 
 // int	main(int argc, char **argv, char **envp)
 // {
