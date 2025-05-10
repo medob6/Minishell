@@ -6,25 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/08 14:30:40 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:09:00 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int     search_wildcard(char *tmp)
-{
-    int     i;
-
-    i = 0;
-    while (tmp[i])
-    {
-        if (tmp[i] == '*')
-            return (1);
-        i++;
-    }
-    return (0);
-}
 
 int     check_str(char *str)
 {
@@ -42,8 +28,8 @@ int     check_str(char *str)
 
 int match_pattern(const char *pattern, const char *name)
 {
-    if (!pattern || !name)
-        return (0);
+    //if (!pattern || !name)
+        //return (0);
     while (*pattern)
     {
         if (*pattern == '*')
@@ -85,7 +71,6 @@ char    *handle_dir(struct dirent *dir, char *get, char *path, char *new_str)
     tmp = ft_strjoin(dir->d_name, &get[i]);
     if (header)
     {
-        //if (get[i] == '/' && get[i + 1] == '\0' &&
         if (dir->d_name[0] == '.')
             return (ft_strjoin(new_str, ft_strjoin(ft_strjoin(path, tmp), " ")));
     }
@@ -102,9 +87,9 @@ void help_expand_wild(struct dirent *dir, char *path, char *get, char **new_str)
     char *tmp;
 
     tmp = ft_strjoin(path, dir->d_name);
-    if ((!get || check_str(get)) && dir->d_name[0] != '.')
-        *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
-    else if (get && match_pattern(get, dir->d_name) && dir->d_name[0] != '.')
+    //if ((!get || check_str(get)) && dir->d_name[0] != '.')
+    //    *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
+    if (get && match_pattern(get, dir->d_name) && dir->d_name[0] != '.')
     {
         *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
     }
@@ -147,7 +132,7 @@ char    *check_string_get(char *get)
 
 char    *expand_wild(char *path, char *get)
 {
-    struct dirent   *line;
+    struct dirent   *file;
     DIR     *dir;
     int     i;
     char    *new_str;
@@ -161,14 +146,14 @@ char    *expand_wild(char *path, char *get)
         dir = opendir(".");
     if (!dir)
         return (NULL);
-    line = readdir(dir);
-    tmp = ft_strjoin(path, line->d_name);
+    file = readdir(dir);
+    tmp = ft_strjoin(path, file->d_name);
     if (check_string_get(get))
         get = check_string_get(get);
-    while (line)
+    while (file)
     {
-        help_expand_wild(line, path, get, &new_str);
-        line = readdir(dir);
+        help_expand_wild(file, path, get, &new_str);
+        file = readdir(dir);
     }
     closedir(dir);
     return (new_str);
@@ -320,46 +305,59 @@ char *expand_wildcard(char *str)
     //    return (str);
     return (new_str);
 }
+//char    **fill_arr(char **words, char **new, char *str, int flag)
+//{
+    
+//}
+static char     **split_new(char *str, int *count, int flag)
+{
+    char    **words;
+
+    words = NULL;
+    *count = (!flag);
+    words = ft_split(str, ' ');
+    while (words && words[*count])
+        (*count)++;
+    return (words);
+}
+
+static char    **append_old_arr(char **old, int *j, int i, int count)
+{
+    char    **new;
+
+    new = ft_calloc(sizeof(char *), i + count + 1);
+    while (old && old[*j])
+    {
+        new[*j] = ft_strdup(old[*j]);
+        (*j)++;
+    }
+    return (new);
+}
 
 char    **append_to_arr(char **old, char *str, int flag)
 {
-    int     i = 0;
-    int     j = 0;
-    int     count = 0;
+    int     i;
+    int     j;
+    int     count;
     char    **new;
-    char    **words = NULL;
+    char    **words;
 
+    i = 0;
     while (old && old[i])
         i++;
-    if (flag)
-    {
-        words = ft_split(str, ' ');
-        while (words && words[count])
-            count++;
-    }
-    else
-        count = 1;
+    count = 0;
+    words = split_new(str, &count,flag);
     new = ft_calloc(sizeof(char *), i + count + 1);
-    if (!new)
-        return (NULL);
     j = 0;
-    while (old && old[j])
-    {
-        new[j] = ft_strdup(old[j]);
-        j++;
-    }
+    new = append_old_arr(old, &j, i, count);
     if (flag)
     {
-        int k = 0;
-        while (words && words[k])
-        {
-            new[j++] = ft_strdup(words[k]);
-            k++;
-        }
+        i = 0;
+        while (words && words[i])
+            new[j++] = ft_strdup(words[i++]);
     }
     else
         new[j++] = ft_strdup(str);
-
     new[j] = NULL;
     return (new);
 }
@@ -407,7 +405,7 @@ char *update_new(int len)
     return res;
 }
 
-char    *take_after_wildcard(char *field, char **org, int j, int *i)
+static char    *take_after_wildcard(char *field, char **org, int j, int *i)
 {
     int     offset = *i + ft_strlen(org[j]);
     int     total_len = ft_strlen(field);
@@ -442,6 +440,15 @@ void create_new_field(char **field, char **org, int j, char *exp)
     *field = new;
 }
 
+int     get_len(char **str)
+{
+    int     count;
+
+    count = 0;
+    while (str && str[count])
+        count++;
+    return (count);
+}
 
 void    call_expand_wildcard(t_array *child, char **field, int i)
 {
@@ -450,15 +457,11 @@ void    call_expand_wildcard(t_array *child, char **field, int i)
     int     j;
 
     str = get_string_from_child(child, i);
-    j = 0;
-    new = NULL;
-    while (str && str[j])
-        j++;
-    new = ft_calloc(sizeof(char *), j + 1);
+    new = ft_calloc(sizeof(char *), get_len(str) + 1);
     j = 0;
     while (str && str[j])
     {
-        if (search_wildcard(str[j]))
+        if (search_for(str[j], '*'))
         {
             if (expand_wildcard(str[j]))
             {

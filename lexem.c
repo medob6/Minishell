@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/09 16:00:49 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:41:41 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@
 //     write(fd, s, ft_strlen(s));
 // }
 
-int is_operator(const char *c, int i)
+static int is_operator(const char *c, int i)
 {
-	return ((c[i] == '&' && c[i + 1] == '&') || (c[i] == '|' && c[i + 1] == '|') || c[i] == '|' || c[i] == '<' || c[i] == '>' || c[i] == '(' || c[i] == ')');
+	return ((c[i] == '&' && c[i + 1] == '&') || (c[i] == '|' && c[i + 1] == '|')
+	|| c[i] == '|' || c[i] == '<' || c[i] == '>' || c[i] == '(' || c[i] == ')');
 }
 
-int check_quote(char *cmd_line)
+static int check_quote(char *cmd_line)
 {
 	int i;
 	int qout;
@@ -51,7 +52,7 @@ int check_quote(char *cmd_line)
 	return (qout == 0);
 }
 
-int check_quotes(char *cmd_line)
+static int check_quotes(char *cmd_line)
 {
 	return (check_quote(cmd_line) && check_quote(cmd_line));
 }
@@ -73,22 +74,6 @@ size_t ft_strlcpy(char *dst, const char *src, size_t dstsize)
 		dst[i] = '\0';
 	}
 	return (count);
-}
-
-int get_next_qout(char *cmd_line, int i)
-{
-	int j;
-	char c;
-
-	j = i + 1;
-	c = cmd_line[i];
-	while (cmd_line[j])
-	{
-		if (cmd_line[j] == c)
-			return (j);
-		j++;
-	}
-	return (i);
 }
 
 int skip_quotes(const char *s, int i, int *in_word)
@@ -146,7 +131,7 @@ int skip_quotes(const char *s, int i, int *in_word)
 // 	return (count);
 // }
 
-void	help_count_words(char const *s, int *i, int *count, int *in_word)
+static void	help_count_words(char const *s, int *i, int *count, int *in_word)
 {
 	if (*in_word)
 	{
@@ -159,7 +144,7 @@ void	help_count_words(char const *s, int *i, int *count, int *in_word)
 	(*i)++;
 }
 
-void	check_if_in_word(int *in_word, int *count, int *i)
+static void	check_if_in_word(int *in_word, int *count, int *i)
 {
 	if (*in_word)
 	{
@@ -169,7 +154,7 @@ void	check_if_in_word(int *in_word, int *count, int *i)
 	(*i)++;
 }
 
-int count_words(char const *s)
+static int count_words(char const *s)
 {
 	int i;
 	int count;
@@ -200,7 +185,7 @@ int count_words(char const *s)
 
 
 
-int handle_par(char **str, char *c, int *i)
+static int handle_par(char **str, char *c, int *i)
 {
 	if (is_operator(c, *i) && c[*i] != '(' && c[*i] != ')' && c[*i] == c[*i + 1])
 	{
@@ -237,7 +222,7 @@ int handle_in_the_qouts(char **str, char *cmd_line, int *i)
 	return (1);
 }
 
-int check_for_operation(char *cmd_line)
+static int check_for_operation(char *cmd_line)
 {
 	int i;
 
@@ -264,7 +249,8 @@ int handle_normal_words(char **str, char *cmd_line, int *i)
 	int start;
 
 	start = *i;
-	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
+	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t'
+	&& !is_operator(cmd_line, *i))
 		(*i)++;
 	check_for_operation(cmd_line);
 	*str = ft_malloc(*i - start + 1, 1);
@@ -303,25 +289,32 @@ int handle_normal_words(char **str, char *cmd_line, int *i)
 // 	return (1);
 // }
 
-int handle_word(char **str, char *cmd_line, int *i)
+static char	*handle_qouts(char *cmd_line, int *i)
 {
 	char	*tmp;
 	char	quote;
 	int		start;
 
 	tmp = NULL;
+	quote = cmd_line[*i];
+	start = (*i)++;
+	while (cmd_line[*i] && cmd_line[*i] != quote)
+		(*i)++;
+	if (cmd_line[*i] == quote)
+		(*i)++;
+	tmp = ft_substr(cmd_line, start, *i - start);
+	return (tmp);
+}
+static int handle_word(char **str, char *cmd_line, int *i)
+{
+	char	*tmp;
+	int		start;
+
+	tmp = NULL;
 	while (cmd_line[*i] && cmd_line[*i] != ' ' && cmd_line[*i] != '\t' && !is_operator(cmd_line, *i))
 	{
 		if (cmd_line[*i] == '\'' || cmd_line[*i] == '"')
-		{
-			quote = cmd_line[*i];
-			start = (*i)++;
-			while (cmd_line[*i] && cmd_line[*i] != quote)
-				(*i)++;
-			if (cmd_line[*i] == quote)
-				(*i)++;
-			tmp = ft_strjoin(tmp, ft_substr(cmd_line, start, *i - start));
-		}
+			tmp = ft_strjoin(tmp, handle_qouts(cmd_line, i));
 		else
 		{
 			start = *i;
@@ -408,11 +401,6 @@ char **lexer(char *cmd_line)
 		ft_print("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
 	}
-	// if (!check_parenthesis(cmd_line))
-	// {
-	// 	ft_print("ERROR:\nbalanced paronthesis.\n", 2);
-	// 	return (NULL);
-	// }
 	total = count_words(cmd_line);
 	str = ft_malloc(sizeof(char *), (total + 1));
 	return (help_lexer(str, cmd_line));

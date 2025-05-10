@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/09 18:05:52 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 14:06:55 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	is_valid_length(char *tmp, int flag)
 	return (i);
 }
 
-char	*help_expand_the_value(char *str, char *value, int var_len)
+static char	*help_expand_the_value(char *str, char *value, int var_len)
 {
 	char	next;
 
@@ -53,6 +53,7 @@ char	*help_expand_the_value(char *str, char *value, int var_len)
 	}
 	return (NULL);
 }
+
 char  *expand_the_value(char *str, t_env **env)
 {
 	t_env	*tmp;
@@ -81,115 +82,6 @@ char  *expand_the_value(char *str, t_env **env)
 	return (str);
 }
 
-//void	print_field(t_bit_mask *field, char *str)
-//{
-//	for (int i = 0; str[i]; i++)
-//		printf("%c (%d) ", str[i], field[i]);
-//	printf("\n");
-//}
-size_t	next_dollar(char *s)
-{
-	int		i;
-
-	i = 1;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (i);
-		i++;
-	}
-	return (0);
-}
-
-//void	update_field_expansion(t_bit_mask **field, char *old_str, char *exp, int len)
-//{
-//	int		size;
-//	int		i;
-//	int		j;
-//	int		old_i;
-//	t_bit_mask	*new_field;
-
-//	size = (ft_strlen(old_str) + ft_strlen(exp) - len);
-//	new_field = ft_malloc(sizeof(t_bit_mask), size + 1);
-//	i = 0;
-//	j = 0;
-//	while (old_str[i])
-//	{
-//		if (old_str[i] == '$')
-//			break ;
-//		new_field[j] = (*field)[j];
-//		j++;	
-//		i++;
-//	}
-//	old_i = i;
-//	i = 0;
-//	while (exp[i])
-//	{
-//		new_field[j] = (*field)[j] | EXPANDED;
-//		j++;
-//		i++;
-//	}
-//	old_i += len;
-//	while (old_str[old_i])
-//	{
-//		new_field[j] = (*field)[old_i];
-//		j++;
-//		old_i++;
-//	}
-//	new_field[j] = ORIGINAL;
-//	(*field) = new_field;
-//}
-
-
-//int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
-//{
-//	int var_len;
-//	//char *tmp;
-//	char *exp;
-//	char *var;
-//	char buf[2];
-//	(void)field;
-
-//	var_len = is_valid_length(&str[1], 0);
-//	if (var_len == 0)
-//	{
-//		buf[0] = '$';
-//		buf[1] = '\0';
-//		*old_str = ft_strjoin(*old_str, buf);
-//		return (1);
-//	}
-//	var = ft_substr(str, 0, var_len + 1);
-//	exp = expand_the_value(var, env);
-//	*old_str = ft_strjoin(*old_str, exp);
-//	return (var_len + 1);
-//}
-
-//int handle_expansion(char *str, t_env **env, char **old_str, t_bit_mask **field)
-//{
-//	int var_len;
-//	char *exp;
-//	char *var;
-//	char buf[2];
-//	int old_len;
-
-//	var_len = is_valid_length(&str[1], 0);
-//	if (var_len == 0)
-//	{
-//		buf[0] = '$';
-//		buf[1] = '\0';
-//		*old_str = ft_strjoin(*old_str, buf);
-//		return (1);
-//	}
-//	//update_field_expansion(field, *old_str, exp, str, var_len);
-//	var = ft_substr(str, 0, var_len + 1);
-//	exp = expand_the_value(var, env);
-//	*old_str = ft_strjoin(*old_str, exp);
-
-//	//print_field(*field, *old_str);
-//	//printf("[%s]\n", *old_str);
-//	return (var_len + 1);
-//}
-
 
 char *append_char(char *old_str, char c)
 {
@@ -200,20 +92,6 @@ char *append_char(char *old_str, char c)
 	buf[1] = '\0';
 	tmp = ft_strjoin(old_str, buf);
 	return (tmp);
-}
-
-int	check_for_spaces(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == ' ')
-			return (1);
-		i++;
-	}
-	return (0);
 }
 
 int	check_if_qouted(char *str, int index)
@@ -230,64 +108,6 @@ int	check_if_qouted(char *str, int index)
 	return (1);
 }
 
-//int	check_the_word(t_array *child, t_env **env, int i, int split)
-//{
-//	char *old_str = ft_strdup("");
-//	char *tmp;
-//	int index = 0;
-//	char *str;
-
-//	if (child)
-//		str = child->items[i];
-//	else
-//		str = ((t_token *)child->items[i])->value.str_value;
-//	while (str[index])
-//	{
-//		if (str[index] == '\'' && check_if_qouted(str, index))
-//		{
-//			int start = index;
-//			index++;
-//			while (str[index] && str[index] != '\'')
-//				index++;
-//			if (str[index] == '\'')
-//				index++;
-//			tmp = ft_strjoin(old_str, ft_substr(str, start, index - start));
-//		}
-//		else if (str[index] == '$')
-//			tmp = handle_expansion(str, &index, env, old_str);
-//		else
-//		{
-//			tmp = append_char(old_str, str[index]);
-//			if (str[index] != '\0')
-//				index++;
-//		}
-//		old_str = tmp;
-//	}
-
-//	if (child)
-//	{
-//		if (split)
-//			child->items[i] = applicate_field_split(old_str);
-//		else
-//			child->items[i] = old_str;
-//	} *
-//	else
-//	{
-//		if (split)
-//			((t_token *)child->items[i])->value.str_value = applicate_field_split(old_str);
-//		else
-//			((t_token *)child->items[i])->value.str_value = old_str;
-//		if (check_for_spaces(((t_token *)child->items[i])->value.str_value) 
-//		|| ((t_token *)child->items[i])->value.str_value[0] == '\0')
-//		{
-//			if (((t_token *)child->items[i])->value.fd_value != -1)
-//				close(((t_token *)child->items[i])->value.fd_value);
-//			((t_token *)child->items[i])->value.fd_value = AMBIGUOUS_REDIRECTION;
-//		}
-//	}
-//	return (1);
-//}
-
 int		search_for(char *str, char c)
 {
 	int		i;
@@ -301,158 +121,6 @@ int		search_for(char *str, char c)
 	}
 	return (0);
 }
-
-//static char	*handle_single_quote(char *str, int *index, char *old_str)
-//{
-//	int		start;
-//	char	*tmp;
-
-//	start = 0;
-//	start++;
-//	while (str[start] && str[start] != '\'')
-//		start++;
-//	if (str[start] == '\'')
-//		start++;
-//	*old_str = ft_strjoin(*old_str, ft_substr(str, 0, start));
-//	return (start);
-//}
-
-//static int handle_other_char(char *str, char **old_str)
-//{
-//	//char	*tmp;
-
-//	*old_str = append_char(*old_str, str[0]);
-//	if (str[0] != '\0')
-//		return (1);
-//	return (0);
-//}
-
-//void	update_field(t_bit_mask **field, char *old_str, char *new_str, int len)
-//{
-//	int		i;
-//	int		old_i;
-//	t_bit_mask	*new_field;
-
-//	i = 0;
-//	new_field = ft_malloc(sizeof(t_bit_mask), ft_strlen(new_str) + 1);
-//	while (new_str[i])
-//	{
-//		if (new_str[i] == old_str[i])
-//			new_field[i] = (*field)[i];
-//		else
-//		{
-//			old_i = i;
-//			while (new_str[i] != old_str[len])
-//			{
-//				if ((*field)[old_i] == 0)
-//					new_field[i] = EXPANDED;
-//				else
-//					new_field[i] = DOUBLE_QOUT | EXPANDED;
-//				i++;
-//			}
-//			while (old_str && old_str[len])
-//				new_field[i++] = (*field)[len++];
-//		}
-//		if (new_str[i] && old_str[len])
-//			i++;
-//	}
-//	new_field[i] = ORIGINAL;
-//	*field = new_field;
-//}
-
-//void	update_field(t_bit_mask **field, int old_len, int insert_start, int insert_len, char *new_str)
-//{
-//	t_bit_mask	*new_field;
-//	int			i;
-
-//	new_field = ft_malloc(sizeof(t_bit_mask), ft_strlen(new_str) + 1);
-//	i = 0;
-
-//	while (new_str[i])
-//	{
-//		if (i >= insert_start && i < insert_start + insert_len)
-//			new_field[i] = DOUBLE_QOUT | EXPANDED;
-//		else if (i < old_len)
-//			new_field[i] = (*field)[i];
-//		else
-//			new_field[i] = ORIGINAL;
-//		i++;
-//	}
-//	new_field[i] = ORIGINAL;
-//	*field = new_field;
-//}
-
-
-
-
-//static char	*expand_loop(t_bit_mask **field, char *str, t_env **env)
-//{
-//	int		index;
-//	char	*old_str;
-//	char	*tmp;
-
-//	index = 0;
-//	old_str = ft_strdup("");
-//	while (str[index])
-//	{
-//		if ((*field)[index] == 2)
-//			tmp = handle_single_quote(str, &index, old_str);
-//		else if (str[index] == '$')
-//		{
-//			index += handle_expansion(&str[index], env, &old_str, field);
-//			//if (tmp)
-//			//	update_field(field, str, tmp, index - old_index);
-//			//printf("%s\n", old_str);
-//		}
-//		else
-//			index += handle_other_char(&str[index], &old_str);
-//	}
-//	//print_field(*field, str);
-//	printf("[%s]\n", old_str);
-//	return (old_str);
-//}
-
-//void	update_field(t_bit_mask **field, char *str, char *exp, int len)
-//{
-//	t_bit_mask	*new_field;
-//	int		i;
-//	int		j;
-//	int		old_i;
-//	int		size;
-
-//	size = (ft_strlen(str) + ft_strlen(exp)) - len;
-//	new_field = ft_malloc(sizeof(t_bit_mask), size + 1);
-//	i = 0;
-//	j = 0;
-//	while (str[i])
-//	{
-//		if (str[i] == '$')
-//			break ;
-//		new_field[j] = (*field)[i];
-//		j++;	
-//		i++;
-//	}
-//	old_i = i;
-//	i = 0;
-//	while (exp[i])
-//	{
-//		if ((*field)[old_i + 1] == 4)
-//			new_field[j] = DOUBLE_QOUT | EXPANDED;
-//		else
-//			new_field[j] = EXPANDED;
-//		j++;
-//		i++;
-//	}
-//	old_i += (len + 1);
-//	while (str[old_i])
-//	{
-//		new_field[j] = (*field)[old_i];
-//		j++;
-//		old_i++;
-//	}
-//	new_field[j] = ORIGINAL;
-//	(*field) = new_field;
-//}
 
 char *handle_expansion(t_env **env, char *str, int *index)
 {
@@ -477,17 +145,6 @@ char *handle_expansion(t_env **env, char *str, int *index)
 	return (exp);
 }
 
-//char *append_char(char *old_str, char c)
-//{
-//	char buf[2];
-//	char *tmp;
-
-//	buf[0] = c;
-//	buf[1] = '\0';
-//	tmp = ft_strjoin(old_str, buf);
-//	return (tmp);
-//}
-
 char	*handle_what_in_single_qout(char *str, int *index)
 {
 	char	*tmp;
@@ -502,7 +159,6 @@ char	*handle_what_in_single_qout(char *str, int *index)
 	tmp = ft_substr(str, start, *index - start);
 	return (tmp);
 }
-
 
 char	*update_field(char **field, char *tmp, int index)
 {
@@ -549,41 +205,80 @@ char	*append(char s)
 	return (ft_strdup(buf));
 }
 
-char	*help_check_the_word(char **field, t_env **env, char *str)
+static char	*copy_and_update(char **field, char *str, int *index, char **new)
 {
 	int		start;
 	char	*tmp;
-	int		index;
+
+	start = *index;
+	tmp = append(str[(*index)++]);
+	*new = ft_strjoin(*new, update_field(field, tmp, start));
+	return (tmp);
+}
+
+char	*help_check_the_word(char **field, t_env **env, char *str)
+{
+	char	*tmp;
 	char	*old_str;
-	char *new;
-	char	*hold;
+	char	*new;
+	int		index;
+	int		start;
 
 	index = 0;
 	old_str = ft_strdup("");
-	hold = ft_strdup("");
 	new = ft_strdup("");
 	while (str[index])
 	{
 		if (str[index] == '$' && (*field)[index] != '2')
-		{		
+		{
 			start = index;
 			tmp = handle_expansion(env, str, &index);
 			new = ft_strjoin(new, update_field_exp(field, tmp, start));
-			tmp = ft_strjoin(old_str, tmp);
+			old_str = ft_strjoin(old_str, tmp);
 		}
 		else
-		{
-			start = index;
-			tmp = append(str[index++]);
-			new = ft_strjoin(new, update_field(field, tmp, start));
-			tmp = ft_strjoin(old_str, tmp);
-		}
-		old_str = tmp;
-		hold = new;
+			old_str = ft_strjoin(old_str, copy_and_update(field, str, &index, &new));
 	}
-	*field = hold;
+	*field = new;
 	return (old_str);
 }
+
+
+//static char	*help_check_the_word(char **field, t_env **env, char *str)
+//{
+//	int		start;
+//	char	*tmp;
+//	int		index;
+//	char	*old_str;
+//	char *new;
+//	char	*hold;
+
+//	index = 0;
+//	old_str = ft_strdup("");
+//	hold = ft_strdup("");
+//	new = ft_strdup("");
+//	while (str[index])
+//	{
+//		if (str[index] == '$' && (*field)[index] != '2')
+//		{		
+//			start = index;
+//			tmp = handle_expansion(env, str, &index);
+//			new = ft_strjoin(new, update_field_exp(field, tmp, start));
+//			tmp = ft_strjoin(old_str, tmp);
+//		}
+//		else
+//		{
+//			start = index;
+//			tmp = append(str[index++]);
+//			new = ft_strjoin(new, update_field(field, tmp, start));
+//			tmp = ft_strjoin(old_str, tmp);
+//		}
+//		old_str = tmp;
+//		hold = new;
+//	}
+//	*field = hold;
+//	return (old_str);
+//}
 //void	printl(char **s)
 //{
 //	int		i;
@@ -719,12 +414,10 @@ t_str	*create_t_str(void)
 	str = ft_malloc(sizeof(t_str), 1);
 	if (!str)
 		return (NULL);
-
-	str->value = ft_malloc(sizeof(char *), 2); // allocate the string array
+	str->value = ft_malloc(sizeof(char *), 2);
 	if (!str->value)
 		return (NULL);
-
-	str->value[0] = NULL; // init to NULL so it's safe
+	str->value[0] = NULL;
 	str->fd = -1;
 	str->type = -1;
 	return (str);
@@ -790,15 +483,35 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     unlink(str);
     close(value->fd_value);
     value->fd_value = fd;
-} 
+}
+
+void	application_expansion(t_expansion *expand, char *tmp, size_t i, int flag)
+{
+	int		split;
+
+	split = 0;
+	if (check_for_field_split(tmp))
+	{
+		split = 1;
+		if (check_for_last_exp(expand->node) != -1)
+		{
+			if (flag)
+				tmp = ((t_token *)expand->node->redirect_list->items[check_for_last_exp(expand->node)])->value.str_value;
+			else
+				tmp = (char *)expand->node->children->items[check_for_last_exp(expand->node)];	
+		}
+    	if (!check_the_last_arg(tmp))
+        	split = 0;
+	}
+    check_the_word(expand, i, split);
+}
+
 void expand_cmd(t_expansion *expand)
 {
 	size_t		i;
-	int		split;
 	char	*tmp;
 	
 	i = 0;
-	split = 0;
 	if (!expand->node->children)
 		return ;
 	expand->field = create_field(expand->node);
@@ -808,17 +521,7 @@ void expand_cmd(t_expansion *expand)
 		expand->str[i] = create_t_str();
 		tmp = (char *)expand->node->children->items[i];
 		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(expand->node) != -1)
-					tmp = (char *)expand->node->children->items[check_for_last_exp(expand->node)];
-    			if (!check_the_last_arg(tmp))
-        			split = 0;
-			}
-            check_the_word(expand, i, split);
-        }
+			application_expansion(expand, tmp, i, 0);
 		i++;
 	}
 	expand->str[i] = NULL;
@@ -828,12 +531,9 @@ void expand_cmd(t_expansion *expand)
 void expand_redirection(t_expansion *expand)
 {
 	size_t		i;
-	int		split;
 	char	*tmp;
 	
 	i = 0;
-	split = 0;
-	
 	if (!expand->node->redirect_list)
 		return ;
 	expand->field = create_field_red(expand->node);
@@ -849,17 +549,7 @@ void expand_redirection(t_expansion *expand)
 		}
 		tmp = ((t_token *)expand->node->redirect_list->items[i])->value.str_value;
 		if (tmp)
-		{
-			if (check_for_field_split(tmp))
-			{
-				split = 1;
-				if (check_for_last_exp(expand->node) != -1)
-					tmp = ((t_token *)expand->node->redirect_list->items[check_for_last_exp(expand->node)])->value.str_value;
-    			if (!check_the_last_arg(tmp))
-        			split = 0;
-			}
-            check_the_word(expand, i, split);
-        }
+			application_expansion(expand, tmp, i, 1);
 		i++;
 	}
 	expand->str[i] = NULL;

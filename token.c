@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 14:21:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 10:45:39 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,61 +325,69 @@ void	close_all_files(t_token **head)
 	}
 }
 
+int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
+{
+	int		index;
+
+	index = 0;
+	(*heredoc)++;
+	if (*heredoc > 16)
+	{
+		ft_print("bash: maximum here-document count exceeded\n", 2);
+		*heredoc = 0;
+		close_all_files(head);
+		exit(2);
+	}
+	index = handle_heredoc_case(head, tail, next);
+	return (index);
+}
+int	help_handle_redirection(t_token **head, t_token **tail, char *next, char c)
+{
+	int		index;
+
+	index = 0;
+	if (c == '>' || c == '<' || c == 'a')
+		index = handle_redirection(head, tail, c, next);
+	return (index);
+}
 void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
 	static int heredoc;
-	char	*next;
 
-	i = 0;
-	next = s[*index + 1];
-	while (s[*index][i])
+	i = -1;
+	while (s[*index][++i])
 	{
 		if (s[*index][i] == '\'' || s[*index][i] == '\"')
-		{
-			create_simple_token(head, tail, s[*index]);
-			return ;
-		}
+			return (create_simple_token(head, tail, s[*index]), (void)0);
 		c = check_for_operations(s[*index], i);
 		if (c)
 		{
 			if (c == '|' || c == '(')
 				heredoc = 0;
 			if (c == 'h')
-			{
-				heredoc++;
-				if (heredoc > 16)
-				{
-					ft_print("bash: maximum here-document count exceeded\n", 2);
-					heredoc = 0;
-					close_all_files(head);
-					exit(2);
-				}
-				*index += handle_heredoc_case(head, tail, next);
-			}
+				*index += handle_heredoc(head, tail, s[*index + 1], &heredoc);
 			else
 			{
 				i += handle_operator(head, tail, c);
-				if (c == '>' || c == '<' || c == 'a')
-					*index += handle_redirection(head, tail, c, next);
+				*index += help_handle_redirection(head, tail, s[*index + 1], c);
 			}
 			return ;
 		}
-		i++;
 	}
 	create_simple_token(head, tail, s[*index]);
 }
 
-int	counter(char **s)
-{
-	int	i;
+//int	counter(char **s)
+//{
+//	int	i;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
+//	i = 0;
+//	while (s[i])
+//		i++;
+//	return (i);
+//}
 
 t_token	**create_tokens(char **str)
 {

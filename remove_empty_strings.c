@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/07 14:35:09 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:09:46 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,14 @@ t_str	**remove_empty_string(t_array *child, int index)
 	t_str	**new;
 	size_t	i;
 	int		j;
-	int		happend;
 
 	i = 0;
 	j = 0;
-	happend = 0;
 	new = ft_malloc(sizeof(t_str *), child->length + 1);
 	while (i < child->length)
 	{
 		if (child->items[i] != child->items[index])
 		{
-			happend = 1;
 			new[j] = ft_malloc(sizeof(t_str), 1);
 			new[j]->value = ((t_str *)child->items[i])->value;
 			new[j]->type = ((t_str *)child->items[i])->type;
@@ -36,8 +33,7 @@ t_str	**remove_empty_string(t_array *child, int index)
 		}
 		i++;
 	}
-	if (happend)
-		new[j] = NULL;
+	new[j] = NULL;
 	child->length--;
 	return (new);
 }
