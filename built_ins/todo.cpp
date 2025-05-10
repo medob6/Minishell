@@ -8,7 +8,7 @@
 // 5- implement subshell				!!!!!!!!!!  //! DONE
 // 6- handel exit status code we have five (also in built-in); //! DONE
 // 7- remove paranteses in parsing  //! DONE
-// 8- check for save derefrencing     //?  should start doing it
+// 8- check for save derefrencing     //! DONE
 // 9- test execuiton  //? in progress
 
 // 10- test everything //TODO when expansion is finished
@@ -35,7 +35,6 @@
 
 //! FIX built-ins  :
 
-// ignor comments as argments #somthin
 // -nnnn for echo should be ignored even after first flag
 // += append for export
 // should pass NULL to cat in case of empthy expansion not '' or ""
@@ -49,3 +48,5 @@
 //! DO in echo handell case if write fails perror("minishell: ");
 // in expansion if an expansion resulted a empthy string and nothing was linked to the arg expanded ,it must be removed rather then stored as a empthy str ,ask mahedi
 // if i expand a file name in redirections and
+
+//TODO EXIT IF MALLOC FAILED

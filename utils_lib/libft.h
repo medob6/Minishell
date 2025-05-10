@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 15:28:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/04/27 16:23:13 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:44:26 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,7 @@ char	**split_tabs_spaces(char *str);
 char	*fill_word(const char *src, int start, int end);
 void	free_all(char **p);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_itoa(long n);
+int		ft_ctonbr(const char *str);
 
 #endif

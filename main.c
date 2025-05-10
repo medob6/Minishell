@@ -21,17 +21,19 @@ void	ft_lstclear(t_gar **lst)
 
 const char	*costruct_prompt(t_env *env)
 {
-	char	*cwd;
-	char	*home;
-	char	*prompt;
-	char	*tmp;
+	char		*cwd;
+	char		*home;
+	static char	*prompt;
+	char		*tmp;
 
 	prompt = NULL;
 	tmp = NULL;
 	cwd = getcwd(NULL, 0);
-	// printf("cmd = '%s'\n",cwd);
-	if (env && !cwd )
+	// (void)env;
+	// printf("cmd = '%s', env = %p\n",cwd,env);
+	if (env && !cwd)
 		cwd = expand_the_value("$PWD", &env);
+	// printf("cmd2 = '%s'\n", cwd);
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
@@ -161,7 +163,8 @@ void	print_redir(t_ast_node *node)
 	for (size_t d = 0; d < node->redirect_list->length; d++)
 	{
 		redir = (t_token *)node->redirect_list->items[d];
-		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",get_redir_value(redir->type), redir->value.str_value);
+		printf(" \033[0;36m{redir_type: \033[1;36m%s\033[0;36m,filename: \033[1;36m%s\033[0;36m}\033[0m ",
+			get_redir_value(redir->type), redir->value.str_value);
 	}
 	printf(")\n");
 }
@@ -228,14 +231,15 @@ int	main(int ac, char **av, char **envp)
 	const char	*prompt;
 	t_token		**h;
 	t_ast_node	*ast;
+	static int	shlvl;
+	t_env		*env;
 
-	t_env *env;
 	(void)ac;
 	(void)av;
-
 	ast = NULL;
 	ft_error(1);
-	env = create_the_main_list(envp);
+	shlvl++;
+	env = create_the_main_list(envp, shlvl);
 	
 	while (1)
 	{
@@ -244,7 +248,7 @@ int	main(int ac, char **av, char **envp)
 		cmd_line = readline(prompt);
 		// printf("\n");
 		// printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",
-			// cmd_line);
+		// cmd_line);
 		if (!cmd_line)
 			break ;
 		if (*cmd_line)
@@ -283,4 +287,4 @@ int	main(int ac, char **av, char **envp)
 }
 
 // example test
-// cat << eof  && (echo hello > file1 && cat < file1 | grep hi || echo "fallback") && (ls	-l | grep .c) || mkdir test && echo done >> lolo
+// cat << eof  && (echo hello > file1 && cat < file1 | grep hi || echo "fallback") && (ls	-l | grep .c) || mkdir test	&& echo done >> lolo
