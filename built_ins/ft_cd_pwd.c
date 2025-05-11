@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd_pwd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 11:40:27 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/08 15:49:19 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	ft_pwd(t_env **env_list)
 	char	*cwd;
 	t_env	*cur;
 
-	// printf("pwd \n");
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
@@ -65,22 +64,27 @@ int	update_pwd(t_env **env_list, char *cwd)
 int	ft_cd(char *path, t_env **env_list)
 {
 	char	*cwd;
-
+	
+	if (path && path[0] == '\0')
+			return (0);
 	if (!path)
-		return (ft_print("cd: path required\n", 2), 1);
+	{
+		path = expand_the_value("$HOME", env_list);
+		if (!path || path[0] == '\0')
+			return (0);
+	}
 	if (chdir(path) != 0)
-		return (perror("cd"), 1);
+		return (printf("cd: %s %s\n",strerror(errno),path), 1);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		ft_print("cd: getcwd failed (directory structure might be broken)", 2);
+		printf("cd: %s %s\n", strerror(errno), path);
 		return (1);
 	}
 	if (!update_pwd(env_list, cwd))
 	{
 		ft_print("cd: failed to update PWD\n", 2);
-		free(cwd);
-		return (1);
+		return (free(cwd),1);
 	}
 	free(cwd);
 	return (0);

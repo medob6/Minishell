@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 11:28:29 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/06 15:48:28 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,29 @@ int	check_string(char *s)
 	}
 	return (1);
 }
+int print_str_fd(char *s,int fd)
+{
+	int n;
+	if (fd < 0 || !s)
+		return (0);
+	n = write(fd, s, ft_strlen(s));
+	if (n < 0)
+	{
+		ft_putstr_fd("bash: echo: write error: No space left on device\n", 2);
+		return (0);
+	}
+	return (1);
+}
 
 int	ft_echo(char **args, int fd)
 {
 	int	i;
 	int	new_line;
-
+	
 	new_line = 1;
 	i = 1;
-	//if (fd < 0)
-	//ft_print("bash: echo: write error: No space left on device\n", 2);
+	// if (fd < 0)// this check must be done if and only if write fails cus fd fails handeled in execution ok
+	// 	ft_print("bash: echo: write error: No space left on device\n", 2);
 	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0 && check_string(args[1]))
 	{
 		i = 2;
@@ -49,15 +62,18 @@ int	ft_echo(char **args, int fd)
 			i++;
 		else
 		{
-			ft_print(args[i], fd);
-			ft_print(" ", fd);
+			if (!print_str_fd(args[i], fd))
+			{
+				close(fd);
+				return (1);
+			}
+			print_str_fd(" ", fd);
 		}
 		i++;
 	}
 	if (new_line)
-		ft_print("\n", fd);
+		print_str_fd("\n", fd);
 	if (fd != 1)
 		close(fd);
 	return (0);
 }
-

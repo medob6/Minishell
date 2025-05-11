@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 14:06:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:07:38 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expansion.h"
 
 int	valid(char c)
 {
@@ -683,7 +683,8 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 	size_t i;
 	
 	i = 0;
-	while (i  < node->children->length)
+	
+	while ( node->children && i  < node->children->length)
 	{
 		if (((t_ast_node *)node->children->items[i])->type == AST_SIMPLE_CMD)
 			expand_variables((t_ast_node *)node->children->items[i],env);

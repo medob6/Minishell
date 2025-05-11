@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 15:09:46 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:08:02 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expansion.h"
 
 t_str	**remove_empty_string(t_array *child, int index)
 {

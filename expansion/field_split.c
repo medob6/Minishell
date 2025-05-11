@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 13:32:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 15:41:23 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:07:45 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expansion.h"
 
 int	is_separator(char c, char *sep)
 {

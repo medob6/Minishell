@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:14:20 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/09 16:43:04 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:07:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expansion.h"
 
 void	handle_what_in_double(char **field, char **items, size_t index, int *j)
 {

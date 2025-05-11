@@ -15,29 +15,12 @@
 # include <unistd.h>
 
 # define AMBIGUOUS_REDIRECTION -5
-// # include "env.h"
-// # include "token.h"
-// # include "array.h"
-// # include "parser.h"
-/* Structures */
-// typedef struct s_cmd
-// {
-// 	char	*path;
-// 	char	**args;
-// 	pid_t	pid;
-// 	int		exit_status;
-// }			t_cmd;
 
-// typedef struct s_data
-// {
-// 	int		old_fd;
-// 	int		out_fd;
-// 	int		fd[2];
-// 	t_cmd	*lst_cmd;
-// 	int		cmd_nbr;
-// 	char	**envp;
-// 	int		ac;
-// }			t_data;
+typedef struct s_g_data
+{
+	int				status;
+	char			*prompt;
+}					GlobalData;
 
 typedef struct s_garbag
 {
@@ -75,7 +58,7 @@ typedef enum e_token_type
 // 	struct s_token *next; // Linked list to store multiple tokens
 // }					t_token;
 
-//typedef enum s_bit_mask
+// typedef enum s_bit_mask
 //{
 //	ORIGINAL = 0,
 //	EXPANDED = 1,
@@ -108,11 +91,10 @@ typedef struct s_array
 
 typedef struct s_string
 {
-	char	**value;
-	int		fd;
+	char			**value;
+	int				fd;
 	t_token_type	type;
-}	t_str;
-
+}					t_str;
 
 typedef enum e_ast_type
 {
@@ -129,9 +111,9 @@ typedef enum e_ast_type
 typedef struct s_ast_node
 {
 	t_ast_type		type;
-	t_array			*children; // {ls , -l , -e}
+	t_array *children; // {ls , -l , -e}
 	t_array			*redirect_list;
-	char			**field; // null
+	char **field; // null
 	t_str			**str;
 }					t_ast_node;
 
@@ -139,12 +121,16 @@ typedef struct s_expansion
 {
 	t_ast_node		*node;
 	t_env			**env;
-	char			**field; // null
+	char **field; // null
 	t_str			**str;
-}	t_expansion;
+}					t_expansion;
 // void print_ast(t_ast_node *node, int depth);
-t_token				**create_tokens(char **str);
-char				**lexer(char *cmd_line);
+t_ast_node			*subshell(t_token **token);
+t_ast_node			*command(t_token **token);
+bool				paranteses_symetric(t_token **token);
+
+char				*get_value_ast(int type);
+void				print_token(t_token *head);
 void				*ft_malloc(int size, int bytes);
 t_gar				**garbage_list(void);
 int					ft_print(char *c, int fd);
@@ -169,30 +155,15 @@ int					expand_ast(t_ast_node *node, t_env **env);
 int					is_valid_identifier(char *s);
 int					ft_export(char **args, t_env **env);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
-
-char **create_field(t_ast_node *node);
-int					check_the_last_arg(char *tmp);
-int					check_for_last_exp(t_ast_node *node);
-int					check_for_field_split(char *tmp);
-char				*append_char(char *old_str, char c);
-void				expand_path_name_cmd(t_expansion *expand);
-void				expand_path_name_red(t_expansion *expand);
-void				removes_qouts_cmd(t_expansion *expand);
-void				removes_qouts_red(t_expansion *expand);
+void				print_err(char *err, char *str);
+void				ft_free(void *address);
 int					check_for_next_one(char *str, int j);
 int					take_inside_qout(char **s, char *str, int j);
-char	*get_name_heredoc(void);
-void	check_for_empty_strings(t_expansion *expand);
-void	**create_copy(t_ast_node *node);
-int		search_for(char *str, char c);
-char	**field_splitting(char *str, char *charset);
-int	expand_ast(t_ast_node *node, t_env **env);
-void	check_for_empty_strings_red(t_expansion *expand);
-char **applicate_splitting(char *str, char *field);
-char **create_field_red(t_ast_node *node);
+char				*append_char(char *old_str, char c);
+t_token				**create_tokens(char **str);
+char				**lexer(char *cmd_line);
 
-//export a='"'  export b='*'  echo "$a$b$a"
+// export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"
-
 
 #endif
