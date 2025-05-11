@@ -6,17 +6,19 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/06 15:48:28 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 14:46:55 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	check_string(char *s)
+int	check_n_flag(char *s)
 {
 	int	i;
 
-	i = 2;
+	i = 1;
+	if (s[0] != '-')
+		return (0);
 	while (s[i])
 	{
 		if (s[i] != 'n')
@@ -25,9 +27,11 @@ int	check_string(char *s)
 	}
 	return (1);
 }
-int print_str_fd(char *s,int fd)
+
+int	print_str_fd(char *s, int fd)
 {
-	int n;
+	int	n;
+
 	if (fd < 0 || !s)
 		return (0);
 	n = write(fd, s, ft_strlen(s));
@@ -43,32 +47,20 @@ int	ft_echo(char **args, int fd)
 {
 	int	i;
 	int	new_line;
-	
-	new_line = 1;
+
 	i = 1;
-	// if (fd < 0)// this check must be done if and only if write fails cus fd fails handeled in execution ok
-	// 	ft_print("bash: echo: write error: No space left on device\n", 2);
-	if (args[1] && ft_strncmp(args[1], "-n", 2) == 0 && check_string(args[1]))
+	new_line = 1;
+	while (args[i] && check_n_flag(args[i]))
 	{
-		i = 2;
 		new_line = 0;
+		i++;
 	}
-	while (args && args[i])
+	while (args[i])
 	{
-		if (args[i][0] == '#')
-			break ;
-		else if (args[i] && ft_strncmp(args[i], "-n", 2) == 0
-			&& check_string(args[i]))
-			i++;
-		else
-		{
-			if (!print_str_fd(args[i], fd))
-			{
-				close(fd);
-				return (1);
-			}
+		if (!print_str_fd(args[i], fd))
+			return (1);
+		if (args[i + 1])
 			print_str_fd(" ", fd);
-		}
 		i++;
 	}
 	if (new_line)
