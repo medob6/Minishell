@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:07:30 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:35:14 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,10 +314,15 @@ static char     **split_new(char *str, int *count, int flag)
     char    **words;
 
     words = NULL;
-    *count = (!flag);
-    words = ft_split(str, ' ');
-    while (words && words[*count])
-        (*count)++;
+    if (flag)
+    {
+        *count = 0;
+        words = ft_split(str, ' ');
+        while (words && words[*count])
+            (*count)++;
+    }
+    else
+        *count = 1;
     return (words);
 }
 
@@ -346,7 +351,7 @@ char    **append_to_arr(char **old, char *str, int flag)
     while (old && old[i])
         i++;
     count = 0;
-    words = split_new(str, &count,flag);
+    words = split_new(str, &count, flag);
     new = ft_calloc(sizeof(char *), i + count + 1);
     j = 0;
     new = append_old_arr(old, &j, i, count);

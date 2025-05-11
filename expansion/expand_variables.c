@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 16:53:51 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:58:55 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ char	*help_check_the_word(char **field, t_env **env, char *str)
 	index = 0;
 	old_str = ft_strdup("");
 	new = ft_strdup("");
-	while (str[index])
+	while (str && str[index])
 	{
 		if (str[index] == '$' && (*field)[index] != '2')
 		{
@@ -360,18 +360,17 @@ static void	update_token_value(t_expansion *expand, int i, char *expanded, int f
 	}
 }
 
-int	check_the_word(t_expansion *expand, int i, int split)
+int	check_the_word(t_expansion *expand, int i, int split, int flag)
 {
 	char	*str;
 	char	*expanded;
 
-	if (expand->node->children)
-		str = expand->node->children->items[i];
+	if (!flag)
+		str = (char *)expand->node->children->items[i];
 	else
 		str = ((t_token *)expand->node->redirect_list->items[i])->value.str_value;
-	
 	expanded = help_check_the_word(&(expand->field[i]), expand->env, str);
-	if (expand->node->children)
+	if (!flag)
 		update_child_value(expand, i, expanded, split);
 	else
 		update_token_value(expand, i, expanded, split);
@@ -503,7 +502,7 @@ void	application_expansion(t_expansion *expand, char *tmp, size_t i, int flag)
     	if (!check_the_last_arg(tmp))
         	split = 0;
 	}
-    check_the_word(expand, i, split);
+    check_the_word(expand, i, split, flag);
 }
 
 void expand_cmd(t_expansion *expand)
@@ -528,6 +527,37 @@ void expand_cmd(t_expansion *expand)
 	expand->node->children->items = (void **)expand->str;
 }
 
+void	update_heredoc_value(t_expansion *expand, size_t i)
+{
+	expand->str[i]->value[0] = ft_strdup(((t_token *)expand->node->redirect_list->items[i])->value.str_value);
+	expand->str[i]->value[1] = NULL;
+	expand->str[i]->fd = ((t_token *)expand->node->redirect_list->items[i])->value.fd_value;
+	expand->str[i]->type = ((t_token *)expand->node->redirect_list->items[i])->type;
+}
+
+void	printfd(t_str **red)
+{
+	int i;
+	i = 0;
+	while (red[i])
+	{
+		if (red[i]->value)
+			printf("{%s}\n",((t_str *)red[i])->value[0]);
+		i++;
+	}
+}
+
+void	printfgf(t_token **str, int len)
+{
+	int	i;
+
+	i = 0;
+	while (i < len)
+	{
+		printf("{%s}\n", str[i]->value.str_value);
+		i++;
+	}
+}
 void expand_redirection(t_expansion *expand)
 {
 	size_t		i;
@@ -538,12 +568,14 @@ void expand_redirection(t_expansion *expand)
 		return ;
 	expand->field = create_field_red(expand->node);
 	expand->str = ft_malloc(sizeof(t_str *), expand->node->redirect_list->length + 1);
+	//printfgf((t_token **)expand->node->redirect_list->items, expand->node->redirect_list->length);
 	while (i < expand->node->redirect_list->length)
 	{
 		expand->str[i] = create_t_str();
 		if (((t_token *)expand->node->redirect_list->items[i])->type == TOKEN_HEREDOC)
 		{
 			handle_heredoc_expansion(expand->env, &(((t_token *)expand->node->redirect_list->items[i])->value));
+			update_heredoc_value(expand, i);
 			i++;
 			continue;
 		}
@@ -553,6 +585,7 @@ void expand_redirection(t_expansion *expand)
 		i++;
 	}
 	expand->str[i] = NULL;
+	//printfd(expand->str);
 	expand->node->redirect_list->items = (void **)expand->str;
 }
 //bool is_here_doc(void *item)
@@ -693,6 +726,7 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 		else if (((t_ast_node *)node->children->items[i])->type == AST_SUBSHELL)
 		{
 			//expand_redirection((t_ast_node *)node->children->items[i],env);
+			expand_variables((t_ast_node *)node->children->items[i],env);
 			expand_ast((t_ast_node *)node->children->items[i],env);
 		}
 		i++;
