@@ -6,11 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 15:28:46 by mbousset          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/05/03 14:28:18 by salahian         ###   ########.fr       */
-=======
-/*   Updated: 2025/05/10 15:44:26 by mbousset         ###   ########.fr       */
->>>>>>> execution
+/*   Updated: 2025/05/11 15:40:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +37,7 @@ char	**split_tabs_spaces(char *str);
 char	*fill_word(const char *src, int start, int end);
 void	free_all(char **p);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-<<<<<<< HEAD
-=======
 char	*ft_itoa(long n);
 int		ft_ctonbr(const char *str);
 
->>>>>>> execution
 #endif

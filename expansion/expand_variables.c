@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:07:38 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:51:08 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -674,6 +674,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	removes_qouts_cmd(expand);
 	removes_qouts_red(expand);
 	print_arguments(expand->node->children);
+	print_arguments(expand->node->redirect_list);
 	//printf("here\n");
 	return (1);
 }
