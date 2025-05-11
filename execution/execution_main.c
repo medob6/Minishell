@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/08 06:32:46 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 16:45:26 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->env = env;
 	expand_pipeline(pipeline, &data->env);
 	data->cmd_nbr = pipeline->children->length;
-	data->lst_cmd = build_cmd_list(data->cmd_nbr,
-			(t_ast_node **)pipeline->children->items, env);
+	data->lst_cmd = build_cmd_list(data->cmd_nbr,(t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
 

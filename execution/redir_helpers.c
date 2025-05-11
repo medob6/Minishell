@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:21:16 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/06 13:47:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:06:18 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 void	perforem_subshell_redirs(t_data *data, int n)
 {
 	size_t		i;
-	t_token		**redir_lst;
+	t_str		**redir_lst;
 	t_ast_node	*subshell_node;
 
 	i = 0;
 	subshell_node = data->lst_cmd[n].subshell_node;
 	if (subshell_node->redirect_list)
-		redir_lst = (t_token **)subshell_node->redirect_list->items;
+		redir_lst = (t_str **)subshell_node->redirect_list->items;
 	else
 		redir_lst = NULL;
 	if (n != data->cmd_nbr - 1)
@@ -43,7 +43,7 @@ void	perforem_subshell_redirs(t_data *data, int n)
 void	perforem_redirections(t_data *data, int n)
 {
 	size_t	i;
-	t_token	**redir_lst;
+	t_str	**redir_lst;
 
 	i = 0;
 	redir_lst = data->lst_cmd[n].redirlist;
@@ -92,7 +92,7 @@ void	reset_fds(t_data *data, int n)
 	}
 }
 
-void	close_here_docs(t_token **redir_list)
+void	close_here_docs(t_str **redir_list)
 {
 	int	i;
 
@@ -100,7 +100,7 @@ void	close_here_docs(t_token **redir_list)
 	while (redir_list && redir_list[i])
 	{
 		if (redir_list[i]->type == TOKEN_HEREDOC)
-			close(redir_list[i]->value.fd_value);
+			close(redir_list[i]->fd);
 		i++;
 	}
 	return ;

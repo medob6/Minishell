@@ -1,5 +1,5 @@
-FLAFS= -Wall  -Wextra -Werror -lreadline -g 
-# -lreadline : flag to link readline function   -fsanitize=address
+FLAFS= -Wall  -Wextra -Werror -lreadline -g -fsanitize=address
+# -lreadline : flag to link readline function   
 SRC=  garbage_collector.c  lexer/*.c  main.c  parsing/*.c utils_lib/*.c  execution/*.c built_ins/*.c expansion/*.c
 CC= cc
 

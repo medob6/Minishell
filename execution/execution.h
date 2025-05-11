@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/10 15:28:05 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:08:38 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_cmd
 	char		**args;
 	pid_t		pid;
 	int			exit_status;
-	t_token		**redirlist;
+	t_str		**redirlist;
 	t_ast_node	*subshell_node;
 	int			is_built_in;
 	bool		is_subshell;
@@ -61,24 +61,24 @@ bool			set_cmd_args_and_path(t_cmd *cmd, char **cmd_args, t_env *env);
 char			*get_cmd_path(char *cmd, char **envp);
 
 /* Redirection */
-void			redirect(t_data *data, t_token *file_obj);
+void			redirect(t_data *data, t_str *file_obj);
 void			perforem_redirections(t_data *data, int n);
 void			perforem_subshell_redirs(t_data *data, int n);
-void			close_here_docs(t_token **redir_list);
+void			close_here_docs(t_str **redir_list);
 void			reset_fds(t_data *data, int n);
 void			save_old_fd(int *old_fd, int *fd);
-bool			handle_redirect_token(t_data *data, t_token *token,
+bool			handle_redirect_token(t_data *data, t_str *token,
 					int *last_idx, int idx);
-bool			open_output_redirect(t_data *data, t_token *token,
+bool			open_output_redirect(t_data *data, t_str *token,
 					int *last_idx, int idx);
-bool			open_input_redirect(t_data *data, t_token *token);
+bool			open_input_redirect(t_data *data, t_str *token);
 bool			redirection_builtins(t_data *data, int n);
-bool			reopen_last_output(t_data *data, t_token **redir_lst,
+bool			reopen_last_output(t_data *data, t_str **redir_lst,
 					int last_idx);
-bool			process_redirections(t_data *data, t_token **redir_lst,
+bool			process_redirections(t_data *data, t_str **redir_lst,
 					int *last_idx);
-bool			is_ambiguous_redirect(t_token *token);
-int				open_file(t_token *file_token);
+bool			is_ambiguous_redirect(t_str *token);
+int				open_file(t_str *file_token);
 
 /* Env and Expansion */
 char			**extract_envp(t_env *env);
