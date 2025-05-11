@@ -162,6 +162,8 @@ int					take_inside_qout(char **s, char *str, int j);
 char				*append_char(char *old_str, char c);
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
+char  *expand_the_value(char *str, t_env **env);
+char	*get_name_heredoc(void);
 
 // export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"
