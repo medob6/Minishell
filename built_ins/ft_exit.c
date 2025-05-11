@@ -6,13 +6,13 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/27 08:45:40 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:26:50 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-long	ft_atoi(char *str, int *flag)
+long	ft_atoi_flag(char *str, int *flag)
 {
 	long	re;
 	int		i;
@@ -41,7 +41,7 @@ long	ft_atoi(char *str, int *flag)
 	return (re * sign);
 }
 
-int	ft_exit(char **args, long last_status)
+int	ft_exit(char **args, long last_status )
 {
 	int		flag;
 	long	num;
@@ -49,7 +49,7 @@ int	ft_exit(char **args, long last_status)
 	flag = 0;
 	if (args[1] && args[2])
 	{
-		num = ft_atoi(args[1], &flag);
+		num = ft_atoi_flag(args[1], &flag);
 		if (flag)
 		{
 			ft_print("exit\nminishell: exit: numeric argument required\n", 2);
@@ -63,14 +63,14 @@ int	ft_exit(char **args, long last_status)
 		ft_print("exit\n", 1);
 		exit(last_status);
 	}
-	num = ft_atoi(args[1], &flag);
+	num = ft_atoi_flag(args[1], &flag);
 	if (flag)
 	{
 		ft_print("exit\nminishell: exit: numeric argument required\n", 2);
 		exit(2);
 	}
 	ft_print("exit\n", 1);
-	exit((unsigned char)num);
+	exit((int)num);
 }
 
 // int	main(void)

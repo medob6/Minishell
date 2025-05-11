@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:25:39 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:30:22 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ t_env *create_node(char *s, int sep)
     return (node);
 }
 
-t_env *fill_the_list(char **envp)
+t_env	*fill_the_list(char **envp)
 {
-    int i;
-    int j;
-    t_env *new_node;
-    t_env *head;
-    t_env *last;
+	int		i;
+	int		j;
+	t_env	*new_node;
+	t_env	*head;
+	t_env	*last;
 
     head = NULL;
     last = NULL;
@@ -56,9 +56,13 @@ t_env *fill_the_list(char **envp)
     return (head);
 }
 
-t_env    *create_the_main_list(char **envp)
+t_env	*create_the_main_list(char **envp, int shlvl)
 {
-    return (fill_the_list(envp));
+	if (!*envp)
+	{
+		return (default_envp(shlvl));
+	}
+	return (fill_the_list(envp));
 }
 
 // void print_env_list(t_env *env)
@@ -80,6 +84,3 @@ t_env    *create_the_main_list(char **envp)
 //     print_env_list(env_list);
 //     return 0;
 // }
-
-
-

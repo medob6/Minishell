@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/08 07:40:10 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 14:53:02 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 			print_err("cd", "too many arguments");
 	}
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
-		return (ft_pwd(&data->env));
+		return (ft_pwd(&data->env,data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "unset"))
 		return (ft_unset(cmd.args, &data->env));
 	else if (!ft_strcmp(cmd.args[0], "env"))
-		return (ft_env(&data->env));
+		return (ft_env(&data->env,data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "exit"))
 		return (ft_exit(cmd.args, cmd.exit_status));
 	return (1);

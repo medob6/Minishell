@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/08 06:56:45 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/10 15:28:05 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ void			expand_pipeline(t_ast_node *node, t_env **env);
 /* Built-ins */
 int				ft_echo(char **args, int fd);
 int				ft_exit(char **args, long last_status);
-int				ft_env(t_env **env);
+int				ft_env(t_env **env, int fd);
 int				ft_unset(char **args, t_env **env);
-int				ft_pwd(t_env **env_list);
+int				ft_pwd(t_env **env_list,int fd);
 int				ft_cd(char *path, t_env **env_list);
 
 /* Utilities */
@@ -109,9 +109,10 @@ void			free_garbeg(t_data *prg_data);
 void			free_pointers(char **p);
 void			ft_free(void *address);
 t_gar			**garbage_list(void);
-t_env			*create_the_main_list(char **envp);
 
 /* FUNCTIONS */
+char	*ft_itoa(long n)
+;
 void			handle_missing_cmd(t_cmd cmd, t_data *prg_data);
 int				exec_cmd(t_cmd cmd, char **envp, char *new_path);
 char			*expand_the_value(char *str, t_env **env);
