@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 17:30:23 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 13:38:22 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	update_shlvl(t_env *env_list)
 		if (ft_strcmp(env_list->key, "SHLVL") == 0)
 		{
 			current_lvl = check_value(env_list->value);
-			free(env_list->value);
+			ft_free(env_list->value);
 			env_list->value = ft_itoa(current_lvl + 1);
 			return ;
 		}

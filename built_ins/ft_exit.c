@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 17:26:50 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:21:50 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ long	ft_atoi_flag(char *str, int *flag)
 	return (re * sign);
 }
 
-int	ft_exit(char **args, long last_status )
+int	ft_exit(char **args, long last_status)
 {
 	int		flag;
 	long	num;
@@ -52,25 +52,23 @@ int	ft_exit(char **args, long last_status )
 		num = ft_atoi_flag(args[1], &flag);
 		if (flag)
 		{
-			ft_print("exit\nminishell: exit: numeric argument required\n", 2);
-			exit(2);
+			ft_print("minishell: exit: numeric argument required\n", 2);
+			return (2);
 		}
-		ft_print("exit\nminishell: exit: too many arguments\n", 2);
+		ft_print("minishell: exit: too many arguments\n", 2);
 		return (1);
 	}
 	if (!args[1])
 	{
-		ft_print("exit\n", 1);
-		exit(last_status);
+		return (last_status);
 	}
 	num = ft_atoi_flag(args[1], &flag);
 	if (flag)
 	{
-		ft_print("exit\nminishell: exit: numeric argument required\n", 2);
-		exit(2);
+		ft_print("minishell: exit: numeric argument required\n", 2);
+		return (2);
 	}
-	ft_print("exit\n", 1);
-	exit((int)num);
+	return ((int)num);
 }
 
 // int	main(void)
