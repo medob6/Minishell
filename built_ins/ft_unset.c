@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/24 15:14:21 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/08 06:47:04 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	ft_unset(char **args, t_env **env)
 			if (ft_strncmp(tmp->key, args[i], ft_strlen(args[i])) == 0)
 			{
 				remove_from_the_list(env, tmp, prev);
-				break ;
+				return (0);
 			}
 			prev = tmp;
 			tmp = tmp->next;

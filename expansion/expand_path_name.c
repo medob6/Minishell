@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 15:09:00 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:07:30 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "expansion.h"
 
 int     check_str(char *str)
 {
@@ -37,7 +37,7 @@ int match_pattern(const char *pattern, const char *name)
             while (*pattern == '*')
                 pattern++;
             if (*pattern == '\0')
-                return 1;
+                return (1);
             while (*name)
             {
                 if (match_pattern(pattern, name))

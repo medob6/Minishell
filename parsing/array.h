@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   array.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 14:54:46 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/08 08:32:55 by mbousset         ###   ########.fr       */
+/*   Created: 2025/05/05 17:59:20 by mbousset          #+#    #+#             */
+/*   Updated: 2025/05/05 18:02:51 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef ARRAY_H
+# define ARRAY_H
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
+# include "../minishell.h"
 
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
-}
+void		array_extend(t_array *arr);
+void		array_push(t_array **list, void *new_item);
+t_array		*creat_array(void);
+
+#endif

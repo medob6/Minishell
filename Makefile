@@ -1,15 +1,13 @@
-FLAFS= -Wall  -Wextra -lreadline -fsanitize=address -g 
-# -lreadline : flag to link readline function  -Werror -fsanitize=address
-SRC= array.c  create_the_main_list.c   garbage_collector.c  lexem.c  main.c field_split.c parsing.c  remove_empty_strings.c token.c utils_lib/*.c create_field.c execution/execute_input.c execution/utils_exec.c built_ins/*.c expand_variables.c    field_splitting.c  removes_qouts.c expand_path_name.c
+FLAFS= -Wall  -Wextra -Werror -lreadline -g 
+# -lreadline : flag to link readline function   -fsanitize=address
+SRC=  garbage_collector.c  lexer/*.c  main.c  parsing/*.c utils_lib/*.c  execution/*.c built_ins/*.c expansion/*.c
 CC= cc
 NAME=bash_prompt
-
 
 all: $(NAME)
 
 $(NAME):
 	@ $(CC) $(SRC) $(FLAFS)  -o $(NAME) 
-
 
 clean:
 	@rm -f $(NAME)

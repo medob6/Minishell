@@ -70,8 +70,8 @@
     "array.h": "c",
     "execution.h": "c",
     "libft.h": "c",
-    "string_view": "c",
-    "numbers": "c"
+    "waitstatus.h": "c",
+    "cmd_utils,c": "c"
   },
   "functionHeaderExtension.headerFilePath": "/home/mbousset/Desktop/Minishell/execution/execution.h"
 }

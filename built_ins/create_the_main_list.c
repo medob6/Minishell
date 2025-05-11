@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 15:39:17 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:25:39 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_env *create_node(char *s, int sep)
 {

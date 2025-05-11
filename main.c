@@ -19,15 +19,19 @@ void	ft_lstclear(t_gar **lst)
 	*lst = NULL;
 }
 
-const char	*costruct_prompt(void)
+const char	*costruct_prompt(t_env *env)
 {
 	char	*cwd;
 	char	*home;
 	char	*prompt;
 	char	*tmp;
 
-	cwd = ft_malloc(1, 100);
-	getcwd(cwd, 100);
+	prompt = NULL;
+	tmp = NULL;
+	cwd = getcwd(NULL, 0);
+	// printf("cmd = '%s'\n",cwd);
+	if (env && !cwd )
+		cwd = expand_the_value("$PWD", &env);
 	home = getenv("HOME");
 	if (home && !ft_strncmp(cwd, home, ft_strlen(home)))
 	{
@@ -36,6 +40,9 @@ const char	*costruct_prompt(void)
 	}
 	else
 		prompt = ft_strjoin(cwd, "$ ");
+	ft_free(tmp);
+	ft_free(cwd);
+	// g_data.prompt = prompt;
 	return (prompt);
 }
 
@@ -97,8 +104,6 @@ int	ft_error(int a)
 
 	if (a != 0)
 		c = a;
-	//else
-	//	ft_print("bash: echo: write error: No space left on device\n", 2);
 	return (c);
 }
 
@@ -257,8 +262,6 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 
-	(void)ac;
-	(void)av;
 	ast = NULL;
 	ft_error(1);
 	env = create_the_main_list(envp);
@@ -266,11 +269,11 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		ast = NULL;
-		prompt = costruct_prompt();
+		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
-		printf("\n");
-		printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",
-			cmd_line);
+		// printf("\n");
+		// printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",
+			// cmd_line);
 		if (!cmd_line)
 			break ;
 		if (*cmd_line)
@@ -278,27 +281,26 @@ int	main(int ac, char **av, char **envp)
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 		{
-			printf("\033[0;32m============================\033[0m\n\n");
-			printf("\033[1;33m📦 Tokens:\033[0m\n\n");
-			print_token(*h);
-			printf("\n\n");
+			// printf("\033[0;32m============================\033[0m\n\n");
+			// printf("\033[1;33m📦 Tokens:\033[0m\n\n");
+			// print_token(*h);
+			// printf("\n\n");
 			ast = parse_tokens(*h);
 		}
-		//if (!ast)
-		//{
-		//	printf("\033[0;32m============================\033[0m\n\n");
-		//	printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
-		//}
-		//else
-		//{
-		//	printf("\033[0;32m============================\033[0m\n\n");
-		//	printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
-		//	print_ast(ast, 0);
-		//	printf("\033[0;32m============================\033[0m\n\n");
-		//	printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
-		//	//execution(ast, env);
-		//}
-		expand_ast(ast, &env);
+		if (!ast)
+		{
+			// printf("\033[0;32m============================\033[0m\n\n");
+			printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
+		}
+		else
+		{
+			// printf("\033[0;32m============================\033[0m\n\n");
+			// printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
+			// print_ast(ast, 0);
+			// printf("\033[0;32m============================\033[0m\n\n");
+			// printf("\033[1;34m🚀 This is the OUTPUT of EXECUTION:\033[0m\n\n");
+			execution(ast, env);
+		}
 		free(cmd_line);
 		rl_on_new_line();
 	}

@@ -6,11 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 10:45:39 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:04:49 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "lexer.h"
 
 char	check_for_operations(char *cmd_line, int i)
 {
@@ -55,7 +55,7 @@ char    *removes_qouts_heredoc(char *str)
 
     j = 0;
     new_str = ft_strdup("");
-    while (str[j])
+    while (str && str[j])
     {
         if (str[j] == '\'' && check_for_next_one(str, j))
             j = take_inside_qout(&new_str, str, j);
@@ -130,15 +130,15 @@ void	print_err(char *err, char *str)
 	buffer = ft_strjoin("minishell: ", err);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, ": ");
-	free(tmp);
+	ft_free(tmp);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, str);
-	free(tmp);
+	ft_free(tmp);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, "\n");
-	free(tmp);
+	ft_free(tmp);
 	ft_putstr_fd(buffer, 2);
-	free(buffer);
+	ft_free(buffer);
 }
 void	handle_error(char	*str)
 {
@@ -168,12 +168,12 @@ void	print_err1(char *err, char *str)
 	buffer = ft_strjoin("\nMysh: ", err);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, str);
-	free(tmp);
+	ft_free(tmp);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, "')\n");
-	free(tmp);
+	ft_free(tmp);
 	ft_putstr_fd(buffer, 2);
-	free(buffer);
+	ft_free(buffer);
 }
 
 int	is_delemeter(char *line, char *delemeter)
@@ -196,9 +196,9 @@ void	process_input(int fd1, char *delemeter)
 		if (line)
 		{
 			tmp = ft_strjoin(line, "\n");
-			free(line);
+			ft_free(line);
 			write(fd1, tmp, ft_strlen(tmp));
-			free(tmp);
+			ft_free(tmp);
 		}
 		line = readline("> ");
 		if (!line)
@@ -207,7 +207,7 @@ void	process_input(int fd1, char *delemeter)
 	if (!line)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
-	free(line);
+	ft_free(line);
 }
 
 void	read_from_herdoc(char *delemeter, int *old_fd)
@@ -301,8 +301,6 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 		fd = handle_herdoc(next);
 		new_token = create_token(next, TOKEN_HEREDOC);
 		new_token->value.fd_value = fd;
-		// printf("fd = %d\n",fd);
-		// close(fd);
 		if (qouts)
 			new_token->value.theres_qouts = 1;
 		append_token(head, tail, new_token);
