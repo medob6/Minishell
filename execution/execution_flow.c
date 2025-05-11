@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/10 14:53:02 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 15:23:56 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	child(t_data *prg_data, int index)
 	else if (!cmd.is_built_in)
 	{
 		perforem_redirections(prg_data, index);
-		// if (cmd.path == NULL || cmd.args == NULL) //TODO
+		// if (cmd.path == NULL || cmd.args == NULL) //TODO this linked to expansion case ls | $r | ls
 		// 	exit_status(prg_data, 0);
 		execute_cmd(cmd, prg_data);
 	}
@@ -45,7 +45,14 @@ void	child(t_data *prg_data, int index)
 			prg_data->lst_cmd[index].exit_status = execute_built_in(cmd,
 					prg_data);
 	}
-	if (!cmd.is_built_in || (prg_data->cmd_nbr > 1))
+  	if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
+	{
+		
+		printf("exit\n");
+		if (prg_data->lst_cmd[index].exit_status != 1)
+			exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
+	}
+	if ((!cmd.is_built_in || (prg_data->cmd_nbr > 1)))
 		exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
 }
 
