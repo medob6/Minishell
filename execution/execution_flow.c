@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 15:23:56 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:23:33 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@ void	child(t_data *prg_data, int index)
 	t_cmd		cmd;
 
 	cmd = prg_data->lst_cmd[index];
+
+	int i;
+	i = 0;
+	while (cmd.redirlist[i])
+	{
+		if (cmd.redirlist[i]->value)
+			printf("{%s}\n",((t_str *)cmd.redirlist[i])->value[0]);
+		i++;
+	}
 	if (cmd.is_subshell)
 	{
 		perforem_subshell_redirs(prg_data, index);
@@ -35,8 +44,8 @@ void	child(t_data *prg_data, int index)
 	else if (!cmd.is_built_in)
 	{
 		perforem_redirections(prg_data, index);
-		// if (cmd.path == NULL || cmd.args == NULL) //TODO this linked to expansion case ls | $r | ls
-		// 	exit_status(prg_data, 0);
+		if (cmd.path == NULL || cmd.args == NULL) //TODO this linked to expansion case ls | $r | ls
+			exit_status(prg_data, 0);
 		execute_cmd(cmd, prg_data);
 	}
 	else

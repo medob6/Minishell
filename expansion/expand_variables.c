@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:51:08 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/11 16:53:51 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -673,11 +673,12 @@ int	expand_variables(t_ast_node *node, t_env **env)
 	check_for_empty_strings_red(expand);
 	removes_qouts_cmd(expand);
 	removes_qouts_red(expand);
-	print_arguments(expand->node->children);
-	print_arguments(expand->node->redirect_list);
+	// print_arguments(expand->node->children);
+	// print_arguments(expand->node->redirect_list);
 	//printf("here\n");
 	return (1);
 }
+//["dhsj","dffs"] void **---> [t_str_node1->value[], t_str_node2] t_str **
 
 void expand_pipeline(t_ast_node *node, t_env **env)
 {

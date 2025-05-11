@@ -6,30 +6,30 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:00:15 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/06 16:24:39 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 18:15:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-int	open_file(t_token *file_token)
+int	open_file(t_str *file_token)
 {
 	if (!file_token)
 		return (-1);
 	if (file_token->type == TOKEN_REDIRECT_IN)
-		return (open(file_token->value.str_value, O_RDONLY));
+		return (open(file_token->value[0], O_RDONLY));
 	else if (file_token->type == TOKEN_REDIRECT_OUT)
-		return (open(file_token->value.str_value, O_WRONLY | O_CREAT | O_TRUNC,
+		return (open(file_token->value[0], O_WRONLY | O_CREAT | O_TRUNC,
 				0644));
 	else if (file_token->type == TOKEN_APPEND)
-		return (open(file_token->value.str_value, O_WRONLY | O_CREAT | O_APPEND,
+		return (open(file_token->value[0], O_WRONLY | O_CREAT | O_APPEND,
 				0644));
 	else if (file_token->type == TOKEN_HEREDOC)
-		return (file_token->value.fd_value);
+		return (file_token->fd);
 	return (-1);
 }
 
-void	redirect(t_data *data, t_token *file_obj)
+void	redirect(t_data *data, t_str *file_obj)
 {
 	int	fd;
 
@@ -46,15 +46,15 @@ void	redirect(t_data *data, t_token *file_obj)
 	}
 	else
 	{
-		print_err(strerror(errno), file_obj->value.str_value);
+		print_err(strerror(errno), file_obj->value[0]);
 		exit_status(data, 1);
 	}
 	close(fd);
 }
 
-bool	is_ambiguous_redirect(t_token *token)
+bool	is_ambiguous_redirect(t_str *token)
 {
-	if (token->value.fd_value == AMBIGUOUS_REDIRECTION)
+	if ((token->value && token->value[1] != NULL) || !token->value[0])
 	{
 		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
 		return (true);
@@ -62,13 +62,13 @@ bool	is_ambiguous_redirect(t_token *token)
 	return (false);
 }
 
-bool	open_output_redirect(t_data *data, t_token *token, int *last_idx,
+bool	open_output_redirect(t_data *data, t_str *token, int *last_idx,
 		int idx)
 {
 	data->out_fd = open_file(token);
 	if (data->out_fd < 0)
 	{
-		print_err(strerror(errno), token->value.str_value);
+		print_err(strerror(errno), token->value[0]);
 		return (false);
 	}
 	if (!isatty(data->out_fd))

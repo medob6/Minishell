@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 16:59:14 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/08 08:49:56 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 17:11:13 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,48 @@ bool	cmd_built_in(char *cmd)
 	return (false);
 }
 
+/////////////////////////////////////////////////   //TODO
+int get_length(t_str **strs)
+{
+    int len = 0;
+    int i = 0, j;
+
+    while (strs[i])
+    {
+        j = 0;
+        while (strs[i]->value && strs[i]->value[j])
+        {
+            len++;
+            j++;
+        }
+        i++;
+    }
+    return len;
+}
+
+// Function to extract all arguments into a single char **
+char **extract_cmd_args(t_str **strs)
+{
+    int total_len = get_length(strs);
+    char **args = (char **)ft_malloc((total_len + 1) , sizeof(char *));
+    int i = 0, j = 0, k = 0;
+
+    while (strs[i])
+    {
+        j = 0;
+        while (strs[i]->value && strs[i]->value[j])
+        {
+            args[k++] = strs[i]->value[j++];
+        }
+        i++;
+    }
+
+    args[k] = NULL; // Null-terminate the array
+    return args;
+}
+/////////////////////////////////////////////////   //TODO
+
+
 bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 {
 	char	**cmd_args;
@@ -64,8 +106,16 @@ bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 	if (!init_cmd_structure(cmd, node))
 		return (false);
 	cmd_args = NULL;
+	
 	if (node->children)
-		cmd_args = (char **)node->children->items;
+	{
+		// printf("lenght = %zu\n",node->children->length);
+		// printf("here :  %s   \n",((t_str *)node->children->items[1])->value[0]);
+		// cmd_args = (char **)node->children->items;
+		// TODO undesatand what happens in exansion
+		node->children->length = get_length((t_str **)node->children->items);
+		cmd_args = extract_cmd_args((t_str **)node->children->items);
+	}
 	if (!set_cmd_args_and_path(cmd, cmd_args, env))
 		return (false);
 	if (cmd_built_in(cmd_args[0]))

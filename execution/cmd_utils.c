@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:39:28 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/06 13:30:47 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/11 17:57:20 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	init_cmd_structure(t_cmd *cmd, t_ast_node *node)
 	cmd->redirlist = NULL;
 	cmd->is_subshell = false;
 	if (node->redirect_list)
-		cmd->redirlist = (t_token **)node->redirect_list->items;
+		cmd->redirlist = (t_str **)node->redirect_list->items;
 	return (true);
 }
 

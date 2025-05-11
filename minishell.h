@@ -113,8 +113,6 @@ typedef struct s_ast_node
 	t_ast_type		type;
 	t_array *children; // {ls , -l , -e}
 	t_array			*redirect_list;
-	char **field; // null
-	t_str			**str;
 }					t_ast_node;
 
 typedef struct s_expansion
