@@ -119,7 +119,8 @@ typedef struct s_expansion
 {
 	t_ast_node		*node;
 	t_env			**env;
-	char **field; // null
+	char **field_cmd;
+	char **field_red;
 	t_str			**str;
 }					t_expansion;
 // void print_ast(t_ast_node *node, int depth);

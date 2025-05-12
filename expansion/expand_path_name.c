@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 18:35:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 09:12:33 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -508,7 +508,7 @@ void    expand_path_name_cmd(t_expansion *expand)
         tmp = ((t_str *)expand->node->children->items[i])->value;
         if (tmp && *tmp)
         {
-            call_expand_wildcard(expand->node->children, expand->field, i);
+            call_expand_wildcard(expand->node->children, expand->field_cmd, i);
         }
         i++;
     }
@@ -531,7 +531,7 @@ void    expand_path_name_red(t_expansion *expand)
 		}
 		tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
 		if (tmp && *tmp)
-            call_expand_wildcard(expand->node->redirect_list, expand->field, i);
+            call_expand_wildcard(expand->node->redirect_list, expand->field_red, i);
 		i++;
 	}
 }

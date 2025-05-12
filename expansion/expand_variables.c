@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 18:58:55 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 09:24:24 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,8 +327,8 @@ static void	update_child_value(t_expansion *expand, int i, char *expanded, int f
 	copy_exp = ft_strdup(expanded);
 	if (field_split)
 	{
-		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
-		expand->field[i] = update_field_after_splitting(expand->field[i], copy_exp);
+		expand->str[i]->value = applicate_splitting(expanded, expand->field_cmd[i]);
+		expand->field_cmd[i] = update_field_after_splitting(expand->field_cmd[i], copy_exp);
 	}
 	else
 	{
@@ -346,8 +346,8 @@ static void	update_token_value(t_expansion *expand, int i, char *expanded, int f
 	copy_exp = ft_strdup(expanded);
 	if (field_split)
 	{
-		expand->str[i]->value = applicate_splitting(expanded, expand->field[i]);
-		expand->field[i] = update_field_after_splitting(expand->field[i], copy_exp);
+		expand->str[i]->value = applicate_splitting(expanded, expand->field_red[i]);
+		expand->field_red[i] = update_field_after_splitting(expand->field_red[i], copy_exp);
 		expand->str[i]->fd = ((t_token *)expand->node->redirect_list->items[i])->value.fd_value;
 		expand->str[i]->type = ((t_token *)expand->node->redirect_list->items[i])->type;
 	}
@@ -369,7 +369,10 @@ int	check_the_word(t_expansion *expand, int i, int split, int flag)
 		str = (char *)expand->node->children->items[i];
 	else
 		str = ((t_token *)expand->node->redirect_list->items[i])->value.str_value;
-	expanded = help_check_the_word(&(expand->field[i]), expand->env, str);
+	if (!flag)
+		expanded = help_check_the_word(&(expand->field_cmd[i]), expand->env, str);
+	else
+		expanded = help_check_the_word(&(expand->field_red[i]), expand->env, str);
 	if (!flag)
 		update_child_value(expand, i, expanded, split);
 	else
@@ -470,7 +473,7 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     line = get_next_line(value->fd_value);
     while (line)
     {
-        if (search_for(line, '$'))
+        if (search_for(line, '$') && !value->theres_qouts)
             write(fd1, expand_heredoc(env, line), ft_strlen(expand_heredoc(env, line)));
         else
             write(fd1, line, ft_strlen(line));
@@ -513,7 +516,7 @@ void expand_cmd(t_expansion *expand)
 	i = 0;
 	if (!expand->node->children)
 		return ;
-	expand->field = create_field(expand->node);
+	expand->field_cmd = create_field(expand->node);
 	expand->str = ft_malloc(sizeof(t_str *), expand->node->children->length + 1);
 	while (i < expand->node->children->length)
 	{
@@ -535,18 +538,6 @@ void	update_heredoc_value(t_expansion *expand, size_t i)
 	expand->str[i]->type = ((t_token *)expand->node->redirect_list->items[i])->type;
 }
 
-void	printfd(t_str **red)
-{
-	int i;
-	i = 0;
-	while (red[i])
-	{
-		if (red[i]->value)
-			printf("{%s}\n",((t_str *)red[i])->value[0]);
-		i++;
-	}
-}
-
 void	printfgf(t_token **str, int len)
 {
 	int	i;
@@ -558,6 +549,7 @@ void	printfgf(t_token **str, int len)
 		i++;
 	}
 }
+
 void expand_redirection(t_expansion *expand)
 {
 	size_t		i;
@@ -566,7 +558,7 @@ void expand_redirection(t_expansion *expand)
 	i = 0;
 	if (!expand->node->redirect_list)
 		return ;
-	expand->field = create_field_red(expand->node);
+	expand->field_red = create_field_red(expand->node);
 	expand->str = ft_malloc(sizeof(t_str *), expand->node->redirect_list->length + 1);
 	//printfgf((t_token **)expand->node->redirect_list->items, expand->node->redirect_list->length);
 	while (i < expand->node->redirect_list->length)
@@ -655,7 +647,8 @@ t_expansion	*create_t_expand(t_ast_node *node, t_env **env)
 	expand = ft_malloc(sizeof(t_expansion), 1);
 	expand->env = env;
 	expand->node = node;
-	expand->field = NULL;
+	expand->field_cmd = NULL;
+	expand->field_red = NULL;
 	expand->str = NULL;
 	return (expand);
 }
@@ -687,6 +680,17 @@ void	print_arguments(t_array *args)
 		{
 			printf("  [%zu]: (empty or NULL)\n", i);
 		}
+	}
+}
+
+void	printfd(char **red)
+{
+	int i;
+	i = 0;
+	while (red[i])
+	{
+		printf("{%s}\n",red[i]);
+		i++;
 	}
 }
 
