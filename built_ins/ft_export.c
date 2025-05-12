@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 15:39:43 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:41:12 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,8 @@ void	print_lst(t_env **env, int fd)
 		if (tmp->value_set)
 		{
 			ft_print("=", fd);
+			if (tmp->value[0] == '\0')
+				ft_print("\"\"", fd);
 			ft_print(tmp->value, fd);
 		}
 		ft_print("\n", fd);
