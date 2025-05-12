@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/12 12:21:02 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 14:39:47 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	init_program_data(t_data *data, t_ast_node *pipeline, t_env *env)
 	data->env = env;
 	expand_pipeline(pipeline, &data->env);
 	data->cmd_nbr = pipeline->children->length;
-	data->lst_cmd = build_cmd_list(data->cmd_nbr,(t_ast_node **)pipeline->children->items, env);
+	data->lst_cmd = build_cmd_list(data->cmd_nbr,
+			(t_ast_node **)pipeline->children->items, env);
 	data->env = env;
 }
 
@@ -77,20 +78,14 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	return (status);
 }
 
-int *get_last_status()
+int	*get_last_status(void)
 {
+	static int	status;
 
-    static int status;
-    return (&status);
-
+	return (&status);
 }
-
 
 void	execution(t_ast_node *root, t_env *env)
 {
-	int	n;
-
-	n = execute_cmd_line(root, env);
-	*(get_last_status()) = n;
-	printf("status = %d\n", n);
+	*(get_last_status()) = execute_cmd_line(root, env);
 }

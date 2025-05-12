@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:34:48 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 13:47:11 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 15:38:23 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	ft_env(t_env **env, int fd)
 	tmp = *env;
 	while (tmp)
 	{
+		
 		if (tmp->value_set)
 		{
 			str = ft_strjoin(ft_strjoin(tmp->key, "="), tmp->value);
