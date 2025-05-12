@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 09:17:31 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:08:11 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 09:13:15 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ char    *remove_q(char **field, char *str, int *index, size_t i)
     new_str = ft_strdup("");
     while (str[j])
     {
+        //printf("str = [%s]/////////// field = [%s]////////index = %d\n",str, field[i], *index);
         if ((str[j] == '\'' || str[j] == '"') && field[i][*index] == '0')
         {
             start = j;
@@ -89,6 +90,17 @@ char    *remove_q(char **field, char *str, int *index, size_t i)
 }
 //"hello"$x"world"$x$HOME
 
+//void	printfd(char **red)
+//{
+//	int i;
+//	i = 0;
+//	while (red[i])
+//	{
+//		printf("{%s}\n",red[i]);
+//		i++;
+//	}
+//}
+
 void    removes_qouts_cmd(t_expansion *expand)
 {
     size_t  i;
@@ -99,6 +111,7 @@ void    removes_qouts_cmd(t_expansion *expand)
     if (!expand->node->children)
         return ;
     i = 0;
+    //printfd(expand->field);
     while (i < expand->node->children->length)
     {
         tmp = ((t_str *)expand->node->children->items[i])->value;
@@ -108,7 +121,7 @@ void    removes_qouts_cmd(t_expansion *expand)
             index = 0;
             while (tmp && tmp[j])
             {
-                tmp[j] = remove_q(expand->field, tmp[j], &index, i);
+                tmp[j] = remove_q(expand->field_cmd, tmp[j], &index, i);
                 j++;
             }
         }
@@ -130,7 +143,7 @@ void    help_removes_qouts_red(t_expansion *expand, size_t i)
         index = 0;
         while (tmp && tmp[j])
         {
-            tmp[j] = remove_q(expand->field, tmp[j], &index, i);
+            tmp[j] = remove_q(expand->field_red, tmp[j], &index, i);
             j++;
         }
     }
