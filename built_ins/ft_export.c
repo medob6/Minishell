@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/04/29 17:45:07 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:54:56 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,11 @@ t_env	*create_new(char *s, int sep)
 	node->key = ft_substr(s, 0, sep);
 	node->value = NULL;
 	if (s[sep] == '=')
+	{
 		node->value = ft_substr(s, sep + 1, ft_strlen(s) - sep - 1);
+		node->value_set = true;
+	}
+	node->value_set = false;
 	node->next = NULL;
 	return (node);
 }
@@ -61,45 +65,6 @@ void	add_the_new(t_env **env, t_env *new)
 		tmp->next = new;
 	}
 }
-
-// int ft_export(char **args, t_env **env)
-// {
-//     int i;
-//     int sep;
-//     t_env *tmp;
-
-//     i = 1;
-//     while (args[i])
-//     {
-//         if (!check_is_okey(args[i]))
-//         {
-//             ft_print("minishell: export: not a valid identifier\n", 2);
-//             i++;
-//             continue ;
-//         }
-//         sep = 0;
-//         while (args[i][sep] && args[i][sep] != '=')
-//             sep++;
-
-//         tmp = *env;
-//         while (tmp)
-//         {
-//             if (ft_strncmp(args[i], tmp->key, sep) == 0
-//	&& tmp->key[sep] == '\0')
-//             {
-//                 if (args[i][sep] == '=')
-//                     tmp->value = ft_strdup(&args[i][sep + 1]);
-//                 break ;
-//             }
-//             tmp = tmp->next;
-//         }
-//         if (!tmp && args[i][sep] == '=')
-//             add_the_new(env, create_new(args[i], sep));
-
-//         i++;
-//     }
-//     return (0);
-// }
 
 int	is_valid_identifier(char *s)
 {
@@ -135,7 +100,7 @@ void	update_existing_env(t_env *env, char *arg, int sep)
 		{
 			if (arg[sep] == '=')
 			{
-				free(env->value);
+				ft_free(env->value);
 				env->value = ft_strdup(&arg[sep + 1]);
 			}
 			break ;
@@ -157,56 +122,35 @@ void	add_or_update_env(char *arg, int sep, t_env **env)
 	}
 }
 
-// // ? testing function
-
-// static void	print_lst(t_env **env)
-// {
-// 	t_env	*head;
-
-// 	head = *env;
-// 	while (head)
-// 	{
-// 		if (!strcmp(head->key, "var"))
-// 		{
-// 			printf("\033[0;32mvalue added succesfully \033[0m\n");
-// 			printf("key = %s , value = %s \n", head->key, head->value);
-// 		}
-// 		// else
-// 		// 	printf("key = %s , value = %s \n", head->key, head->value);
-// 		head = head->next;
-// 	}
-// 	if (head)
-// 		printf("\033[0;32mkey was not added\033[0m\n");
-// 	return ;
-// }
-
-void	print_lst(t_env **env)
+void	print_lst(t_env **env, int fd)
 {
 	t_env	*tmp;
 
 	tmp = *env;
 	while (tmp)
 	{
-		ft_print("declare -x ", 1);
-		ft_print(tmp->key, 1);
-		ft_print("=", 1);
-		ft_print(tmp->value, 1);
-		ft_print("\n", 1);
+		ft_print("declare -x ", fd);
+		ft_print(tmp->key, fd);
+		if (tmp->value_set)
+		{
+			ft_print("=", fd);
+			ft_print(tmp->value, fd);
+		}
+		ft_print("\n", fd);
 		tmp = tmp->next;
 	}
 }
 
-int	ft_export(char **args, t_env **env)
+int	ft_export(char **args, t_env **env, int fd)
 {
 	int	i;
 	int	sep;
-	int status;
+	int	status;
 
 	status = 0;
-
 	i = 1;
-	 if (!args[1])
-	 	print_lst(env);
+	if (!args[1])
+		print_lst(env, fd);
 	while (args[i])
 	{
 		if (!is_valid_identifier(args[i]))
@@ -214,13 +158,13 @@ int	ft_export(char **args, t_env **env)
 			ft_print("minishell: export: not a valid identifier\n", 2);
 			i++;
 			status = 1;
-			continue;
+			continue ;
 		}
 		status = 0;
 		sep = find_equal_pos(args[i]);
 		add_or_update_env(args[i], sep, env);
 		i++;
 	}
-	
 	return (status);
 }
+

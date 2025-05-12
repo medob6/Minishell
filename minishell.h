@@ -32,6 +32,7 @@ typedef struct s_env
 {
 	char			*key;
 	char			*value;
+	bool			value_set;
 	struct s_env	*next;
 }					t_env;
 
@@ -119,8 +120,8 @@ typedef struct s_expansion
 {
 	t_ast_node		*node;
 	t_env			**env;
-	char **field_cmd;
-	char **field_red;
+	char			**field_cmd;
+	char			**field_red;
 	t_str			**str;
 }					t_expansion;
 // void print_ast(t_ast_node *node, int depth);
@@ -133,7 +134,7 @@ void				print_token(t_token *head);
 void				*ft_malloc(int size, int bytes);
 t_gar				**garbage_list(void);
 int					ft_print(char *c, int fd);
-t_env				*create_the_main_list(char **envp,int shlvl);
+t_env				*create_the_main_list(char **envp, int shlvl);
 
 t_array				*creat_array(void);
 void				array_extend(t_array *arr);
@@ -152,7 +153,7 @@ char				*get_value(int type);
 
 int					expand_ast(t_ast_node *node, t_env **env);
 int					is_valid_identifier(char *s);
-int					ft_export(char **args, t_env **env);
+int					ft_export(char **args, t_env **env, int fd);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void				print_err(char *err, char *str);
 void				ft_free(void *address);
@@ -161,10 +162,15 @@ int					take_inside_qout(char **s, char *str, int j);
 char				*append_char(char *old_str, char c);
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
-char  *expand_the_value(char *str, t_env **env);
-char	*get_name_heredoc(void);
+char				*expand_the_value(char *str, t_env **env);
+char				*get_name_heredoc(void);
 
 // export a='"'  export b='*'  echo "$a$b$a"
 // error message = "$a$b$a" and i get ""*"" --> "*"
 
+int					check_value(char *number);
+t_env				*create_the_main_list(char **envp, int shlvl);
+bool				is_correct_nbr(char *number);
+int					ft_atoi(char *str);
+int					*get_last_status(void);
 #endif

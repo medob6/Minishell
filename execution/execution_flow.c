@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 18:42:27 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 12:49:46 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,21 @@ int	execute_subshell(t_ast_node *subshell, t_env *env)
 	return (status);
 }
 
+
+//TODO add to header file
+int update_status_sp_case()
+{
+	if (*get_last_status() != 0 )
+		return (*get_last_status());
+	return (1);
+}
+
 void	child(t_data *prg_data, int index)
 {
 	t_ast_node	*subshell_node;
 	t_cmd		cmd;
 
 	cmd = prg_data->lst_cmd[index];
-
-	//int i;
-	//i = 0;
-	//while (cmd.redirlist[i])
-	//{
-	//	if (cmd.redirlist[i]->value)
-	//		printf("{%s}\n",((t_str *)cmd.redirlist[i])->value[0]);
-	//	i++;
-	//}
 	if (cmd.is_subshell)
 	{
 		perforem_subshell_redirs(prg_data, index);
@@ -44,7 +44,7 @@ void	child(t_data *prg_data, int index)
 	else if (!cmd.is_built_in)
 	{
 		perforem_redirections(prg_data, index);
-		if (cmd.path == NULL || cmd.args == NULL) //TODO this linked to expansion case ls | $r | ls
+		if (cmd.args == NULL)
 			exit_status(prg_data, 0);
 		execute_cmd(cmd, prg_data);
 	}
@@ -54,12 +54,12 @@ void	child(t_data *prg_data, int index)
 			prg_data->lst_cmd[index].exit_status = execute_built_in(cmd,
 					prg_data);
 	}
-  	if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
+	if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
 	{
-		
 		printf("exit\n");
-		if (prg_data->lst_cmd[index].exit_status != 1)
+		if (prg_data->lst_cmd[index].exit_status != -1)
 			exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
+		prg_data->lst_cmd[index].exit_status = update_status_sp_case();
 	}
 	if ((!cmd.is_built_in || (prg_data->cmd_nbr > 1)))
 		exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
@@ -90,7 +90,7 @@ void	pipe_execution(t_data *prg_data)
 int	execute_built_in(t_cmd cmd, t_data *data)
 {
 	if (!ft_strcmp(cmd.args[0], "export"))
-		return (ft_export(cmd.args, &data->env));
+		return (ft_export(cmd.args, &data->env,data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "echo"))
 		return (ft_echo(cmd.args, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "cd"))
@@ -101,13 +101,13 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 			print_err("cd", "too many arguments");
 	}
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
-		return (ft_pwd(&data->env,data->out_fd));
+		return (ft_pwd(&data->env, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "unset"))
 		return (ft_unset(cmd.args, &data->env));
 	else if (!ft_strcmp(cmd.args[0], "env"))
-		return (ft_env(&data->env,data->out_fd));
+		return (ft_env(&data->env, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "exit"))
-		return (ft_exit(cmd.args, cmd.exit_status));
+		return (ft_exit(cmd.args));
 	return (1);
 }
 
@@ -122,6 +122,5 @@ int	execute_pipeline(t_ast_node *pipeline, t_env *env)
 	wait_for_prc(prg_data.lst_cmd, prg_data.cmd_nbr);
 	status = prg_data.lst_cmd[prg_data.cmd_nbr - 1].exit_status;
 	free_garbeg(&prg_data);
-	// TODO when freeing garbeg i do lost some data ,like envp
 	return (status);
 }

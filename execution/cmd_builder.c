@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 16:59:14 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 17:11:13 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 09:53:42 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ bool	cmd_built_in(char *cmd)
 	return (false);
 }
 
-/////////////////////////////////////////////////   //TODO
 int get_length(t_str **strs)
 {
     int len = 0;
@@ -76,7 +75,6 @@ int get_length(t_str **strs)
     return len;
 }
 
-// Function to extract all arguments into a single char **
 char **extract_cmd_args(t_str **strs)
 {
     int total_len = get_length(strs);
@@ -93,10 +91,9 @@ char **extract_cmd_args(t_str **strs)
         i++;
     }
 
-    args[k] = NULL; // Null-terminate the array
+    args[k] = NULL;
     return args;
 }
-/////////////////////////////////////////////////   //TODO
 
 
 bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
@@ -109,10 +106,6 @@ bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 	
 	if (node->children)
 	{
-		// printf("lenght = %zu\n",node->children->length);
-		// printf("here :  %s   \n",((t_str *)node->children->items[1])->value[0]);
-		// cmd_args = (char **)node->children->items;
-		// TODO undesatand what happens in exansion
 		node->children->length = get_length((t_str **)node->children->items);
 		cmd_args = extract_cmd_args((t_str **)node->children->items);
 	}

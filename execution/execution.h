@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 18:08:38 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 12:49:18 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_data
 
 /* Core Execution */
 int				execute_cmd_line(t_ast_node *root, t_env *envp);
-int				execution(t_ast_node *root, t_env *env);
+void			execution(t_ast_node *root, t_env *env);
 int				execute_pipeline(t_ast_node *pipeline, t_env *env);
 int				execute_subshell(t_ast_node *subshell, t_env *env);
 void			execute_cmd(t_cmd cmd, t_data *prg_data);
@@ -67,10 +67,10 @@ void			perforem_subshell_redirs(t_data *data, int n);
 void			close_here_docs(t_str **redir_list);
 void			reset_fds(t_data *data, int n);
 void			save_old_fd(int *old_fd, int *fd);
-bool			handle_redirect_token(t_data *data, t_str *token,
-					int *last_idx, int idx);
-bool			open_output_redirect(t_data *data, t_str *token,
-					int *last_idx, int idx);
+bool			handle_redirect_token(t_data *data, t_str *token, int *last_idx,
+					int idx);
+bool			open_output_redirect(t_data *data, t_str *token, int *last_idx,
+					int idx);
 bool			open_input_redirect(t_data *data, t_str *token);
 bool			redirection_builtins(t_data *data, int n);
 bool			reopen_last_output(t_data *data, t_str **redir_lst,
@@ -87,10 +87,11 @@ void			expand_pipeline(t_ast_node *node, t_env **env);
 
 /* Built-ins */
 int				ft_echo(char **args, int fd);
-int				ft_exit(char **args, long last_status);
+int				ft_exit(char **args);
 int				ft_env(t_env **env, int fd);
 int				ft_unset(char **args, t_env **env);
-int				ft_pwd(t_env **env_list,int fd);
+int				ft_export(char **args, t_env **env, int fd);
+int				ft_pwd(t_env **env_list, int fd);
 int				ft_cd(char *path, t_env **env_list);
 
 /* Utilities */
@@ -111,8 +112,8 @@ void			ft_free(void *address);
 t_gar			**garbage_list(void);
 
 /* FUNCTIONS */
-char	*ft_itoa(long n)
-;
+
+char			*ft_itoa(long n);
 void			handle_missing_cmd(t_cmd cmd, t_data *prg_data);
 int				exec_cmd(t_cmd cmd, char **envp, char *new_path);
 char			*expand_the_value(char *str, t_env **env);

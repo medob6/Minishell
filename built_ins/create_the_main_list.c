@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   create_the_main_list.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:34:31 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 13:49:19 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// Helper function to update SHLVL
+// TODO add to utils
 
 int	ft_isdigit(int c)
 {
@@ -47,7 +47,7 @@ int	ft_atoi(char *str)
 	}
 	return ((int)res * sign);
 }
-
+//////////////////////////
 bool	is_correct_nbr(char *number)
 {
 	int	i;
@@ -74,9 +74,9 @@ int	check_value(char *number)
 		n = ft_atoi(number);
 		if (n < 0 || n > 999)
 			return (-1);
+		return (n);
 	}
 	return (-1);
-	// TODO remplace atoi with this function
 }
 
 void	update_shlvl(t_env *env_list)
@@ -104,6 +104,7 @@ t_env	*create_node(char *s, int sep)
 	node = ft_malloc(sizeof(t_env), 1);
 	node->key = ft_substr(s, 0, sep);
 	node->value = ft_substr(s, sep + 1, ft_strlen(s) - (sep + 1));
+	node->value_set = true;
 	node->next = NULL;
 	return (node);
 }
@@ -151,6 +152,7 @@ t_env	*default_envp(int shlvl)
 	shlvl_node = ft_malloc(sizeof(t_env), 1);
 	head->key = ft_strdup("PWD");
 	head->value = getcwd(NULL, 0);
+	head->value_set = true;
 	head->next = shlvl_node;
 	shlvl_node->key = ft_strdup("SHLVL");
 	shlvl_node->value = ft_itoa(shlvl);
