@@ -6,7 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:00:15 by mbousset          #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2025/05/12 09:37:16 by salahian         ###   ########.fr       */
+=======
+/*   Updated: 2025/05/12 09:47:48 by mbousset         ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +58,14 @@ void	redirect(t_data *data, t_str *file_obj)
 
 bool	is_ambiguous_redirect(t_str *token)
 {
+<<<<<<< Updated upstream
 	if (token->value && (token->value[0] == NULL || token->value[1]))
+=======
+	// printf("[%s]\n", token->value[0]);
+	if ((token->value && token->value[1] != NULL) || !token->value[0])
+>>>>>>> Stashed changes
 	{
+		printf("here \n");
 		ft_putstr_fd("minishell: ambiguous redirect\n", 2);
 		return (true);
 	}
