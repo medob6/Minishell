@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 16:45:26 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 12:21:02 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,20 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 	return (status);
 }
 
-int	execution(t_ast_node *root, t_env *env)
+int *get_last_status()
+{
+
+    static int status;
+    return (&status);
+
+}
+
+
+void	execution(t_ast_node *root, t_env *env)
 {
 	int	n;
 
 	n = execute_cmd_line(root, env);
+	*(get_last_status()) = n;
 	printf("status = %d\n", n);
-	return (n);
 }

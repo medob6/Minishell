@@ -268,7 +268,7 @@ int	main(int ac, char **av, char **envp)
 	ft_error(1);
 	shlvl++;
 	env = create_the_main_list(envp, shlvl);
-	
+	rl_outstream = stderr;//TODO understand this
 	while (1)
 	{
 		ast = NULL;
@@ -307,6 +307,7 @@ int	main(int ac, char **av, char **envp)
 		free(cmd_line);
 		rl_on_new_line();
 	}
+	printf("exit\n");
 	if (ft_error(0) == -1)
 		return (1);
 	ft_lstclear(garbage_list());
