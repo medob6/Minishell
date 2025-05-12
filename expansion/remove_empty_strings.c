@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:08:02 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 09:35:12 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	check_for_empty_strings_red(t_expansion *expand)
 	{
 		tmp = ((t_str *)expand->node->redirect_list->items[i])->value;
 		if (tmp && tmp[0] == 0)
-			expand->node->redirect_list->items = (void **)remove_empty_string(expand->node->redirect_list, i);
+			((t_str *)expand->node->redirect_list->items[i])->value[0] = NULL;
 		i++;
 	}
 }
