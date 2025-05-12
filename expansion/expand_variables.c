@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 09:24:24 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 14:34:58 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,12 @@ char *handle_expansion(t_env **env, char *str, int *index)
 	var_len = is_valid_length(&str[*index + 1], 0);
 	if (var_len == 0)
 	{
+		if (str[*index + 1] == '?')
+		{
+			tmp = ft_itoa(*get_last_status());
+			(*index) += 2;
+			return (tmp);
+		}
 		buf[0] = '$';
 		buf[1] = '\0';
 		tmp = ft_strdup(buf);
@@ -577,68 +583,8 @@ void expand_redirection(t_expansion *expand)
 		i++;
 	}
 	expand->str[i] = NULL;
-	//printfd(expand->str);
 	expand->node->redirect_list->items = (void **)expand->str;
 }
-//bool is_here_doc(void *item)
-//{
-//	t_token *token = (t_token *)item;
-//	return (token->type == TOKEN_HEREDOC);
-//}
-
-
-//int should_disable_split(t_ast_node *node, int split)
-//{
-//	char *tmp;
-//	int last_exp_index;
-
-//	last_exp_index = check_for_last_exp(node);
-//	if (last_exp_index != -1)
-//	{
-//		tmp = (char *)node->children->items[last_exp_index];
-//		if ((size_t)check_the_last_arg(tmp) != ft_strlen(tmp))
-//			split = 0;
-//	}
-//	return (split);
-//}
-
-//void handle_redir_word(t_ast_node *node, t_env **env, size_t i)
-//{
-//	char *str;
-//	int split;
-
-//	split = 0;
-//	str = ((t_token *)node->redirect_list->items[i])->value.str_value;
-//	if (!str)
-//		return ;
-//	if (check_for_field_split(str))
-//	{
-//		split = 1;
-//		split = should_disable_split(node, split);
-//	}
-//	check_the_word(node->redirect_list, env, i, split);
-//}
-
-
-//void expand_redirection(t_ast_node *node, t_env **env)
-//{
-//	size_t i;
-
-//	if (!node->redirect_list)
-//		return ;
-//	i = 0;
-//	while (i < node->redirect_list->length)
-//	{
-//		if (is_here_doc(node->redirect_list->items[i]))
-//		{
-//			handle_heredoc_expansion(env, &(((t_token *)node->redirect_list->items[i])->value));
-//			i++;
-//			continue;
-//		}
-//		handle_redir_word(node, env, i);
-//		i++;
-//	}
-//}
 
 t_expansion	*create_t_expand(t_ast_node *node, t_env **env)
 {
