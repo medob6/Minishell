@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 13:54:56 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:41:12 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,13 @@ t_env	*create_new(char *s, int sep)
 	node = ft_malloc(sizeof(t_env), 1);
 	node->key = ft_substr(s, 0, sep);
 	node->value = NULL;
-	if (s[sep] == '=')
+	node->value_set = false;
+	if (sep != -1 && s[sep] == '=')
 	{
 		node->value = ft_substr(s, sep + 1, ft_strlen(s) - sep - 1);
 		node->value_set = true;
 	}
-	node->value_set = false;
+	
 	node->next = NULL;
 	return (node);
 }
@@ -87,39 +88,52 @@ int	find_equal_pos(char *s)
 	int	i;
 
 	i = 0;
-	while (s[i] && s[i] != '=')
+	while (s && s[i])
+	{
+		if (s[i] == '=')
+			return (i);
 		i++;
-	return (i);
+	}
+	return (-1);
 }
 
-void	update_existing_env(t_env *env, char *arg, int sep)
+t_env	*update_existing_env(t_env *env, char *arg, int sep)
 {
+
 	while (env)
 	{
-		if (ft_strncmp(arg, env->key, sep) == 0 && env->key[sep] == '\0')
+		if ((sep != -1 && (!ft_strncmp(arg, env->key, sep) && env->key[sep] == '\0')) || (sep == -1 && !ft_strcmp(arg, env->key)))
 		{
-			if (arg[sep] == '=')
+			
+			if (sep != -1 && arg[sep] == '=')
 			{
+
 				ft_free(env->value);
 				env->value = ft_strdup(&arg[sep + 1]);
+				env->value_set = true;
 			}
-			break ;
+
+			return (env);
 		}
 		env = env->next;
 	}
+
+	return (NULL);
 }
 
 void	add_or_update_env(char *arg, int sep, t_env **env)
 {
 	t_env	*tmp;
+	t_env *tes;
 
 	tmp = *env;
-	update_existing_env(tmp, arg, sep);
-	if (!tmp || (tmp && ft_strncmp(arg, tmp->key, sep) != 0))
+	tes = update_existing_env(tmp, arg, sep);
+
+	if (!tes)
 	{
-		if (arg[sep] == '=')
-			add_the_new(env, create_new(arg, sep));
+		add_the_new(env, create_new(arg, sep));
 	}
+	
 }
 
 void	print_lst(t_env **env, int fd)
@@ -134,6 +148,8 @@ void	print_lst(t_env **env, int fd)
 		if (tmp->value_set)
 		{
 			ft_print("=", fd);
+			if (tmp->value[0] == '\0')
+				ft_print("\"\"", fd);
 			ft_print(tmp->value, fd);
 		}
 		ft_print("\n", fd);
