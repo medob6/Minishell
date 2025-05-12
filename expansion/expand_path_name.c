@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 16:40:26 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/12 18:02:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,26 +26,69 @@ int     check_str(char *str)
     return (1);
 }
 
+//int match_pattern(char *field, char *pattern, char *name)
+//{
+//    while (*pattern)
+//    {
+//        if (*pattern == '*' && (*field == '0' || *field == '1'))
+//        {
+//            while (*pattern == '*' && (*field == '0' || *field == '1'))
+//            {
+//                field++;
+//                pattern++;
+//            }
+//            if (*pattern == '\0')
+//                return (1);
+//            while (*name)
+//            {
+//                if (match_pattern(field, pattern, name))
+//                    return (1);
+//                name++;
+//            }
+//            return (0);
+//        }
+//        else if (*name && *pattern == *name)
+//        {
+//            field++;
+//            pattern++;
+//            name++;
+//        }
+//        else
+//            return (0);
+//    }
+//    return (*name == '\0');
+//}
+
+int skip_wildcards(char **pattern, char **field)
+{
+    while (**pattern == '*' && (**field == '0' || **field == '1'))
+    {
+        (*pattern)++;
+        (*field)++;
+    }
+    return (**pattern == '\0');
+}
+
+int try_match_rest(char *field, char *pattern, char *name)
+{
+    while (*name)
+    {
+        if (match_pattern(field, pattern, name))
+            return (1);
+        name++;
+    }
+    return (0);
+}
+
 int match_pattern(char *field, char *pattern, char *name)
 {
     while (*pattern)
     {
         if (*pattern == '*' && (*field == '0' || *field == '1'))
         {
-            while (*pattern == '*' && (*field == '0' || *field == '1'))
-            {
-                field++;
-                pattern++;
-            }
-            if (*pattern == '\0')
+            if (skip_wildcards(&pattern, &field))
                 return (1);
-            while (*name)
-            {
-                if (match_pattern(field, pattern, name))
-                    return (1);
-                name++;
-            }
-            return (0);
+            return (try_match_rest(field, pattern, name));
         }
         else if (*name && *pattern == *name)
         {
@@ -58,6 +101,7 @@ int match_pattern(char *field, char *pattern, char *name)
     }
     return (*name == '\0');
 }
+
 
 char    *handle_dir(struct dirent *dir, char *get, char *path, char *new_str)
 {
@@ -85,24 +129,43 @@ char    *handle_dir(struct dirent *dir, char *get, char *path, char *new_str)
     return (NULL);
 }
 
-void help_expand_wild(struct dirent *dir, char *path, char *get, char **new_str, char *field)
+//void help_expand_wild(struct dirent *dir, char *path, char *get, char **new_str, char *field)
+//{
+//    char *tmp;
+
+//    tmp = ft_strjoin(path, dir->d_name);
+//    //if ((!get || check_str(get)) && dir->d_name[0] != '.')
+//    //    *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
+//    if (get && match_pattern(field, get, dir->d_name) && dir->d_name[0] != '.')
+//    {
+//        *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
+//    }
+//    else if (get && dir->d_type == 4)
+//    {
+//        tmp = handle_dir(dir, get, path, *new_str);
+//        if (tmp)
+//            *new_str = tmp;
+//    }
+//}
+
+char *help_expand_wild(struct dirent *dir, char *path, char *get, char *field)
 {
     char *tmp;
+    char *result;
 
+    result = NULL;
     tmp = ft_strjoin(path, dir->d_name);
-    //if ((!get || check_str(get)) && dir->d_name[0] != '.')
-    //    *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
     if (get && match_pattern(field, get, dir->d_name) && dir->d_name[0] != '.')
     {
-        *new_str = ft_strjoin(*new_str, ft_strjoin(tmp, " "));
+        result = ft_strjoin(tmp, " ");
     }
     else if (get && dir->d_type == 4)
     {
-        tmp = handle_dir(dir, get, path, *new_str);
-        if (tmp)
-            *new_str = tmp;
+        result = handle_dir(dir, get, path, NULL);
     }
+    return (result);
 }
+
 
 char    *check_string_is_not_null(char *get)
 {
@@ -132,12 +195,28 @@ char    *check_string_is_not_null(char *get)
     return (tmp);
 }
 
+char    *help_check_string_get(char **field, char **new, char *get, int *i)
+{
+    char    c;
+    char    *tmp;
+
+    tmp = NULL;
+    c = get[(*i)++];
+    while (get[*i] && get[*i] != c)
+    {
+        *new = append_char(*new, field[0][*i]);
+        tmp = append_char(tmp, get[(*i)++]);
+    }
+    if (get[*i] == c)
+        (*i)++;
+    return (tmp);
+}
+
 char    *check_string_get(char **field, char *get)
 {
     int     i;
     char    *tmp;
     char    *new;
-    char    c;
     
     i = 0;
     tmp = NULL;
@@ -145,16 +224,7 @@ char    *check_string_get(char **field, char *get)
     while (get[i])
     {
         if (get[i] == '"' || get[i] == '\'')
-        {
-            c = get[i++];
-            while (get[i] && get[i] != c)
-            {
-                new = append_char(new, field[0][i]);
-                tmp = append_char(tmp, get[i++]);
-            }
-            if (get[i] == c)
-                i++;
-        }
+            tmp = ft_strjoin(tmp, help_check_string_get(field, &new, get, &i));
         else
         {
             new = append_char(new, field[0][i]);
@@ -165,35 +235,62 @@ char    *check_string_get(char **field, char *get)
     return (tmp);
 }
 
-char    *expand_wild(char **field, char *path, char *get)
-{
-    struct dirent   *file;
-    DIR     *dir;
-    int     i;
-    char    *new_str;
-    char    *tmp;
+//char    *expand_wild(char **field, char *path, char *get)
+//{
+//    struct dirent   *file;
+//    DIR     *dir;
+//    int     i;
+//    char    *new_str;
+//    char    *tmp;
 
-    new_str = NULL;
-    i = 0;
+//    new_str = NULL;
+//    i = 0;
+//    if (path)
+//        dir = opendir(path);
+//    else
+//        dir = opendir(".");
+//    if (!dir)
+//        return (NULL);
+//    file = readdir(dir);
+//    tmp = ft_strjoin(path, file->d_name);
+//    if (check_string_is_not_null(get))
+//        get = check_string_get(field, get);
+//    while (file)
+//    {
+//        help_expand_wild(file, path, get, &new_str, *field);
+//        file = readdir(dir);
+//    }
+//    closedir(dir);
+//    return (new_str);
+//}
+
+char *expand_wild(char **field, char *path, char *get)
+{
+    struct dirent *file;
+    DIR *dir;
+    char *new_str;
+    char *add;
+
     if (path)
         dir = opendir(path);
     else
         dir = opendir(".");
     if (!dir)
         return (NULL);
+    new_str = NULL;
     file = readdir(dir);
-    tmp = ft_strjoin(path, file->d_name);
     if (check_string_is_not_null(get))
         get = check_string_get(field, get);
     while (file)
     {
-        help_expand_wild(file, path, get, &new_str, *field);
+        add = help_expand_wild(file, path, get, *field);
+        if (add)
+            new_str = ft_strjoin(new_str, add);
         file = readdir(dir);
     }
     closedir(dir);
     return (new_str);
 }
-
 
 //int check_pattern(char *s)
 //{
