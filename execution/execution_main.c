@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/12 14:39:47 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/12 16:25:01 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,6 @@ int	*get_last_status(void)
 
 void	execution(t_ast_node *root, t_env *env)
 {
-	*(get_last_status()) = execute_cmd_line(root, env);
+	if (root->children || root->redirect_list)
+		*(get_last_status()) = execute_cmd_line(root, env);
 }
