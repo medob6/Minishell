@@ -51,6 +51,7 @@ typedef enum e_token_type
 	TOKEN_EOF
 }					t_token_type;
 
+// void print_ast(t_ast_node *node, int depth);
 // typedef struct s_token
 // {
 // 	char *value; // The actual token string
@@ -128,7 +129,7 @@ typedef struct s_expansion
 t_ast_node			*subshell(t_token **token);
 t_ast_node			*command(t_token **token);
 bool				paranteses_symetric(t_token **token);
-
+void print_ast(t_ast_node *node, int depth);
 char				*get_value_ast(int type);
 void				print_token(t_token *head);
 void				*ft_malloc(int size, int bytes);
