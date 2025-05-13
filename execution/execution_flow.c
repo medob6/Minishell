@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 14:20:21 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:52:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,14 @@ void	pipe_execution(t_data *prg_data)
 		if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
 			prg_data->lst_cmd[i].pid = fork();
 		if (prg_data->lst_cmd[i].pid == 0)
+		{
+			if (!prg_data->lst_cmd[i].is_built_in || (prg_data->cmd_nbr > 1))
+			{
+				signal(SIGQUIT, SIG_DFL);
+				signal(SIGINT, SIG_DFL);
+			}
 			child(prg_data, i);
+		}
 		else
 		{
 			save_old_fd(&prg_data->old_fd, prg_data->fd);
