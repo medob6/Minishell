@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 10:14:00 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 14:20:21 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,16 @@ void	child(t_data *prg_data, int index)
 {
 	t_ast_node	*subshell_node;
 	t_cmd		cmd;
+	static int	exit_in_subshell;
 
 	cmd = prg_data->lst_cmd[index];
 	if (cmd.is_subshell)
 	{
+		exit_in_subshell = true;
 		perforem_subshell_redirs(prg_data, index);
 		subshell_node = prg_data->lst_cmd[index].subshell_node;
-		prg_data->lst_cmd[index].exit_status = execute_subshell(subshell_node, prg_data->env);
+		prg_data->lst_cmd[index].exit_status = execute_subshell(subshell_node,
+				prg_data->env);
 	}
 	else if (!cmd.is_built_in)
 	{
@@ -54,7 +57,8 @@ void	child(t_data *prg_data, int index)
 					prg_data);
 		if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
 		{
-			printf("exit\n");
+			if (!exit_in_subshell)
+				printf("exit\n");
 			if (prg_data->lst_cmd[index].exit_status != -1)
 				exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
 			prg_data->lst_cmd[index].exit_status = update_status_sp_case();
