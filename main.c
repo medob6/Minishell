@@ -257,15 +257,15 @@ int	main(int ac, char **av, char **envp)
 		h = create_tokens(lexer(cmd_line));
 		if (h)
 		{
-			// printf("\033[0;32m============================\033[0m\n\n");
-			// printf("\033[1;33m📦 Tokens:\033[0m\n\n");
-			// print_token(*h);
-			// printf("\n\n");
+			printf("\033[0;32m============================\033[0m\n\n");
+			printf("\033[1;33m📦 Tokens:\033[0m\n\n");
+			print_token(*h);
+			printf("\n\n");
 			ast = parse_tokens(*h);
 		}
 		if (!ast)
 		{
-			// printf("\033[0;32m============================\033[0m\n\n");
+			printf("\033[0;32m============================\033[0m\n\n");
 			printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
 		}
 		else
