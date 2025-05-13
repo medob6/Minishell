@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:58:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 18:10:50 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 10:11:26 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,18 @@ t_ast_node	*flatten_compound_if_possible(t_ast_node *compouned)
 	t_ast_node	*child;
 	t_array		*redir_list;
 
+	
 	if (!compouned || compouned->children->length != 1)
 		return (compouned);
 	pipeline = compouned->children->items[0];
 	if (pipeline->children->length != 1)
 		return (compouned);
 	child = pipeline->children->items[0];
+	//TODO FIX this here and merge
+	//to change
+	if (pipeline->children->length == 1 &&  child->type == AST_SIMPLE_CMD)
+		return (compouned);
+	//to change
 	if (child->type != AST_SUBSHELL && child->type != AST_SIMPLE_CMD)
 		return (compouned);
 	if (!compouned->redirect_list)

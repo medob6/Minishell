@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 08:32:37 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 10:14:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 		return (ft_echo(cmd.args, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "cd"))
 	{
-		if (!cmd.args[2])
+		if (!cmd.args[1] || !cmd.args[2])
 			return (ft_cd(cmd.args[1], &data->env));
 		else
 			print_err("cd", "too many arguments");
