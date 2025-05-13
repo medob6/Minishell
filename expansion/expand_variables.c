@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 14:34:58 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 09:27:41 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -666,6 +666,7 @@ int	expand_variables(t_ast_node *node, t_env **env)
 void expand_pipeline(t_ast_node *node, t_env **env)
 {
 	size_t i;
+	t_expansion *expand;
 	
 	i = 0;
 	
@@ -675,8 +676,9 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 			expand_variables((t_ast_node *)node->children->items[i],env);
 		else if (((t_ast_node *)node->children->items[i])->type == AST_SUBSHELL)
 		{
-			//expand_redirection((t_ast_node *)node->children->items[i],env);
-			expand_variables((t_ast_node *)node->children->items[i],env);
+			expand = create_t_expand((t_ast_node *)node->children->items[i], env);
+			expand_redirection(expand);
+			//expand_variables((t_ast_node *)node->children->items[i],env);
 			expand_ast((t_ast_node *)node->children->items[i],env);
 		}
 		i++;
