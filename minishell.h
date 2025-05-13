@@ -12,7 +12,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
-# include <unistd.h>
+# include <unistd.h> // ls > o -la > o1 > -la -l
 
 # define AMBIGUOUS_REDIRECTION -5
 

@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 09:41:14 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:00:16 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@ char	*append(char s)
 	buf[1] = '\0';
 	return (ft_strdup(buf));
 }
-
+//ls > o -la > o1 > -la -l
 static char	*copy_and_update(char **field, char *str, int *index, char **new)
 {
 	int		start;
@@ -556,6 +556,17 @@ void	printfgf(t_token **str, int len)
 	}
 }
 
+void	printd(char **red)
+{
+	int i;
+	i = 0;
+	while (red[i])
+	{
+		printf("{%s}\n",red[i]);
+		i++;
+	}
+}
+
 void expand_redirection(t_expansion *expand)
 {
 	size_t		i;
@@ -565,6 +576,7 @@ void expand_redirection(t_expansion *expand)
 	if (!expand->node->redirect_list)
 		return ;
 	expand->field_red = create_field_red(expand->node);
+	//printd(expand->field_red);
 	expand->str = ft_malloc(sizeof(t_str *), expand->node->redirect_list->length + 1);
 	//printfgf((t_token **)expand->node->redirect_list->items, expand->node->redirect_list->length);
 	while (i < expand->node->redirect_list->length)
@@ -583,6 +595,7 @@ void expand_redirection(t_expansion *expand)
 		i++;
 	}
 	expand->str[i] = NULL;
+	//printfd(expand)
 	expand->node->redirect_list->items = (void **)expand->str;
 }
 

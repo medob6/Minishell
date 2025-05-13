@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 14:14:20 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 18:32:43 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:10:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,19 +135,43 @@ char **create_field(t_ast_node *node)
 	return (field);
 }
 
+//char **create_field_red(t_ast_node *node)
+//{
+//	char **field;
+//	size_t		i;
+
+//	i = 0;
+//	field = ft_malloc(sizeof(char *), node->redirect_list->length + 1);
+//	while (i < node->redirect_list->length)
+//	{
+//		create_single_field_red(field, (char **)(((t_token *)node->redirect_list->items)->value.str_value), i);
+//		i++;
+//	}
+//	//printf("%zu\n", i);
+//	field[i] = NULL;
+//	return (field);
+//}
+
 char **create_field_red(t_ast_node *node)
 {
-	char **field;
-	size_t		i;
+    char **field;
+    size_t i;
+	t_token *token;
+	char *value;
+	char *arr[2];
 
-	i = 0;
-	field = ft_malloc(sizeof(char *), node->redirect_list->length + 1);
-	while (i < node->redirect_list->length)
-	{
-		create_single_field_red(field, (char **)(((t_token *)node->redirect_list->items)->value.str_value), i);
-		i++;
-	}
-	//printf("%zu\n", i);
-	field[i] = NULL;
-	return (field);
+    i = 0;
+    field = ft_malloc(sizeof(char *), node->redirect_list->length + 1);
+    while (i < node->redirect_list->length)
+    {
+        token = (t_token *)node->redirect_list->items[i];
+        value = token->value.str_value;
+        arr[0] = value;
+		arr[1] = NULL;
+        create_single_field_red(field, arr, i);
+        i++;
+    }
+    field[i] = NULL;
+    return (field);
 }
+
