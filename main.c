@@ -226,6 +226,15 @@ void	print_ast(t_ast_node *node, int depth)
 }
 
 
+void	handler(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char		*cmd_line;
@@ -238,6 +247,8 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	ast = NULL;
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handler);
 	ft_error(1);
 	shlvl++;
 	env = create_the_main_list(envp, shlvl);
