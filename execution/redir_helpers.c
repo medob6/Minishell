@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:21:16 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 18:06:18 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 07:02:12 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@ void	perforem_subshell_redirs(t_data *data, int n)
 	t_ast_node	*subshell_node;
 
 	i = 0;
+	redir_lst = NULL;
 	subshell_node = data->lst_cmd[n].subshell_node;
 	if (subshell_node->redirect_list)
 		redir_lst = (t_str **)subshell_node->redirect_list->items;
-	else
-		redir_lst = NULL;
 	if (n != data->cmd_nbr - 1)
 		close(data->fd[0]);
 	if (data->old_fd != -1)
