@@ -6,11 +6,27 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 18:02:19 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 09:26:20 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansion.h"
+
+int find_last_slash(char *str)
+{
+    int j;
+    int last_slash;
+
+    j = 0;
+    last_slash = -1;
+    while (str[j])
+    {
+        if (str[j] == '/')
+            last_slash = j;
+        j++;
+    }
+    return (last_slash);
+}
 
 int     check_str(char *str)
 {
@@ -103,31 +119,81 @@ int match_pattern(char *field, char *pattern, char *name)
 }
 
 
-char    *handle_dir(struct dirent *dir, char *get, char *path, char *new_str)
+char    *handle_dir(struct dirent *dir, char *get, char *path, char *field)
 {
-    int     i;
+    int     slash;
     int     header;
     char    *tmp;
+    char    *new;
 
-    header = 0;
-    if (get[0] == '.')
-        header = 1;
-    i = header;
-    while (get[i] == '*')
-        i++;
-    tmp = ft_strjoin(dir->d_name, &get[i]);
+    header = (get[0] == '.');
+    slash = find_last_slash(get);
+    if (slash != -1)
+        new = ft_substr(get, 0, slash);
+    else
+        new = ft_strdup(get);
+    tmp = ft_strdup(dir->d_name);
     if (header)
     {
-        if (dir->d_name[0] == '.')
-            return (ft_strjoin(new_str, ft_strjoin(ft_strjoin(path, tmp), " ")));
+        if (dir->d_name[0] == '.' && match_pattern(field, new, dir->d_name))
+        {
+            if (slash != -1)
+                return (ft_strjoin(ft_strjoin(path, tmp), "/ "));
+            return (ft_strjoin(ft_strjoin(path, tmp), " ")); 
+        }
     }
     else
     {
-        if (get[i] == '/' && get[i + 1] == '\0' && dir->d_name[0] != '.')
-            return (ft_strjoin(new_str, ft_strjoin(ft_strjoin(path, tmp), " ")));
+        if (dir->d_name[0] != '.' && match_pattern(field, new, dir->d_name))
+        {
+            if (slash != -1)
+                return (ft_strjoin(ft_strjoin(path, tmp), "/ "));
+            return (ft_strjoin(ft_strjoin(path, tmp), " "));
+        }
     }
     return (NULL);
 }
+//char *handle_dir(struct dirent *dir, char *get, char *path, char *field)
+//{
+//    int     i;
+//    int     slash;
+//    int     header;
+//    char    *tmp;
+//    char    *new;
+//    char    *result = NULL;
+//    char    *full_path;
+//    char    *new_field;
+
+//    header = (get[0] == '.');
+//    i = header;
+//    while (get[i] == '*')
+//        i++;
+//    slash = find_last_slash(&get[i]);
+//    if (slash != -1)
+//    {
+//        new_field = ft_substr(field, 0, ft_strlen(field) - 1);
+//        new = ft_substr(get, i, slash);
+//    }
+//    else
+//    {
+//        new_field = ft_strdup(field);
+//        new = ft_strdup(&get[i]);
+//    }
+//    //printf("[%s]\n", new);
+//    //printf("here////////////////////////[%d]\n", match_pattern(new_field, new, dir->d_name));
+//    tmp = ft_strdup(dir->d_name);
+//    if ((header && dir->d_name[0] == '.' && match_pattern(new_field, new, dir->d_name)) ||
+//        (!header && dir->d_name[0] != '.' && match_pattern(new_field, new, dir->d_name)))
+//    {
+//        full_path = ft_strjoin(path, tmp);
+//        if (slash != -1)
+//            result = ft_strjoin(full_path, "/ ");
+//        else
+//            result = ft_strjoin(full_path, " ");
+//    }
+//    return (result);
+//}
+
 
 //void help_expand_wild(struct dirent *dir, char *path, char *get, char **new_str, char *field)
 //{
@@ -161,7 +227,7 @@ char *help_expand_wild(struct dirent *dir, char *path, char *get, char *field)
     }
     else if (get && dir->d_type == 4)
     {
-        result = handle_dir(dir, get, path, NULL);
+        result = handle_dir(dir, get, path, field);
     }
     return (result);
 }
@@ -210,6 +276,24 @@ char    *help_check_string_get(char **field, char **new, char *get, int *i)
     if (get[*i] == c)
         (*i)++;
     return (tmp);
+}
+
+int find_last_slash_before_star(char *str)
+{
+    int j;
+    int last_slash;
+
+    j = 0;
+    last_slash = -1;
+    while (str[j])
+    {
+        if (str[j] == '/')
+            last_slash = j;
+        if (str[j] == '*')
+            break;
+        j++;
+    }
+    return (last_slash);
 }
 
 char    *check_string_get(char **field, char *get)
@@ -281,6 +365,7 @@ char *expand_wild(char **field, char *path, char *get)
     file = readdir(dir);
     if (check_string_is_not_null(get))
         get = check_string_get(field, get);
+    //printf("[%s]\n", get);
     while (file)
     {
         add = help_expand_wild(file, path, get, *field);
@@ -352,24 +437,6 @@ int	check_pattern(char *s)
 char    **get_string_from_child(t_array *child, int i)
 {
     return (((t_str *)child->items[i])->value);
-}
-
-int find_last_slash_before_star(char *str)
-{
-    int j;
-    int last_slash;
-
-    j = 0;
-    last_slash = -1;
-    while (str[j])
-    {
-        if (str[j] == '/')
-            last_slash = j;
-        if (str[j] == '*')
-            break;
-        j++;
-    }
-    return (last_slash);
 }
 
 void get_pattern_and_path(char *str, char **path, char **pattern)
