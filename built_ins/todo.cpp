@@ -28,3 +28,13 @@
 // unset seems fine but need further testing and err handeling
 
 //TODO EXIT IF MALLOC FAILED
+
+
+
+
+//TODO 
+//! IMPORTANT 
+// FIX $> (exit) , or  any singal cmd in subshel must left one () at least cuse it need to be run in child ok
+//FIX this : need output
+// ~/Desktop/Minishell$ (ls | ls)
+// ~/Desktop/Minishell$ 
