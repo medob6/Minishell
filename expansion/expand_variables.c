@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 09:27:41 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 09:38:54 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -679,7 +679,7 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 			expand = create_t_expand((t_ast_node *)node->children->items[i], env);
 			expand_redirection(expand);
 			//expand_variables((t_ast_node *)node->children->items[i],env);
-			expand_ast((t_ast_node *)node->children->items[i],env);
+			//expand_ast((t_ast_node *)node->children->items[i],env);
 		}
 		i++;
 	}	
