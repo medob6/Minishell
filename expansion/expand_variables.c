@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 14:34:58 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 09:39:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -674,11 +674,9 @@ void expand_pipeline(t_ast_node *node, t_env **env)
 		if (((t_ast_node *)node->children->items[i])->type == AST_SIMPLE_CMD)
 			expand_variables((t_ast_node *)node->children->items[i],env);
 		else if (((t_ast_node *)node->children->items[i])->type == AST_SUBSHELL)
-		{
-			//expand_redirection((t_ast_node *)node->children->items[i],env);
-			expand_variables((t_ast_node *)node->children->items[i],env);
-			expand_ast((t_ast_node *)node->children->items[i],env);
-		}
+			i += 0;
+		// expand_redirection((t_ast_node *)node->children->items[i],env);
+
 		i++;
 	}	
 }

@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/12 18:03:22 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 08:32:37 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	child(t_data *prg_data, int index)
 	if (cmd.is_subshell)
 	{
 		perforem_subshell_redirs(prg_data, index);
-		subshell_node = cmd.subshell_node;
-		cmd.exit_status = execute_subshell(subshell_node, prg_data->env);
+		subshell_node = prg_data->lst_cmd[index].subshell_node;
+		prg_data->lst_cmd[index].exit_status = execute_subshell(subshell_node, prg_data->env);
 	}
 	else if (!cmd.is_built_in)
 	{
