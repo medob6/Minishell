@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 08:50:00 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 18:09:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 	i = 0;
 	if (cmd_nbr == 1 && cmd_list[0].is_built_in)
 		return ;
+	signal(SIGINT, SIG_IGN);
 	while (i < cmd_nbr)
 	{
 		waitpid(cmd_list[i].pid, &status, 0);
+		signal(SIGINT, handler);
 		cmd_list[i].exit_status = 0;
 		if (WIFEXITED(status))
 			cmd_list[i].exit_status = WEXITSTATUS(status);
@@ -36,6 +38,16 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 			cmd_list[i].exit_status = WSTOPSIG(status) + 128;
 		else if (WIFSIGNALED(status))
 			cmd_list[i].exit_status = WTERMSIG(status) + 128;
+		i++;
+	}
+	i = 0;
+	while (i < cmd_nbr)
+	{
+		if (cmd_list[i].exit_status == 130 || cmd_list[i].exit_status == 131)
+		{
+			write(1, "\n", 1);
+			break ;
+		}
 		i++;
 	}
 }

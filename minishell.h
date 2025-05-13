@@ -176,4 +176,5 @@ t_env				*create_the_main_list(char **envp, int shlvl);
 bool				is_correct_nbr(char *number);
 int					ft_atoi(char *str);
 int					*get_last_status(void);
+void				handler(int sig);
 #endif
