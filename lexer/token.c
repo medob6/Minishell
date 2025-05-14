@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 10:24:46 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:49:32 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
+
+//int exit_sign;
 
 char	check_for_operations(char *cmd_line, int i)
 {
@@ -38,12 +40,21 @@ char	check_for_operations(char *cmd_line, int i)
 char	*get_name_heredoc(void)
 {
 	char	*new;
+	int		i;
 	int		fd;
 
+	i = 0;
 	fd = open("/dev/random", O_RDONLY);
 	new = ft_malloc(1, 11);
 	read(fd, new, 10);
+	close(fd);
 	new[10] = '\0';
+	while (i < 10)
+	{
+		if (new[i] < ' ' || new[i] > '~')
+			new[i] = 's';
+		i++;
+	}
 	new = ft_strjoin("/tmp/", new);
 	return (new);
 }
@@ -222,13 +233,10 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 {
 	int	fd1;
 	pid_t	pid;
-	static int		exit;
 	int		status;
 
-	if (exit == 130)
-	{
+	if (exit_sign == 130)
 		return ;
-	}
 	fd1 = create_temp_file(old_fd);
 	pid = fork();
 	if (pid == 0)
@@ -236,18 +244,24 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 		signal(SIGINT, SIG_DFL);
 		process_input(fd1, delemeter);
 	}
+	printf("%d\n", *(get_last_status()));
 	status = 0;
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	signal(SIGINT, handler);
 	if (WIFEXITED(status))
-		exit = WEXITSTATUS(status);
+		exit_sign = WEXITSTATUS(status);
 	else if (WIFSTOPPED(status))
-		exit = WSTOPSIG(status) + 128;
+		exit_sign = WSTOPSIG(status) + 128;
 	else if (WIFSIGNALED(status))
-		exit = WTERMSIG(status) + 128;
-	if (exit == 130 || exit == 131)
+		exit_sign = WTERMSIG(status) + 128;
+	if (exit_sign == 130)
 		write(1, "\n", 1);
+	//printf("here\n");
+	*(get_last_status()) = exit_sign;
+	//else
+	//	*(get_last_status()) = 0;
+	printf("%d\n", *(get_last_status()));
 	close(fd1);
 }
 
@@ -338,7 +352,9 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 		append_token(head, tail, new_token);
 		return (1);
 	}
+	ft_print("bash: syntax error near unexpected token `<<'\n", 2);
 	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
+	*(get_last_status()) = 2;
 	return (0);
 }
 
@@ -440,5 +456,7 @@ t_token	**create_tokens(char **str)
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
 	tokens[0] = head;
 	tokens[1] = NULL;
+	if (exit_sign == 130)
+		return (NULL);
 	return (tokens);
 }
