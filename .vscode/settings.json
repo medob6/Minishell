@@ -55,23 +55,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "minishell.h": "c",
-    "unistd.h": "c",
-    "readline.h": "c",
-    "system_error": "c",
-    "array": "c",
-    "functional": "c",
-    "tuple": "c",
-    "type_traits": "c",
-    "utility": "c",
-    "parser.h": "c",
-    "array.h": "c",
-    "execution.h": "c",
-    "libft.h": "c",
-    "waitstatus.h": "c",
-    "cmd_utils,c": "c"
-  },
-  "functionHeaderExtension.headerFilePath": "/home/mbousset/Desktop/Minishell/execution/execution.h"
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }
