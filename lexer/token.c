@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 15:34:21 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:44:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,14 +208,46 @@ void	process_input(int fd1, char *delemeter)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
 	ft_free(line);
+	close(fd1);
+	exit(0);
 }
+
+//void	handle_herdoc_signal(int sig)
+//{
+//	(void)sig;
+//	close (0);
+//}
 
 void	read_from_herdoc(char *delemeter, int *old_fd)
 {
 	int	fd1;
+	pid_t	pid;
+	static int		exit;
+	int		status;
 
+	if (exit == 130)
+	{
+		return ;
+	}
 	fd1 = create_temp_file(old_fd);
-	process_input(fd1, delemeter);
+	pid = fork();
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		process_input(fd1, delemeter);
+	}
+	status = 0;
+	signal(SIGINT, SIG_IGN);
+	waitpid(pid, &status, 0);
+	signal(SIGINT, handler);
+	if (WIFEXITED(status))
+		exit = WEXITSTATUS(status);
+	else if (WIFSTOPPED(status))
+		exit = WSTOPSIG(status) + 128;
+	else if (WIFSIGNALED(status))
+		exit = WTERMSIG(status) + 128;
+	if (exit == 130 || exit == 131)
+		write(1, "\n", 1);
 	close(fd1);
 }
 
