@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:19:10 by mbousset          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/05/16 22:10:49 by mbousset         ###   ########.fr       */
+=======
+/*   Updated: 2025/05/14 17:12:43 by salahian         ###   ########.fr       */
+>>>>>>> 2bf8185 (need to check heredoc)
 /*                                                                            */
 /* ************************************************************************** */
 

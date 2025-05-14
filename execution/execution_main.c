@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execution_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/05/16 23:26:56 by mbousset         ###   ########.fr       */
+=======
+/*   Updated: 2025/05/14 18:11:22 by salahian         ###   ########.fr       */
+>>>>>>> 2bf8185 (need to check heredoc)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +86,5 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 void	execution(t_ast_node *root, t_env *env)
 {
 	if (root->children || root->redirect_list)
-		*(get_last_status()) = execute_cmd_line(root, env);
+			*(get_last_status()) = execute_cmd_line(root, env);
 }

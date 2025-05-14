@@ -114,8 +114,16 @@ typedef struct s_expansion
 	t_str			**str;
 }					t_expansion;
 
+<<<<<<< HEAD
 int					print_str_fd(char *s, int fd);
 t_ast_node			*subshell(t_token **token);
+=======
+extern int exit_sign;
+
+// void print_ast(t_ast_node *node, int depth);
+int print_str_fd(char *s, int fd);
+t_ast_node *subshell(t_token **token);
+>>>>>>> 2bf8185 (need to check heredoc)
 t_ast_node			*command(t_token **token);
 bool				paranteses_symetric(t_token **token);
 void				print_ast(t_ast_node *node, int depth);

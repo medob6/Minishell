@@ -6,7 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/05/17 11:29:03 by salahian         ###   ########.fr       */
+=======
+/*   Updated: 2025/05/14 17:06:32 by salahian         ###   ########.fr       */
+>>>>>>> 2bf8185 (need to check heredoc)
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +21,22 @@ void	exit_status(t_data *prg_data, int status)
 	free_garbeg(prg_data);
 	ft_lstclear(garbage_list());
 	exit(status);
+}
+
+void	print_new_line(t_cmd *cmd_list, int cmd_nbr)
+{
+	int		i;
+
+	i = 0;
+	while (i < cmd_nbr)
+	{
+		if (cmd_list[i].exit_status == 130 || cmd_list[i].exit_status == 131)
+		{
+			ft_print("\n", 1);
+			break ;
+		}
+		i++;
+	}
 }
 
 void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
@@ -41,7 +61,11 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 			cmd_list[i].exit_status = WTERMSIG(status) + 128;
 		i++;
 	}
+<<<<<<< HEAD
 	sig_exit(cmd_list, cmd_nbr);
+=======
+	print_new_line(cmd_list, cmd_nbr);
+>>>>>>> 2bf8185 (need to check heredoc)
 }
 
 int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
