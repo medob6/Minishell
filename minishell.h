@@ -14,6 +14,8 @@
 # include <sys/types.h>
 # include <unistd.h> // ls > o -la > o1 > -la -l
 # include <signal.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 # define AMBIGUOUS_REDIRECTION -5
 
