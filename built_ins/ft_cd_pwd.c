@@ -6,13 +6,13 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 14:30:58 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:15:25 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_pwd(t_env **env_list,int fd)
+int	ft_pwd(t_env **env_list, int fd)
 {
 	char	*cwd;
 	t_env	*cur;
@@ -21,7 +21,8 @@ int	ft_pwd(t_env **env_list,int fd)
 	if (!cwd)
 		return (0);
 	cur = *env_list;
-	ft_print(ft_strjoin(cwd, "\n"), fd);
+	if (!print_str_fd(ft_strjoin(cwd, "\n"), fd))
+		return (1);
 	while (cur)
 	{
 		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)
@@ -61,6 +62,18 @@ int	update_pwd(t_env **env_list, char *cwd)
 	return (i);
 }
 
+void	print_error_cd(char *message, char *path)
+{
+	print_str_fd("cd: ", 2);
+	print_str_fd(message, 2);
+	if (path)
+	{
+		print_str_fd(": ", 2);
+		print_str_fd(path, 2);
+	}
+	print_str_fd("\n", 2);
+}
+
 int	ft_cd(char *path, t_env **env_list)
 {
 	char	*cwd;
@@ -71,19 +84,22 @@ int	ft_cd(char *path, t_env **env_list)
 	{
 		path = expand_the_value("$HOME", env_list);
 		if (!path || path[0] == '\0')
-			return (0);
+		{
+			print_str_fd("minishell: cd: HOME not set\n", 2);
+			return (1);
+		}
 	}
 	if (chdir(path) != 0)
-		return (printf("cd: %s %s\n", strerror(errno), path), 1);
+		return (print_error_cd(strerror(errno), path), 1);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		printf("cd: %s %s\n", strerror(errno), path);
+		print_error_cd(strerror(errno), path);
 		return (1);
 	}
 	if (!update_pwd(env_list, cwd))
 	{
-		ft_print("cd: failed to update PWD\n", 2);
+		print_str_fd("cd: failed to update PWD\n", 2);
 		return (free(cwd), 1);
 	}
 	free(cwd);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexem.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:04:37 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:19:53 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -398,7 +398,7 @@ char **lexer(char *cmd_line)
 
 	if (!check_quotes(cmd_line))
 	{
-		ft_print("ERROR:\nbalanced brakets.\n", 2);
+		print_str_fd("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
 	}
 	total = count_words(cmd_line);
