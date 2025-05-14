@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 09:44:42 by salahian         ###   ########.fr       */
+/*   Updated: 2026/11/07 16:36:15 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,7 +363,7 @@ int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
 	(*heredoc)++;
 	if (*heredoc > 16)
 	{
-		ft_print("bash: maximum here-document count exceeded\n", 2);
+		print_str_fd("bash: maximum here-document count exceeded\n", 2);
 		*heredoc = 0;
 		close_all_files(head);
 		exit(2);

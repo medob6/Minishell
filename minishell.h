@@ -129,7 +129,8 @@ typedef struct s_expansion
 	t_str			**str;
 }					t_expansion;
 // void print_ast(t_ast_node *node, int depth);
-t_ast_node			*subshell(t_token **token);
+int print_str_fd(char *s, int fd);
+t_ast_node *subshell(t_token **token);
 t_ast_node			*command(t_token **token);
 bool				paranteses_symetric(t_token **token);
 void print_ast(t_ast_node *node, int depth);
@@ -137,7 +138,6 @@ char				*get_value_ast(int type);
 void				print_token(t_token *head);
 void				*ft_malloc(int size, int bytes);
 t_gar				**garbage_list(void);
-int					ft_print(char *c, int fd);
 t_env				*create_the_main_list(char **envp, int shlvl);
 
 t_array				*creat_array(void);

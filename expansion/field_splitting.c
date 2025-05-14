@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   field_splitting.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:07:54 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/13 14:33:12 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char *allocat(const char *s, char *field, int *j)
     while (s[*j] && ((s[*j] != ' ' && s[*j] != '\t') || field[*j] != '1'))
         (*j)++;
     len = *j - start;
-    w = malloc(len + 1);
+    w = ft_malloc(len + 1,sizeof(char));
     if (!w)
         return NULL;
     i = 0;
