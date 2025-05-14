@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 12:43:03 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:20:02 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ int	ft_exit(char **args)
 	{
 		if (num == -1)
 		{
-			ft_print("minishell: exit: numeric argument required\n", 2);
+			print_str_fd("minishell: exit: numeric argument required\n", 2);
 			return (2);
 		}
-		ft_print("minishell: exit: too many arguments\n", 2);
+		print_str_fd("minishell: exit: too many arguments\n", 2);
 		return (-1);
 	}
 	if (num == -1)
 	{
-		ft_print("minishell: exit: numeric argument required\n", 2);
+		print_str_fd("minishell: exit: numeric argument required\n", 2);
 		return (2);
 	}
 	return (num);

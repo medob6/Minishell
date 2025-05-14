@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 09:39:00 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/13 17:26:31 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -551,7 +551,7 @@ void	printfgf(t_token **str, int len)
 	i = 0;
 	while (i < len)
 	{
-		printf("{%s}\n", str[i]->value.str_value);
+		printf("{%s}\n", str[i]->value.str_value); //TODO change this shit dont use printf !!!!!!!!!!!!!!!!!!!
 		i++;
 	}
 }
