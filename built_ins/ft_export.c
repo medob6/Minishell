@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 17:10:17 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 18:11:32 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:42:27 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,11 @@ int	print_sorted_lst(t_env *env, int fd)
 	tmp = env;
 	while (tmp)
 	{
+		if (!ft_strcmp(tmp->key,"_"))
+		{
+			tmp = tmp->next;
+			continue;
+		}
 		if (!print_str_fd("declare -x ", fd))
 			return (0);
 		print_str_fd(tmp->key, fd);

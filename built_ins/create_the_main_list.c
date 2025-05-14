@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 09:22:20 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:34:33 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,44 +171,3 @@ t_env	*create_the_main_list(char **envp, int shlvl)
 	}
 	return (fill_the_list(envp));
 }
-
-// void print_env_list(t_env *env)
-// {
-//     while (env)
-//     {
-//         printf("[key: %s], [value: %s]\n", env->key, env->value);
-//         env = env->next;
-//     }
-// }
-
-// int main(int argc, char **argv, char **envp)
-// {
-//     t_env *env_list;
-
-//     env_list = create_the_main_list(envp);
-
-//     //printf("Initial env list:\n");
-//     //print_env_list(env_list);
-//     if (argc >= 3 && strcmp(argv[1], "cd") == 0)
-//     {
-//         if (ft_cd(argv[2], &env_list) == 0)
-//             printf("\nChanged directory to: %s\n", argv[2]);
-//         else
-//             printf("cd failed.\n");
-//     }
-//     else if (argc >= 2 && strcmp(argv[1], "pwd") == 0)
-//     {
-//         ft_pwd(&env_list);
-//         printf("\nAfter pwd:\n");
-//         //print_env_list(env_list);
-//     }
-
-//     // Final working dir
-//     char cwd[1024];
-//     if (getcwd(cwd, sizeof(cwd)) != NULL)
-//         printf("\nCurrent working dir: %s\n", cwd);
-//     else
-//         perror("getcwd");
-
-//     return (0);
-// }
