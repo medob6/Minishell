@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 13:49:19 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/14 09:22:20 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,11 +147,14 @@ t_env	*default_envp(int shlvl)
 {
 	t_env	*head;
 	t_env	*shlvl_node;
+	char	*cwd;
 
 	head = ft_malloc(sizeof(t_env), 1);
 	shlvl_node = ft_malloc(sizeof(t_env), 1);
 	head->key = ft_strdup("PWD");
-	head->value = getcwd(NULL, 0);
+	cwd = getcwd(NULL, 0);
+	head->value = ft_strdup(cwd);
+	free(cwd);
 	head->value_set = true;
 	head->next = shlvl_node;
 	shlvl_node->key = ft_strdup("SHLVL");
