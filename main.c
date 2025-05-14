@@ -100,22 +100,6 @@ void	print_token(t_token *head)
 	}
 }
 
-int	ft_error(int a)
-{
-	static int	c;
-
-	if (a != 0)
-		c = a;
-	return (c);
-}
-
-int	ft_print(char *c, int fd)
-{
-	if (ft_error(0) != -1)
-		ft_error(write(fd, c, ft_strlen(c)));
-	return (ft_error(0));
-}
-
 void	print_lexer(char **s)
 {
 	int	i;
@@ -249,7 +233,7 @@ int	main(int ac, char **av, char **envp)
 	ast = NULL;
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, handler);
-	ft_error(1);
+	// ft_error(1);
 	shlvl++;
 	env = create_the_main_list(envp, shlvl);
 	rl_outstream = stderr;//TODO understand this
@@ -291,9 +275,7 @@ int	main(int ac, char **av, char **envp)
 		free(cmd_line);
 		rl_on_new_line();
 	}
-	printf("exit\n");
-	if (ft_error(0) == -1)
-		return (1);
+	ft_putendl_fd("exit",1);
 	ft_lstclear(garbage_list());
 	rl_clear_history();
 	return (0);

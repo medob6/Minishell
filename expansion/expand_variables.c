@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 09:10:07 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/14 10:22:33 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -551,18 +551,7 @@ void	printfgf(t_token **str, int len)
 	i = 0;
 	while (i < len)
 	{
-		printf("{%s}\n", str[i]->value.str_value);
-		i++;
-	}
-}
-
-void	printd(char **red)
-{
-	int i;
-	i = 0;
-	while (red[i])
-	{
-		printf("{%s}\n",red[i]);
+		printf("{%s}\n", str[i]->value.str_value); //TODO change this shit dont use printf !!!!!!!!!!!!!!!!!!!
 		i++;
 	}
 }
