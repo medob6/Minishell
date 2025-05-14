@@ -128,6 +128,9 @@ typedef struct s_expansion
 	char			**field_red;
 	t_str			**str;
 }					t_expansion;
+
+extern int exit_sign;
+
 // void print_ast(t_ast_node *node, int depth);
 int print_str_fd(char *s, int fd);
 t_ast_node *subshell(t_token **token);
