@@ -215,7 +215,7 @@ void	print_ast(t_ast_node *node, int depth)
 void	handler(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	print_str_fd("\n", 2);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -264,12 +264,7 @@ int	main(int ac, char **av, char **envp)
 			//printf("\n\n");
 			ast = parse_tokens(*h);
 		}
-		if (!ast)
-		{
-			printf("\033[0;32m============================\033[0m\n\n");
-			//printf("❌ \033[1;31mParser returned NULL (syntax error?)\033[0m\n");
-		}
-		else
+		if (ast)
 		{
 			// printf("\033[0;32m============================\033[0m\n\n");
 			// printf("\033[1;34m🌳 This is the AST:\033[0m\n\n");
@@ -279,7 +274,6 @@ int	main(int ac, char **av, char **envp)
 			execution(ast, env);
 		}
 		free(cmd_line);
-		rl_on_new_line();
 	}
 	ft_putendl_fd("exit",1);
 	ft_lstclear(garbage_list());
