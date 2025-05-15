@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/14 17:06:32 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 12:31:32 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	print_new_line(t_cmd *cmd_list, int cmd_nbr)
 	{
 		if (cmd_list[i].exit_status == 130 || cmd_list[i].exit_status == 131)
 		{
-			ft_print("\n", 1);
+			print_str_fd("\n", 2);
 			break ;
 		}
 		i++;

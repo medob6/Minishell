@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 18:34:49 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:23:22 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -484,7 +484,7 @@ char    *take_before_wildcard(char *field, char **org, int j, int *i)
         k++;
     }
     *i = len;
-    res = malloc(len + 1);
+    res = ft_malloc(len + 1, 1);
     if (!res)
         return (NULL);
     ft_strlcpy(res, field, len + 1);

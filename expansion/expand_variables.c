@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 18:49:45 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:17:08 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -474,7 +474,7 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     char *line;
 	char	*str;
 
-	str = get_name_heredoc();
+	str = get_name_heredoc(value->str_value);
     fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     line = get_next_line(value->fd_value);
     while (line)
@@ -494,6 +494,23 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
     value->fd_value = fd;
 }
 
+int		check_is_valid_split(char *tmp)
+{
+	int		i;
+
+	i = 0;
+	while (tmp && tmp[i])
+	{
+		if (tmp[i] == '$')
+		{
+			if (!valid(tmp[i + 1]))
+				return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
 void	application_expansion(t_expansion *expand, char *tmp, size_t i, int flag)
 {
 	int		split;
@@ -502,14 +519,11 @@ void	application_expansion(t_expansion *expand, char *tmp, size_t i, int flag)
 	if (check_for_field_split(tmp))
 	{
 		split = 1;
-		if (check_for_last_exp(expand->node) != -1)
-		{
-			if (flag)
-				tmp = ((t_token *)expand->node->redirect_list->items[check_for_last_exp(expand->node)])->value.str_value;
-			else
-				tmp = (char *)expand->node->children->items[check_for_last_exp(expand->node)];	
-		}
-    	if (!check_the_last_arg(tmp))
+		if (!flag)
+			tmp = (char *)expand->node->children->items[i];
+		else
+			tmp = ((t_token *)expand->node->redirect_list->items[i])->value.str_value;
+    	if (!check_is_valid_split(tmp))
         	split = 0;
 	}
     check_the_word(expand, i, split, flag);

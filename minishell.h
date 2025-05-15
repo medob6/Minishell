@@ -170,7 +170,7 @@ char				*append_char(char *old_str, char c);
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
 char				*expand_the_value(char *str, t_env **env);
-char				*get_name_heredoc(void);
+char				*get_name_heredoc(char *str);
 int match_pattern(char *field, char *pattern, char *name);
 
 // export a='"'  export b='*'  echo "$a$b$a"
@@ -182,4 +182,5 @@ bool				is_correct_nbr(char *number);
 int					ft_atoi(char *str);
 int					*get_last_status(void);
 void				handler(int sig);
+void	ft_lstclear(t_gar **lst);
 #endif
