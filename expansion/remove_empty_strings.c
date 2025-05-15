@@ -6,13 +6,13 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 09:35:12 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:13:48 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansion.h"
 
-t_str	**remove_empty_string(t_array *child, int index)
+void	**remove_empty_string(t_array *child, int index)
 {
 	t_str	**new;
 	size_t	i;
@@ -35,30 +35,31 @@ t_str	**remove_empty_string(t_array *child, int index)
 	}
 	new[j] = NULL;
 	child->length--;
-	return (new);
+	return ((void **)new);
 }
 
-void	check_for_empty_strings(t_expansion *expand)
+void	check_for_empty_strings(t_expansion *e)
 {
-	size_t		i;
-	char		**tmp;
+	size_t	i;
+	char	**tmp;
 
-	if (!expand->node->children)
+	if (!e->node->children)
 		return ;
 	i = 0;
-	while (i < expand->node->children->length)
+	while (i < e->node->children->length)
 	{
-		tmp = ((t_str *)expand->node->children->items[i])->value;
+		tmp = ((t_str *)e->node->children->items[i])->value;
 		if (tmp && tmp[0] == 0)
-			expand->node->children->items = (void **)remove_empty_string(expand->node->children, i);
+			e->node->children->items = remove_empty_string(e->node->children,
+					i);
 		i++;
 	}
 }
 
 void	check_for_empty_strings_red(t_expansion *expand)
 {
-	size_t		i;
-	char		**tmp;
+	size_t	i;
+	char	**tmp;
 
 	if (!expand->node->redirect_list)
 		return ;
