@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 10:24:46 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/15 12:31:21 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,35 +35,31 @@ char	check_for_operations(char *cmd_line, int i)
 	return ('\0');
 }
 
-char	*get_name_heredoc(void)
+char	*get_name_heredoc(char *str)
 {
 	char	*new;
-	int		fd;
 
-	fd = open("/dev/random", O_RDONLY);
-	new = ft_malloc(1, 11);
-	read(fd, new, 10);
-	new[10] = '\0';
+	new = ft_itoa((long)str);
 	new = ft_strjoin("/tmp/", new);
 	return (new);
 }
 
-char    *removes_qouts_heredoc(char *str)
+char	*removes_qouts_heredoc(char *str)
 {
-    char    *new_str;
-    int     j;
+	char	*new_str;
+	int		j;
 
-    j = 0;
-    new_str = ft_strdup("");
-    while (str && str[j])
-    {
-        if (str[j] == '\'' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
-        else
-            new_str = append_char(new_str, str[j++]);
-    }
+	j = 0;
+	new_str = ft_strdup("");
+	while (str && str[j])
+	{
+		if (str[j] == '\'' && check_for_next_one(str, j))
+			j = take_inside_qout(&new_str, str, j);
+		else if (str[j] == '"' && check_for_next_one(str, j))
+			j = take_inside_qout(&new_str, str, j);
+		else
+			new_str = append_char(new_str, str[j++]);
+	}
 	return (new_str);
 }
 
@@ -72,7 +68,6 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-	// printf("%s\n",value);
 	new->value.str_value = ft_strdup(value);
 	new->value.fd_value = -1;
 	new->value.theres_qouts = 0;
@@ -122,6 +117,7 @@ void	create_simple_token(t_token **head, t_token **tail, char *s)
 	new = create_token(s, TOKEN_WORD);
 	append_token(head, tail, new);
 }
+
 void	print_err(char *err, char *str)
 {
 	char	*buffer;
@@ -140,18 +136,19 @@ void	print_err(char *err, char *str)
 	ft_putstr_fd(buffer, 2);
 	ft_free(buffer);
 }
-void	handle_error(char	*str)
+
+void	handle_error(char *str)
 {
 	print_err(strerror(errno), str);
 	exit(1);
 }
 
-int	create_temp_file(int *old_fd)
+int	create_temp_file(char *del, int *old_fd)
 {
-	int	fd1;
+	int		fd1;
 	char	*str;
 
-	str = get_name_heredoc();
+	str = get_name_heredoc(del);
 	fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	*old_fd = open(str, O_RDONLY);
 	unlink(str);
@@ -196,9 +193,8 @@ void	process_input(int fd1, char *delemeter)
 		if (line)
 		{
 			tmp = ft_strjoin(line, "\n");
-			ft_free(line);
 			write(fd1, tmp, ft_strlen(tmp));
-			ft_free(tmp);
+			(ft_free(line)), (ft_free(tmp));
 		}
 		line = readline("> ");
 		if (!line)
@@ -209,27 +205,30 @@ void	process_input(int fd1, char *delemeter)
 			delemeter);
 	ft_free(line);
 	close(fd1);
+	ft_lstclear(garbage_list());
 	exit(0);
 }
 
-//void	handle_herdoc_signal(int sig)
-//{
-//	(void)sig;
-//	close (0);
-//}
+int	get_status(int status)
+{
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSTOPPED(status))
+		return (WSTOPSIG(status) + 128);
+	else if (WIFSIGNALED(status))
+		return (WTERMSIG(status) + 128);
+	return (1);
+}
 
 void	read_from_herdoc(char *delemeter, int *old_fd)
 {
-	int	fd1;
+	int		fd1;
 	pid_t	pid;
-	static int		exit;
 	int		status;
 
-	if (exit == 130)
-	{
+	if (exit_sign == 130)
 		return ;
-	}
-	fd1 = create_temp_file(old_fd);
+	fd1 = create_temp_file(delemeter, old_fd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -240,14 +239,10 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	signal(SIGINT, handler);
-	if (WIFEXITED(status))
-		exit = WEXITSTATUS(status);
-	else if (WIFSTOPPED(status))
-		exit = WSTOPSIG(status) + 128;
-	else if (WIFSIGNALED(status))
-		exit = WTERMSIG(status) + 128;
-	if (exit == 130 || exit == 131)
-		write(1, "\n", 1);
+	exit_sign = get_status(status);
+	if (exit_sign == 130)
+		print_str_fd("\n", 2);
+	*(get_last_status()) = exit_sign;
 	close(fd1);
 }
 
@@ -302,9 +297,9 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 	return (0);
 }
 
-int		check_for_q(char *str)
+int	check_for_q(char *str)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -338,14 +333,16 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 		append_token(head, tail, new_token);
 		return (1);
 	}
+	print_str_fd("bash: syntax error near unexpected token `<<'\n", 2);
 	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
+	*(get_last_status()) = 2;
 	return (0);
 }
 
 void	close_all_files(t_token **head)
 {
-	t_token *tmp;
-	
+	t_token	*tmp;
+
 	tmp = *head;
 	while (tmp)
 	{
@@ -355,9 +352,9 @@ void	close_all_files(t_token **head)
 	}
 }
 
-int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
+int	handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
 {
-	int		index;
+	int	index;
 
 	index = 0;
 	(*heredoc)++;
@@ -371,20 +368,22 @@ int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
 	index = handle_heredoc_case(head, tail, next);
 	return (index);
 }
+
 int	help_handle_redirection(t_token **head, t_token **tail, char *next, char c)
 {
-	int		index;
+	int	index;
 
 	index = 0;
 	if (c == '>' || c == '<' || c == 'a')
 		index = handle_redirection(head, tail, c, next);
 	return (index);
 }
-void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
+
+void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
-	int		i;
-	char	c;
-	static int heredoc;
+	int			i;
+	char		c;
+	static int	heredoc;
 
 	i = -1;
 	while (s[*index][++i])
@@ -409,16 +408,6 @@ void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 	create_simple_token(head, tail, s[*index]);
 }
 
-//int	counter(char **s)
-//{
-//	int	i;
-
-//	i = 0;
-//	while (s[i])
-//		i++;
-//	return (i);
-//}
-
 t_token	**create_tokens(char **str)
 {
 	int		i;
@@ -440,5 +429,7 @@ t_token	**create_tokens(char **str)
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
 	tokens[0] = head;
 	tokens[1] = NULL;
+	if (exit_sign == 130)
+		return (NULL);
 	return (tokens);
 }

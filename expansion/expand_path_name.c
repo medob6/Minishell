@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 09:26:20 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:23:22 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ int find_last_slash(char *str)
     while (str[j])
     {
         if (str[j] == '/')
+        {
             last_slash = j;
+            break ;
+        }
         j++;
     }
     return (last_slash);
@@ -118,6 +121,16 @@ int match_pattern(char *field, char *pattern, char *name)
     return (*name == '\0');
 }
 
+int     check_after_slash(char *get, int slash)
+{
+    while (get[slash])
+    {
+        if (get[slash] != '/')
+            return (0);
+        slash++;
+    }
+    return (1);
+}
 
 char    *handle_dir(struct dirent *dir, char *get, char *path, char *field)
 {
@@ -128,29 +141,18 @@ char    *handle_dir(struct dirent *dir, char *get, char *path, char *field)
 
     header = (get[0] == '.');
     slash = find_last_slash(get);
-    if (slash != -1)
+    if (slash != -1 && check_after_slash(get, slash))
         new = ft_substr(get, 0, slash);
     else
         new = ft_strdup(get);
     tmp = ft_strdup(dir->d_name);
-    if (header)
+    if (((header && dir->d_name[0] == '.') || (dir->d_name[0] != '.')) && match_pattern(field, new, dir->d_name))
     {
-        if (dir->d_name[0] == '.' && match_pattern(field, new, dir->d_name))
-        {
-            if (slash != -1)
-                return (ft_strjoin(ft_strjoin(path, tmp), "/ "));
-            return (ft_strjoin(ft_strjoin(path, tmp), " ")); 
-        }
+        if (slash != -1)
+            return (ft_strjoin(ft_strjoin(path, tmp), "/ "));
+        return (ft_strjoin(ft_strjoin(path, tmp), " ")); 
     }
-    else
-    {
-        if (dir->d_name[0] != '.' && match_pattern(field, new, dir->d_name))
-        {
-            if (slash != -1)
-                return (ft_strjoin(ft_strjoin(path, tmp), "/ "));
-            return (ft_strjoin(ft_strjoin(path, tmp), " "));
-        }
-    }
+
     return (NULL);
 }
 //char *handle_dir(struct dirent *dir, char *get, char *path, char *field)
@@ -482,7 +484,7 @@ char    *take_before_wildcard(char *field, char **org, int j, int *i)
         k++;
     }
     *i = len;
-    res = malloc(len + 1);
+    res = ft_malloc(len + 1, 1);
     if (!res)
         return (NULL);
     ft_strlcpy(res, field, len + 1);

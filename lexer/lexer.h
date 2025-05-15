@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:02:12 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:12:51 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:06:22 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,5 @@
 
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
-char	*get_name_heredoc(void);
 
 #endif
