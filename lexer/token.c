@@ -72,7 +72,6 @@ t_token	*create_token(char *value, t_token_type type)
 	t_token	*new;
 
 	new = ft_malloc(sizeof(t_token), 1);
-	// printf("%s\n",value);
 	new->value.str_value = ft_strdup(value);
 	new->value.fd_value = -1;
 	new->value.theres_qouts = 0;
@@ -212,11 +211,6 @@ void	process_input(int fd1, char *delemeter)
 	exit(0);
 }
 
-//void	handle_herdoc_signal(int sig)
-//{
-//	(void)sig;
-//	close (0);
-//}
 
 void	read_from_herdoc(char *delemeter, int *old_fd)
 {
