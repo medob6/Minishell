@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/15 12:31:21 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/16 15:42:42 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void	process_input(int fd1, char *delemeter)
 		{
 			tmp = ft_strjoin(line, "\n");
 			write(fd1, tmp, ft_strlen(tmp));
-			(ft_free(line)), (ft_free(tmp));
+			free(line);
 		}
 		line = readline("> ");
 		if (!line)
@@ -203,7 +203,7 @@ void	process_input(int fd1, char *delemeter)
 	if (!line)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
-	ft_free(line);
+	free(line);
 	close(fd1);
 	ft_lstclear(garbage_list());
 	exit(0);
@@ -226,7 +226,7 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 	pid_t	pid;
 	int		status;
 
-	if (exit_sign == 130)
+	if (herdoc.exit_sign == 130)
 		return ;
 	fd1 = create_temp_file(delemeter, old_fd);
 	pid = fork();
@@ -239,10 +239,10 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	signal(SIGINT, handler);
-	exit_sign = get_status(status);
-	if (exit_sign == 130)
+	herdoc.exit_sign = get_status(status);
+	if (herdoc.exit_sign == 130)
 		print_str_fd("\n", 2);
-	*(get_last_status()) = exit_sign;
+	*(get_last_status()) = herdoc.exit_sign;
 	close(fd1);
 }
 
@@ -311,6 +311,18 @@ int	check_for_q(char *str)
 	return (0);
 }
 
+void	handle_heredoc_no_file_name(t_token **head, t_token **tail)
+{
+	if (!herdoc.no_file_name && *(get_last_status()) != 130)
+	{
+		print_str_fd("bash: syntax error near unexpected token `<<'\n", 2);
+		append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
+		herdoc.no_file_name = 1;
+	}
+	if (*(get_last_status()) != 130)
+		*(get_last_status()) = 2;
+}
+
 int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 {
 	t_token	*new_token;
@@ -331,11 +343,11 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 		if (qouts)
 			new_token->value.theres_qouts = 1;
 		append_token(head, tail, new_token);
+		if (herdoc.no_file_name && *(get_last_status()) != 130)
+			*(get_last_status()) = 2;
 		return (1);
 	}
-	print_str_fd("bash: syntax error near unexpected token `<<'\n", 2);
-	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
-	*(get_last_status()) = 2;
+	handle_heredoc_no_file_name(head, tail);
 	return (0);
 }
 
@@ -352,16 +364,16 @@ void	close_all_files(t_token **head)
 	}
 }
 
-int	handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
+int	handle_heredoc(t_token **head, t_token **tail, char *next)
 {
 	int	index;
 
 	index = 0;
-	(*heredoc)++;
-	if (*heredoc > 16)
+	herdoc.nbr_heredoc++;
+	if (herdoc.nbr_heredoc > 16)
 	{
 		print_str_fd("bash: maximum here-document count exceeded\n", 2);
-		*heredoc = 0;
+		herdoc.nbr_heredoc = 0;
 		close_all_files(head);
 		exit(2);
 	}
@@ -383,7 +395,6 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int			i;
 	char		c;
-	static int	heredoc;
 
 	i = -1;
 	while (s[*index][++i])
@@ -394,9 +405,9 @@ void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		if (c)
 		{
 			if (c == '|' || c == '(')
-				heredoc = 0;
+				herdoc.nbr_heredoc = 0;
 			if (c == 'h')
-				*index += handle_heredoc(head, tail, s[*index + 1], &heredoc);
+				*index += handle_heredoc(head, tail, s[*index + 1]);
 			else
 			{
 				i += handle_operator(head, tail, c);
@@ -429,7 +440,7 @@ t_token	**create_tokens(char **str)
 	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
 	tokens[0] = head;
 	tokens[1] = NULL;
-	if (exit_sign == 130)
+	if (herdoc.exit_sign == 130)
 		return (NULL);
 	return (tokens);
 }
