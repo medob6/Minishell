@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/16 15:42:42 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:22:34 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,13 @@ char	*get_name_heredoc(char *str)
 	new = ft_itoa((long)str);
 	new = ft_strjoin("/tmp/", new);
 	return (new);
+}
+
+t_token **get_token(void)
+{
+	static	t_token *head;
+	
+	return (&head);
 }
 
 char	*removes_qouts_heredoc(char *str)
@@ -143,18 +150,16 @@ void	handle_error(char *str)
 	exit(1);
 }
 
-int	create_temp_file(char *del, int *old_fd)
+void	create_temp_file(char *del)
 {
-	int		fd1;
 	char	*str;
 
 	str = get_name_heredoc(del);
-	fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	*old_fd = open(str, O_RDONLY);
+	herdoc.fd_heredoc = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	herdoc.old_fd = open(str, O_RDONLY);
 	unlink(str);
-	if (fd1 == -1 || *old_fd == -1)
+	if (herdoc.fd_heredoc == -1 || herdoc.old_fd == -1)
 		handle_error(str);
-	return (fd1);
 }
 
 void	print_err1(char *err, char *str)
@@ -180,7 +185,7 @@ int	is_delemeter(char *line, char *delemeter)
 	return (0);
 }
 
-void	process_input(int fd1, char *delemeter)
+void	process_input(char *delemeter)
 {
 	char	*line;
 	char	*tmp;
@@ -193,7 +198,7 @@ void	process_input(int fd1, char *delemeter)
 		if (line)
 		{
 			tmp = ft_strjoin(line, "\n");
-			write(fd1, tmp, ft_strlen(tmp));
+			write(herdoc.fd_heredoc, tmp, ft_strlen(tmp));
 			free(line);
 		}
 		line = readline("> ");
@@ -204,7 +209,7 @@ void	process_input(int fd1, char *delemeter)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
 	free(line);
-	close(fd1);
+	close(herdoc.fd_heredoc);
 	ft_lstclear(garbage_list());
 	exit(0);
 }
@@ -220,20 +225,43 @@ int	get_status(int status)
 	return (1);
 }
 
-void	read_from_herdoc(char *delemeter, int *old_fd)
+void	close_all_files(t_token **head)
 {
-	int		fd1;
+	t_token	*tmp;
+
+	tmp = *head;
+	while (tmp)
+	{
+		if (tmp->value.fd_value > -1)
+			close(tmp->value.fd_value);
+		tmp = tmp->next;
+	}
+}
+
+void	handle_signal(int sig)
+{
+	(void)sig;
+	
+	close(herdoc.fd_heredoc);
+	close(herdoc.old_fd);
+	close_all_files(get_token());
+	//ft_lstclear(garbage_list());
+	exit(130);
+}
+
+void	read_from_herdoc(char *delemeter)
+{
 	pid_t	pid;
 	int		status;
 
 	if (herdoc.exit_sign == 130)
 		return ;
-	fd1 = create_temp_file(delemeter, old_fd);
+	create_temp_file(delemeter);
 	pid = fork();
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		process_input(fd1, delemeter);
+		signal(SIGINT, handle_signal);
+		process_input(delemeter);
 	}
 	status = 0;
 	signal(SIGINT, SIG_IGN);
@@ -243,7 +271,7 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 	if (herdoc.exit_sign == 130)
 		print_str_fd("\n", 2);
 	*(get_last_status()) = herdoc.exit_sign;
-	close(fd1);
+	close(herdoc.fd_heredoc);
 }
 
 int	handle_herdoc(char *delimiter)
@@ -253,7 +281,8 @@ int	handle_herdoc(char *delimiter)
 	fd = -1;
 	if (!delimiter)
 		return (0);
-	read_from_herdoc(delimiter, &fd);
+	read_from_herdoc(delimiter);
+	fd = herdoc.old_fd;
 	return (fd);
 }
 
@@ -351,19 +380,6 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	return (0);
 }
 
-void	close_all_files(t_token **head)
-{
-	t_token	*tmp;
-
-	tmp = *head;
-	while (tmp)
-	{
-		if (tmp->value.fd_value > -1)
-			close(tmp->value.fd_value);
-		tmp = tmp->next;
-	}
-}
-
 int	handle_heredoc(t_token **head, t_token **tail, char *next)
 {
 	int	index;
@@ -423,10 +439,10 @@ t_token	**create_tokens(char **str)
 {
 	int		i;
 	t_token	**tokens;
-	t_token	*head;
+	t_token	**head;
 	t_token	*tail;
 
-	head = NULL;
+	head = get_token();
 	tail = NULL;
 	if (!str)
 		return (NULL);
@@ -434,12 +450,13 @@ t_token	**create_tokens(char **str)
 	i = 0;
 	while (str[i])
 	{
-		check_the_string(&head, &tail, str, &i);
+		check_the_string(head, &tail, str, &i);
 		i++;
 	}
-	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
-	tokens[0] = head;
+	append_token(head, &tail, create_token(NULL, TOKEN_EOF));
+	tokens[0] = *head;
 	tokens[1] = NULL;
+	*(get_token()) = NULL;
 	if (herdoc.exit_sign == 130)
 		return (NULL);
 	return (tokens);

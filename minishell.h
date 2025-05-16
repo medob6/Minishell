@@ -134,6 +134,8 @@ typedef struct s_heredoc
 	int		exit_sign;
 	int		nbr_heredoc;
 	int		no_file_name;
+	int		fd_heredoc;
+	int		old_fd;
 }	t_herdoc;
 
 extern t_herdoc herdoc;
@@ -190,4 +192,5 @@ int					ft_atoi(char *str);
 int					*get_last_status(void);
 void				handler(int sig);
 void	ft_lstclear(t_gar **lst);
+
 #endif
