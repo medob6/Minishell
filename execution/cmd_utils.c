@@ -6,11 +6,24 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:39:28 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/11 17:57:20 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 20:26:21 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
+
+int	lst_size(t_env *head)
+{
+	int	i;
+
+	i = 0;
+	while (head)
+	{
+		i++;
+		head = head->next;
+	}
+	return (i);
+}
 
 bool	init_cmd_structure(t_cmd *cmd, t_ast_node *node)
 {

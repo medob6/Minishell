@@ -3,29 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 17:52:19 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/16 21:31:55 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-int	execute_subshell(t_ast_node *subshell, t_env *env)
+void	handle_builtin(t_data *prg_data, int index, int exit_in_subshell)
 {
-	int	status;
+	t_cmd	cmd;
 
-	status = execute_cmd_line(subshell, env);
-	return (status);
-}
-
-// TODO add to header file
-int	update_status_sp_case(void)
-{
-	if (*get_last_status() != 0)
-		return (*get_last_status());
-	return (1);
+	cmd = prg_data->lst_cmd[index];
+	if (redirection_builtins(prg_data, index))
+		prg_data->lst_cmd[index].exit_status = execute_built_in(cmd, prg_data);
+	if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
+	{
+		if (!exit_in_subshell)
+			printf("exit\n");
+		if (prg_data->lst_cmd[index].exit_status != -1)
+			exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
+		prg_data->lst_cmd[index].exit_status = update_status_sp_case();
+	}
 }
 
 void	child(t_data *prg_data, int index)
@@ -51,19 +52,7 @@ void	child(t_data *prg_data, int index)
 		execute_cmd(cmd, prg_data);
 	}
 	else
-	{
-		if (redirection_builtins(prg_data, index))
-			prg_data->lst_cmd[index].exit_status = execute_built_in(cmd,
-					prg_data);
-		if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
-		{
-			if (!exit_in_subshell)
-				printf("exit\n");
-			if (prg_data->lst_cmd[index].exit_status != -1)
-				exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
-			prg_data->lst_cmd[index].exit_status = update_status_sp_case();
-		}
-	}
+		handle_builtin(prg_data, index, exit_in_subshell);
 	if ((!cmd.is_built_in || (prg_data->cmd_nbr > 1)))
 		exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
 }

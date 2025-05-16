@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 20:56:29 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/12 10:58:37 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 22:10:27 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ static int	count_digit(long n)
 
 char	*ft_itoa(long n)
 {
-	char *res;
-	int i;
-	int sign;
+	char	*res;
+	int		i;
+	int		sign;
 
 	sign = (n < 0);
 	i = 0;
-	res = ft_malloc((count_digit(n) + (n < 0) + 1) , sizeof(char));
+	res = ft_malloc((count_digit(n) + (n < 0) + 1), sizeof(char));
 	if (sign)
 		n = -n;
 	if (!res)
