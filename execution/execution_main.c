@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 20:26:26 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 23:26:56 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		cmd = (t_ast_node *)root->children->items[i];
 		if (cmd->type == AST_PIPELINE)
 			status = execute_pipeline(cmd, env);
+		*(get_last_status()) = status;
 		if (++i < root->children->length)
 		{
 			op = (t_ast_node *)root->children->items[i];
