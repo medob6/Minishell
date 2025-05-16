@@ -227,6 +227,8 @@ void	init_heredoc(t_herdoc *herdoc)
 	herdoc->exit_sign = 0;
 	herdoc->nbr_heredoc = 0;
 	herdoc->no_file_name = 0;
+	herdoc->fd_heredoc = 0;
+	herdoc->old_fd = 0;
 }
 
 int	main(int ac, char **av, char **envp)
