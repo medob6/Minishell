@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 18:09:27 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/16 22:27:11 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,7 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 			cmd_list[i].exit_status = WTERMSIG(status) + 128;
 		i++;
 	}
-	i = 0;
-	while (i < cmd_nbr)
-	{
-		if (cmd_list[i].exit_status == 130 || cmd_list[i].exit_status == 131)
-		{
-			write(1, "\n", 1);
-			break ;
-		}
-		i++;
-	}
+	sig_exit(cmd_list, cmd_nbr);
 }
 
 int	exec_cmd(t_cmd cmd, char **envp, char *new_path)

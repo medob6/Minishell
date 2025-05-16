@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:59:29 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/05 18:03:39 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 22:31:26 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 # include "../minishell.h"
 
 // parser functions
-void		print_token(t_token *head);
-void		print_ast(t_ast_node *node, int depth);
 t_ast_node	*parse_tokens(t_token *token);
 t_ast_node	*creat_ast_node(int node_type);
 void		add_child(t_ast_node *parent, void *new_child);
@@ -27,7 +25,5 @@ bool		is_redirction(t_token_type token_type);
 t_ast_node	*compound_cmd(t_token **token, t_ast_type type);
 bool		paranteses_symetric(t_token **token);
 
-// debuging functions
-char		*get_value(int type);
 
 #endif

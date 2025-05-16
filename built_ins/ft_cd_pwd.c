@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 09:15:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 21:36:14 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,7 @@ int	ft_cd(char *path, t_env **env_list)
 	{
 		path = expand_the_value("$HOME", env_list);
 		if (!path || path[0] == '\0')
-		{
-			print_str_fd("minishell: cd: HOME not set\n", 2);
-			return (1);
-		}
+			return (print_str_fd("minishell: cd: HOME not set\n", 2), 1);
 	}
 	if (chdir(path) != 0)
 		return (print_error_cd(strerror(errno), path), 1);
