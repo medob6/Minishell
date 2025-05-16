@@ -482,7 +482,7 @@ char    *take_before_wildcard(char *field, char **org, int j, int *i)
         k++;
     }
     *i = len;
-    res = malloc(len + 1);
+    res = ft_malloc(len + 1,sizeof(char));
     if (!res)
         return (NULL);
     ft_strlcpy(res, field, len + 1);

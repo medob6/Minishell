@@ -12,18 +12,12 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/types.h>
-# include <unistd.h> // ls > o -la > o1 > -la -l
+# include <unistd.h>
 # include <signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 
-# define AMBIGUOUS_REDIRECTION -5
 
-typedef struct s_g_data
-{
-	int				status;
-	char			*prompt;
-}					GlobalData;
 
 typedef struct s_garbag
 {
@@ -42,34 +36,19 @@ typedef struct s_env
 typedef enum e_token_type
 {
 	TOKEN_WORD,
-	TOKEN_PARENTESIS_OPEN, //(
+	TOKEN_PARENTESIS_OPEN, 
 	TOKEN_PARENTESIS_CLOSE,
 	TOKEN_AND,
 	TOKEN_OR,
-	TOKEN_PIPE,         // |
-	TOKEN_REDIRECT_IN,  // <
-	TOKEN_REDIRECT_OUT, // >
-	TOKEN_APPEND,       // >>
-	TOKEN_HEREDOC,      // <<
+	TOKEN_PIPE,     
+	TOKEN_REDIRECT_IN,  
+	TOKEN_REDIRECT_OUT, 
+	TOKEN_APPEND,       
+	TOKEN_HEREDOC,    
 	TOKEN_EOF
 }					t_token_type;
 
-// void print_ast(t_ast_node *node, int depth);
-// typedef struct s_token
-// {
-// 	char *value; // The actual token string
-// 	t_token_type	type;
-// 	struct s_token *prev; // The type of token
-// 	struct s_token *next; // Linked list to store multiple tokens
-// }					t_token;
 
-// typedef enum s_bit_mask
-//{
-//	ORIGINAL = 0,
-//	EXPANDED = 1,
-//	SINGLE_QOUT = 2,
-//	DOUBLE_QOUT = 4
-//}	t_bit_mask;
 
 typedef struct s_value
 {
@@ -78,13 +57,12 @@ typedef struct s_value
 	int				theres_qouts;
 }					t_value;
 
-// TODO USE THIS STUCT FOR TOKENS INSTEAD
 typedef struct s_token
 {
 	t_value			value;
 	t_token_type	type;
-	struct s_token *prev; // The type of token
-	struct s_token *next; // Linked list to store multiple tokens
+	struct s_token *prev;
+	struct s_token *next; 
 }					t_token;
 
 typedef struct s_array
@@ -112,11 +90,11 @@ typedef enum e_ast_type
 	AST_SUBSHELL,
 	AST_ERROR
 }					t_ast_type;
-// ls | fk && kd | ls -l -e
+
 typedef struct s_ast_node
 {
 	t_ast_type		type;
-	t_array *children; // {ls , -l , -e}
+	t_array *children; 
 	t_array			*redirect_list;
 }					t_ast_node;
 
@@ -128,7 +106,7 @@ typedef struct s_expansion
 	char			**field_red;
 	t_str			**str;
 }					t_expansion;
-// void print_ast(t_ast_node *node, int depth);
+
 int print_str_fd(char *s, int fd);
 t_ast_node *subshell(t_token **token);
 t_ast_node			*command(t_token **token);
@@ -153,7 +131,6 @@ bool				is_redirction(t_token_type token_type);
 t_ast_node			*compound_cmd(t_token **token, t_ast_type token_type);
 
 // debuging functions
-char				*get_value(int type);
 
 int					expand_ast(t_ast_node *node, t_env **env);
 int					is_valid_identifier(char *s);
@@ -170,13 +147,12 @@ char				*expand_the_value(char *str, t_env **env);
 char				*get_name_heredoc(void);
 int match_pattern(char *field, char *pattern, char *name);
 
-// export a='"'  export b='*'  echo "$a$b$a"
-// error message = "$a$b$a" and i get ""*"" --> "*"
-
 int					check_value(char *number);
 t_env				*create_the_main_list(char **envp, int shlvl);
 bool				is_correct_nbr(char *number);
 int					ft_atoi(char *str);
 int					*get_last_status(void);
 void				handler(int sig);
+void	ft_lstclear(t_gar **lst);
+void panic(char *err);
 #endif

@@ -21,6 +21,7 @@ bool	open_input_redirect(t_data *data, t_str *token)
 		return (false);
 	}
 	close(data->out_fd);
+	data->out_fd = 1;
 	return (true);
 }
 
