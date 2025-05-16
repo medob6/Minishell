@@ -1,7 +1,7 @@
 
 #include "execution/execution.h"
 
-int exit_sign;
+t_herdoc herdoc;
 
 void	ft_lstclear(t_gar **lst)
 {
@@ -222,6 +222,12 @@ void	handler(int sig)
 	*(get_last_status()) = 130;
 }
 
+void	init_heredoc(t_herdoc *herdoc)
+{
+	herdoc->exit_sign = 0;
+	herdoc->nbr_heredoc = 0;
+	herdoc->no_file_name = 0;
+}
 
 int	main(int ac, char **av, char **envp)
 {
@@ -246,7 +252,7 @@ int	main(int ac, char **av, char **envp)
 		ast = NULL;
 		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
-		exit_sign = 0;
+		init_heredoc(&herdoc);
 		// printf("\n");
 		// printf("\033[0;36mcmd_line is:\033[0m  \033[1;37m%s\033[0m\n\n",
 		// cmd_line);

@@ -129,7 +129,14 @@ typedef struct s_expansion
 	t_str			**str;
 }					t_expansion;
 
-extern int exit_sign;
+typedef struct s_heredoc
+{
+	int		exit_sign;
+	int		nbr_heredoc;
+	int		no_file_name;
+}	t_herdoc;
+
+extern t_herdoc herdoc;
 
 // void print_ast(t_ast_node *node, int depth);
 int print_str_fd(char *s, int fd);

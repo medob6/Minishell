@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:19:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/14 17:12:43 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/16 10:03:16 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char	*proccess_buffer(int fd, char *buf, char **res)
 			return (NULL);
 		buf[n] = '\0';
 		temp = *res;
-		*res = ft_strjoin(*res, buf);
+		*res = ft_str(*res, buf);
 		free(temp);
 		if (!*res)
 			return (*res = NULL, NULL);
