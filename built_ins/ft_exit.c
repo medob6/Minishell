@@ -6,12 +6,11 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 17:20:02 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 21:35:09 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 
 int	get_nbr(char *number)
 {
@@ -28,7 +27,7 @@ int	get_nbr(char *number)
 int	ft_exit(char **args)
 {
 	long	num;
-	
+
 	if (!args[1])
 		return (*get_last_status());
 	num = get_nbr(args[1]);

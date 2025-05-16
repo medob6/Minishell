@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 08:53:52 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/16 20:26:26 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,6 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		}
 	}
 	return (status);
-}
-
-int	*get_last_status(void)
-{
-	static int	status;
-
-	return (&status);
 }
 
 void	execution(t_ast_node *root, t_env *env)
