@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+void	ft_lstclear(t_gar **lst)
+{
+	t_gar	*d;
+	t_gar	*s;
+
+	if (lst == NULL || *lst == NULL)
+		return ;
+	d = *lst;
+	while (d)
+	{
+		s = d->next;
+		free(d->addr);
+		free(d);
+		d = s;
+	}
+	*lst = NULL;
+}
+
 t_gar   **garbage_list(void)
 {
     static t_gar *tail;
@@ -26,6 +44,13 @@ void add_to_the_list(t_gar **tail, t_gar *new)
     *tail = new;
 }
 
+void panic(char *err)
+{
+    ft_putendl_fd(err,1);
+	ft_lstclear(garbage_list());
+    exit(1);
+}
+
 void    *ft_malloc(int size, int bytes)
 {
     void    *p;
@@ -33,7 +58,7 @@ void    *ft_malloc(int size, int bytes)
 
     new = malloc(sizeof(t_gar));
     if (!new)
-        return (NULL);//TODO should exit
+        panic("Error:\nmalloc failed\n");
     new->addr = malloc(size * bytes);
     if (!new->addr)
         return (free(new), NULL);
