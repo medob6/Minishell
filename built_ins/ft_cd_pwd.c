@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/16 21:36:14 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 16:18:42 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,16 @@ int	ft_pwd(t_env **env_list, int fd)
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
+	{
+		print_str_fd(ft_strjoin(expand_the_value("$PWD", env_list), "\n"), fd);
 		return (0);
+	}
 	cur = *env_list;
 	if (!print_str_fd(ft_strjoin(cwd, "\n"), fd))
 		return (1);
 	while (cur)
 	{
-		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)
+		if (!ft_strcmp(cur->key, "PWD"))
 		{
 			cur->value = ft_strdup(cwd);
 			break ;
@@ -46,13 +49,13 @@ int	update_pwd(t_env **env_list, char *cwd)
 	i = 0;
 	while (cur)
 	{
-		if (ft_strncmp(cur->key, "PWD", ft_strlen("PWD")) == 0)
+		if (!ft_strcmp(cur->key, "PWD"))
 		{
 			i = 1;
 			old = cur->value;
 			cur->value = ft_strdup(cwd);
 		}
-		else if (ft_strncmp(cur->key, "OLDPWD", ft_strlen("OLDPWD")) == 0)
+		else if (!ft_strcmp(cur->key, "OLDPWD"))
 		{
 			i = 1;
 			cur->value = old;
