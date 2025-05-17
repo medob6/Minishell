@@ -6,11 +6,32 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 08:53:27 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/15 17:13:48 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 14:42:44 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansion.h"
+
+int	check_first_char(char c)
+{
+	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_');
+}
+
+int	take_inside_qout(char **s, char *str, int j)
+{
+	char	c;
+
+	c = str[j];
+	j++;
+	while (str[j] && str[j] != c)
+	{
+		*s = append_char(*s, str[j]);
+		j++;
+	}
+	if (str[j] == c)
+		j++;
+	return (j);
+}
 
 void	**remove_empty_string(t_array *child, int index)
 {

@@ -6,16 +6,11 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 15:21:24 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/15 18:27:56 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 14:44:08 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansion.h"
-
-int	check_first_char(char c)
-{
-	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_');
-}
 
 int	count_nbr_words(char *str, char *field)
 {

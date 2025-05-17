@@ -82,5 +82,5 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 void	execution(t_ast_node *root, t_env *env)
 {
 	if (root->children || root->redirect_list)
-			*(get_last_status()) = execute_cmd_line(root, env);
+		*(get_last_status()) = execute_cmd_line(root, env);
 }
