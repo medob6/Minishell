@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_builder.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 16:59:14 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/12 09:53:42 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:20:03 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
-
-int	lst_size(t_env *head)
-{
-	int	i;
-
-	i = 0;
-	while (head)
-	{
-		i++;
-		head = head->next;
-	}
-	return (i);
-}
 
 char	**extract_envp(t_env *env)
 {
@@ -57,44 +44,30 @@ bool	cmd_built_in(char *cmd)
 	return (false);
 }
 
-int get_length(t_str **strs)
+char	**extract_cmd_args(t_str **strs)
 {
-    int len = 0;
-    int i = 0, j;
+	int		total_len;
+	char	**args;
+	int		j;
+	int		i;
+	int		k;
 
-    while (strs[i])
-    {
-        j = 0;
-        while (strs[i]->value && strs[i]->value[j])
-        {
-            len++;
-            j++;
-        }
-        i++;
-    }
-    return len;
+	i = 0;
+	k = 0;
+	total_len = get_length(strs);
+	args = (char **)ft_malloc((total_len + 1), sizeof(char *));
+	while (strs[i])
+	{
+		j = 0;
+		while (strs[i]->value && strs[i]->value[j])
+		{
+			args[k++] = strs[i]->value[j++];
+		}
+		i++;
+	}
+	args[k] = NULL;
+	return (args);
 }
-
-char **extract_cmd_args(t_str **strs)
-{
-    int total_len = get_length(strs);
-    char **args = (char **)ft_malloc((total_len + 1) , sizeof(char *));
-    int i = 0, j = 0, k = 0;
-
-    while (strs[i])
-    {
-        j = 0;
-        while (strs[i]->value && strs[i]->value[j])
-        {
-            args[k++] = strs[i]->value[j++];
-        }
-        i++;
-    }
-
-    args[k] = NULL;
-    return args;
-}
-
 
 bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 {
@@ -103,7 +76,6 @@ bool	build_cmd(t_cmd *cmd, t_ast_node *node, t_env *env)
 	if (!init_cmd_structure(cmd, node))
 		return (false);
 	cmd_args = NULL;
-	
 	if (node->children)
 	{
 		node->children->length = get_length((t_str **)node->children->items);

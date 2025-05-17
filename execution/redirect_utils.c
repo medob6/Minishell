@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:00:15 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/14 10:19:04 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	redirect(t_data *data, t_str *file_obj)
 		print_err(strerror(errno), file_obj->value[0]);
 		exit_status(data, 1);
 	}
-	close(fd);
+	ft_close(fd);
 }
 
 bool	is_ambiguous_redirect(t_str *token)

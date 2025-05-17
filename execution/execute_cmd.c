@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 11:07:41 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:44:18 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	exit_status(t_data *prg_data, int status)
 {
 	free_garbeg(prg_data);
+	ft_lstclear(garbage_list());
 	exit(status);
 }
 
@@ -56,7 +57,7 @@ void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
 			cmd_list[i].exit_status = WTERMSIG(status) + 128;
 		i++;
 	}
-	print_new_line(cmd_list, cmd_nbr);
+	sig_exit(cmd_list, cmd_nbr);
 }
 
 int	exec_cmd(t_cmd cmd, char **envp, char *new_path)

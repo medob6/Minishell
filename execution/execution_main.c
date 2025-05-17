@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:14:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/14 18:11:22 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:44:34 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		cmd = (t_ast_node *)root->children->items[i];
 		if (cmd->type == AST_PIPELINE)
 			status = execute_pipeline(cmd, env);
+		*(get_last_status()) = status;
 		if (++i < root->children->length)
 		{
 			op = (t_ast_node *)root->children->items[i];
@@ -76,13 +77,6 @@ int	execute_cmd_line(t_ast_node *root, t_env *env)
 		}
 	}
 	return (status);
-}
-
-int	*get_last_status(void)
-{
-	static int	status;
-
-	return (&status);
 }
 
 void	execution(t_ast_node *root, t_env *env)
