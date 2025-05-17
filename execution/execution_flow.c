@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 19:05:39 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	execute_built_in(t_cmd cmd, t_data *data)
 	else if (!ft_strcmp(cmd.args[0], "pwd"))
 		return (ft_pwd(&data->env, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "unset"))
-		return (ft_unset(cmd.args, &data->env));
+		return (ft_unset(cmd.args, &(data->env)));
 	else if (!ft_strcmp(cmd.args[0], "env"))
 		return (ft_env(&data->env, data->out_fd));
 	else if (!ft_strcmp(cmd.args[0], "exit"))

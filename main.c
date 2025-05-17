@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 17:11:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 19:10:40 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,19 @@ void	process_command(char *cmd_line, t_env *env)
 	if (!ast)
 	{
 		print_str_fd("minishell: syntax error near unexpected token\n", 2);
-		// if (*get_last_status() != 130) //TODO : fix exit status in ctl+c
-		*get_last_status() = 2;
+		// if (*get_last_status() != 130) // TODO : fix exit status in ctl+c
+			*get_last_status() = 2;
 	}
 	else
 		execution(ast, env);
+}
+
+t_env	**get_env_head_addres(t_env **address)
+{
+	static t_env **head;
+	if (address)
+		head = address;
+	return (head);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -85,6 +93,7 @@ int	main(int ac, char **av, char **envp)
 	static int	shlvl;
 	t_env		*env;
 
+	get_env_head_addres(&env);
 	(void)ac;
 	(void)av;
 	initialize_shell(&env, envp, &shlvl);
