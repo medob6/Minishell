@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 10:24:46 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	handle_operator(t_token **head, t_token **tail, char c)
 	else if (c == '(')
 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
 	else if (c == ')')
-		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
+		new = create_token(")", TOKEN_PARENTESIS_ft_close);
 	append_token(head, tail, new);
 	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') + 1);
 }
@@ -207,7 +207,7 @@ void	process_input(int fd1, char *delemeter)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
 	ft_free(line);
-	close(fd1);
+	ft_close(fd1);
 	exit(0);
 }
 
@@ -242,7 +242,7 @@ void	read_from_herdoc(char *delemeter, int *old_fd)
 		exit = WTERMSIG(status) + 128;
 	if (exit == 130 || exit == 131)
 		write(1, "\n", 1);
-	close(fd1);
+	ft_close(fd1);
 }
 
 int	handle_herdoc(char *delimiter)
@@ -336,7 +336,7 @@ int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
 	return (0);
 }
 
-void	close_all_files(t_token **head)
+void	ft_close_all_files(t_token **head)
 {
 	t_token *tmp;
 	
@@ -344,7 +344,7 @@ void	close_all_files(t_token **head)
 	while (tmp)
 	{
 		if (tmp->value.fd_value > -1)
-			close(tmp->value.fd_value);
+			ft_close(tmp->value.fd_value);
 		tmp = tmp->next;
 	}
 }
@@ -359,7 +359,7 @@ int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
 	{
 		print_str_fd("bash: maximum here-document count exceeded\n", 2);
 		*heredoc = 0;
-		close_all_files(head);
+		ft_close_all_files(head);
 		exit(2);
 	}
 	index = handle_heredoc_case(head, tail, next);
