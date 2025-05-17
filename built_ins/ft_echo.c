@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 07:45:54 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/10 14:46:55 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,6 @@ int	ft_echo(char **args, int fd)
 	if (new_line)
 		print_str_fd("\n", fd);
 	if (fd != 1)
-		close(fd);
+		ft_close(fd);
 	return (0);
 }

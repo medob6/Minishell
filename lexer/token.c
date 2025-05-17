@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/16 18:22:34 by salahian         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/05/17 11:58:25 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "lexer.h"
 
@@ -112,7 +113,7 @@ int	handle_operator(t_token **head, t_token **tail, char c)
 	else if (c == '(')
 		new = create_token("(", TOKEN_PARENTESIS_OPEN);
 	else if (c == ')')
-		new = create_token(")", TOKEN_PARENTESIS_CLOSE);
+		new = create_token(")", TOKEN_PARENTESIS_ft_close);
 	append_token(head, tail, new);
 	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') + 1);
 }
@@ -167,7 +168,7 @@ void	print_err1(char *err, char *str)
 	char	*buffer;
 	char	*tmp;
 
-	buffer = ft_strjoin("\nMysh: ", err);
+	buffer = ft_strjoin("\nminishell: ", err);
 	tmp = buffer;
 	buffer = ft_strjoin(tmp, str);
 	ft_free(tmp);
@@ -184,6 +185,13 @@ int	is_delemeter(char *line, char *delemeter)
 		return (1);
 	return (0);
 }
+void clean_exit(void)
+{
+	close(herdoc.fd_heredoc);
+	close(herdoc.old_fd);
+	ft_lstclear(garbage_list());
+	exit(0);
+}
 
 void	process_input(char *delemeter)
 {
@@ -199,7 +207,7 @@ void	process_input(char *delemeter)
 		{
 			tmp = ft_strjoin(line, "\n");
 			write(herdoc.fd_heredoc, tmp, ft_strlen(tmp));
-			free(line);
+			ft_free(line);
 		}
 		line = readline("> ");
 		if (!line)
@@ -208,10 +216,8 @@ void	process_input(char *delemeter)
 	if (!line)
 		print_err1("warning: here-document delimited by end-of-file (wanted `",
 			delemeter);
-	free(line);
-	close(herdoc.fd_heredoc);
-	ft_lstclear(garbage_list());
-	exit(0);
+	ft_free(line);
+	clean_exit();
 }
 
 int	get_status(int status)
@@ -245,7 +251,7 @@ void	handle_signal(int sig)
 	close(herdoc.fd_heredoc);
 	close(herdoc.old_fd);
 	close_all_files(get_token());
-	//ft_lstclear(garbage_list());
+	ft_lstclear(garbage_list());
 	exit(130);
 }
 
@@ -344,7 +350,7 @@ void	handle_heredoc_no_file_name(t_token **head, t_token **tail)
 {
 	if (!herdoc.no_file_name && *(get_last_status()) != 130)
 	{
-		print_str_fd("bash: syntax error near unexpected token `<<'\n", 2);
+		//print_str_fd("bash: syntax error near unexpected token `<<'\n", 2);
 		append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
 		herdoc.no_file_name = 1;
 	}

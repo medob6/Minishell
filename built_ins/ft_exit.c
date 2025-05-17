@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 08:41:04 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 17:20:02 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 12:03:40 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+bool overflow(int n, char* number)
+{
+	if (ft_strlen(number) != 2 && n == -1)
+		return (true);
+	return (false);
+}
 
 int	get_nbr(char *number)
 {
@@ -20,6 +26,8 @@ int	get_nbr(char *number)
 	if (number && is_correct_nbr(number))
 	{
 		n = ft_atoi(number);
+		if (overflow(n, number))
+			return (-1);
 		return ((unsigned char)n);
 	}
 	return (-1);
@@ -28,7 +36,7 @@ int	get_nbr(char *number)
 int	ft_exit(char **args)
 {
 	long	num;
-	
+
 	if (!args[1])
 		return (*get_last_status());
 	num = get_nbr(args[1]);

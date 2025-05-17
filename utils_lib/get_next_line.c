@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 15:19:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 10:03:16 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:43:26 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	read_fails(int n, char **rest)
 	if (n == -1)
 	{
 		if (*rest != NULL)
-			free(*rest);
+			ft_free(*rest);
 		*rest = NULL;
 		return (1);
 	}
@@ -53,8 +53,8 @@ char	*proccess_buffer(int fd, char *buf, char **res)
 			return (NULL);
 		buf[n] = '\0';
 		temp = *res;
-		*res = ft_str(*res, buf);
-		free(temp);
+		*res = ft_strjoin(*res, buf);
+		ft_free(temp);
 		if (!*res)
 			return (*res = NULL, NULL);
 		i = 0;
@@ -73,19 +73,19 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (free(rest), NULL);
+		return (ft_free(rest), NULL);
 	buf = malloc(((size_t)BUFFER_SIZE) + 1);
 	if (!buf)
-		return (free(rest), rest = NULL, NULL);
+		return (ft_free(rest), rest = NULL, NULL);
 	line = checkline_in_rest(&rest);
 	if (line)
-		return (free(buf), line);
+		return (ft_free(buf), line);
 	line = proccess_buffer(fd, buf, &rest);
 	if (line)
-		return (free(buf), line);
+		return (ft_free(buf), line);
 	if (line == NULL && (!rest || *rest == '\0'))
-		return (free(buf), free(rest), rest = NULL, NULL);
+		return (ft_free(buf), ft_free(rest), rest = NULL, NULL);
 	line = jbad_line(&rest, ft_strlen(rest), 0);
-	free(buf);
+	ft_free(buf);
 	return (line);
 }

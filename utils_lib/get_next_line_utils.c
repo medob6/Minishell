@@ -66,7 +66,7 @@ char	*jbad_line(char **res, size_t len, int new_line)
 		new_res = ft_str(NULL, *res + len + 1);
 	else
 		new_res = NULL;
-	free(*res);
+	ft_free(*res);
 	*res = new_res;
 	return (line);
 }

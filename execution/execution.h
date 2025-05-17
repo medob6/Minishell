@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/13 08:38:11 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char			*get_cmd_path(char *cmd, char **envp);
 void			redirect(t_data *data, t_str *file_obj);
 void			perforem_redirections(t_data *data, int n);
 void			perforem_subshell_redirs(t_data *data, int n);
-void			close_here_docs(t_str **redir_list);
+void			ft_close_here_docs(t_str **redir_list);
 void			reset_fds(t_data *data, int n);
 void			save_old_fd(int *old_fd, int *fd);
 bool			handle_redirect_token(t_data *data, t_str *token, int *last_idx,
@@ -96,10 +96,7 @@ int				ft_cd(char *path, t_env **env_list);
 
 /* Utilities */
 int				ft_strcmp(char *s1, char *s2);
-char			*get_value(int type);
-char			*get_value_ast(int type);
 t_token			**create_tokens(char **str);
-void			print_token(t_token *head);
 void			handle_missing_cmd(t_cmd cmd, t_data *prg_data);
 void			wait_for_prc(t_cmd *cmd_list, int cmd_nbr);
 void			print_err(char *err, char *str);
@@ -110,14 +107,13 @@ void			free_garbeg(t_data *prg_data);
 void			free_pointers(char **p);
 void			ft_free(void *address);
 t_gar			**garbage_list(void);
-
-/* FUNCTIONS */
-
-char			*ft_itoa(long n);
 void			handle_missing_cmd(t_cmd cmd, t_data *prg_data);
 int				exec_cmd(t_cmd cmd, char **envp, char *new_path);
 char			*expand_the_value(char *str, t_env **env);
 t_ast_node		*subshell(t_token **token);
 t_ast_node		*command(t_token **token);
-
+int				get_length(t_str **strs);
+void			sig_exit(t_cmd *cmd_list, int cmd_nbr);
+int				update_status_sp_case(void);
+int				execute_subshell(t_ast_node *subshell, t_env *env);
 #endif
