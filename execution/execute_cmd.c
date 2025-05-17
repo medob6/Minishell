@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 19:01:56 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:07:41 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
 		print_err(strerror(21), cmd.path);
 	return (126);
 }
-
+//hello
 void	execute_cmd(t_cmd cmd, t_data *prg_data)
 {
 	char	*new_path;
