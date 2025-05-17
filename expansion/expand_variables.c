@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2026/11/07 16:36:09 by salahian         ###   ########.fr       */
+/*   Updated: 2026/11/07 16:38:06 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,10 +486,10 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
         free(line);
         line = get_next_line(value->fd_value);
     }
-    close(fd1);
+    ft_close(fd1);
     fd = open(str, O_RDONLY);
     unlink(str);
-    close(value->fd_value);
+    ft_close(value->fd_value);
     value->fd_value = fd;
 }
 

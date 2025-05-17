@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 21:31:55 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	pipe_execution(t_data *prg_data)
 		else
 		{
 			save_old_fd(&prg_data->old_fd, prg_data->fd);
-			close_here_docs(prg_data->lst_cmd[i].redirlist);
+			ft_close_here_docs(prg_data->lst_cmd[i].redirlist);
 		}
 		i++;
 	}

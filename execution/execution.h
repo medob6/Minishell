@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:48:59 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 22:31:02 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char			*get_cmd_path(char *cmd, char **envp);
 void			redirect(t_data *data, t_str *file_obj);
 void			perforem_redirections(t_data *data, int n);
 void			perforem_subshell_redirs(t_data *data, int n);
-void			close_here_docs(t_str **redir_list);
+void			ft_close_here_docs(t_str **redir_list);
 void			reset_fds(t_data *data, int n);
 void			save_old_fd(int *old_fd, int *fd);
 bool			handle_redirect_token(t_data *data, t_str *token, int *last_idx,

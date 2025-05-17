@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:12:17 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 22:12:18 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:31:45 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef enum e_token_type
 {
 	TOKEN_WORD,
 	TOKEN_PARENTESIS_OPEN,
-	TOKEN_PARENTESIS_CLOSE,
+	TOKEN_PARENTESIS_ft_close,
 	TOKEN_AND,
 	TOKEN_OR,
 	TOKEN_PIPE,
@@ -178,5 +178,7 @@ int					find_equal_pos(char *s);
 int					check_is_okey(char *s);
 t_env				*update_existing_env(t_env *env, char *arg, int sep);
 void				add_the_new(t_env **env, t_env *new);
+void				ft_close(int fd);
+
 
 #endif
