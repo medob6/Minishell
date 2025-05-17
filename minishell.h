@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:12:17 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 11:31:45 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 15:02:14 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,17 @@ typedef struct s_expansion
 	t_str			**str;
 }					t_expansion;
 
+typedef struct s_heredoc
+{
+	int				exit_sign;
+	int				no_file_name;
+	int				fd_heredoc;
+	int				old_fd;
+	int				nbr_heredoc;
+}					t_herdoc;
+
+extern t_herdoc		g_herdoc;
+
 int					print_str_fd(char *s, int fd);
 t_ast_node			*subshell(t_token **token);
 t_ast_node			*command(t_token **token);
@@ -151,7 +162,7 @@ char				*append_char(char *old_str, char c);
 t_token				**create_tokens(char **str);
 char				**lexer(char *cmd_line);
 char				*expand_the_value(char *str, t_env **env);
-char				*get_name_heredoc(void);
+char				*get_name_heredoc(char *str);
 int					match_pattern(char *field, char *pattern, char *name);
 
 int					check_value(char *number);
@@ -179,6 +190,5 @@ int					check_is_okey(char *s);
 t_env				*update_existing_env(t_env *env, char *arg, int sep);
 void				add_the_new(t_env **env, t_env *new);
 void				ft_close(int fd);
-
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:44:10 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 11:29:03 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 15:00:52 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,22 @@ void	exit_status(t_data *prg_data, int status)
 	free_garbeg(prg_data);
 	ft_lstclear(garbage_list());
 	exit(status);
+}
+
+void	print_new_line(t_cmd *cmd_list, int cmd_nbr)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd_nbr)
+	{
+		if (cmd_list[i].exit_status == 130 || cmd_list[i].exit_status == 131)
+		{
+			print_str_fd("\n", 2);
+			break ;
+		}
+		i++;
+	}
 }
 
 void	wait_for_prc(t_cmd *cmd_list, int cmd_nbr)
