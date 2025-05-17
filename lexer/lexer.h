@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:02:12 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/11 15:12:51 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 //{
 //	TOKEN_WORD,
 //	TOKEN_PARENTESIS_OPEN, //(
-//	TOKEN_PARENTESIS_CLOSE,
+//	TOKEN_PARENTESIS_ft_close,
 //	TOKEN_AND,
 //	TOKEN_OR,
 //	TOKEN_PIPE,         // |

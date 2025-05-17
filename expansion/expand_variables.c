@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_variables.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:37:47 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/14 10:22:33 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,10 +486,10 @@ void handle_heredoc_expansion(t_env **env, t_value *value)
         free(line);
         line = get_next_line(value->fd_value);
     }
-    close(fd1);
+    ft_close(fd1);
     fd = open(str, O_RDONLY);
     unlink(str);
-    close(value->fd_value);
+    ft_close(value->fd_value);
     value->fd_value = fd;
 }
 
