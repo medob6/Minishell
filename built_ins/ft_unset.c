@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/12 14:30:10 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 17:24:25 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_unset(char **args, t_env **env)
 	t_env	*tmp;
 	t_env	*prev;
 
-	i = 1;
+	i = 0;
 	while (args && args[i])
 	{
 		tmp = *env;
