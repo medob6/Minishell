@@ -6,11 +6,13 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 23:39:48 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 15:02:44 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution/execution.h"
+
+t_herdoc	g_herdoc;
 
 char	*costruct_prompt(t_env *env)
 {
@@ -40,7 +42,7 @@ char	*costruct_prompt(t_env *env)
 void	handler(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	print_str_fd("\n", 2);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -87,13 +89,13 @@ int	main(int ac, char **av, char **envp)
 	initialize_shell(&env, envp, &shlvl);
 	while (1)
 	{
+		ft_bzero(&g_herdoc, sizeof(t_herdoc));
 		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
 		process_command(cmd_line, env);
 		free(cmd_line);
-		rl_on_new_line();
 	}
 	ft_putendl_fd("exit", 1);
 	ft_lstclear(garbage_list());

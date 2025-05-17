@@ -3,268 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/13 13:49:52 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
+/*   Created: 2025/05/17 12:42:36 by salahian          #+#    #+#             */
+/*   Updated: 2025/05/17 15:04:15 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
-
-char	check_for_operations(char *cmd_line, int i)
-{
-	if (cmd_line[i] == '|' && cmd_line[i + 1] == '|')
-		return ('o');
-	else if (cmd_line[i] == '&' && cmd_line[i + 1] == '&')
-		return ('e');
-	else if (cmd_line[i] == '>' && cmd_line[i + 1] == '>')
-		return ('a');
-	else if (cmd_line[i] == '<' && cmd_line[i + 1] == '<')
-		return ('h');
-	else if (cmd_line[i] == '|')
-		return ('|');
-	else if (cmd_line[i] == '>')
-		return ('>');
-	else if (cmd_line[i] == '<')
-		return ('<');
-	else if (cmd_line[i] == '(')
-		return ('(');
-	else if (cmd_line[i] == ')')
-		return (')');
-	return ('\0');
-}
-
-char	*get_name_heredoc(void)
-{
-	char	*new;
-	int		fd;
-
-	fd = open("/dev/random", O_RDONLY);
-	new = ft_malloc(1, 11);
-	read(fd, new, 10);
-	new[10] = '\0';
-	new = ft_strjoin("/tmp/", new);
-	return (new);
-}
-
-char    *removes_qouts_heredoc(char *str)
-{
-    char    *new_str;
-    int     j;
-
-    j = 0;
-    new_str = ft_strdup("");
-    while (str && str[j])
-    {
-        if (str[j] == '\'' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
-        else if (str[j] == '"' && check_for_next_one(str, j))
-            j = take_inside_qout(&new_str, str, j);
-        else
-            new_str = append_char(new_str, str[j++]);
-    }
-	return (new_str);
-}
-
-t_token	*create_token(char *value, t_token_type type)
-{
-	t_token	*new;
-
-	new = ft_malloc(sizeof(t_token), 1);
-	new->value.str_value = ft_strdup(value);
-	new->value.fd_value = -1;
-	new->value.theres_qouts = 0;
-	new->type = type;
-	new->next = NULL;
-	new->prev = NULL;
-	return (new);
-}
-
-void	append_token(t_token **head, t_token **tail, t_token *new)
-{
-	if (!new)
-		return ;
-	if (!*head)
-		*head = new;
-	else
-	{
-		(*tail)->next = new;
-		new->prev = *tail;
-	}
-	*tail = new;
-}
-
-int	handle_operator(t_token **head, t_token **tail, char c)
-{
-	t_token	*new;
-
-	new = NULL;
-	if (c == 'o')
-		new = create_token("||", TOKEN_OR);
-	else if (c == '|')
-		new = create_token("|", TOKEN_PIPE);
-	else if (c == 'e')
-		new = create_token("&&", TOKEN_AND);
-	else if (c == '(')
-		new = create_token("(", TOKEN_PARENTESIS_OPEN);
-	else if (c == ')')
-		new = create_token(")", TOKEN_PARENTESIS_ft_close);
-	append_token(head, tail, new);
-	return ((c == 'o' || c == 'a' || c == 'h' || c == 'e') + 1);
-}
-
-void	create_simple_token(t_token **head, t_token **tail, char *s)
-{
-	t_token	*new;
-
-	new = create_token(s, TOKEN_WORD);
-	append_token(head, tail, new);
-}
-void	print_err(char *err, char *str)
-{
-	char	*buffer;
-	char	*tmp;
-
-	buffer = ft_strjoin("minishell: ", err);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, ": ");
-	ft_free(tmp);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, str);
-	ft_free(tmp);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, "\n");
-	ft_free(tmp);
-	ft_putstr_fd(buffer, 2);
-	ft_free(buffer);
-}
-void	handle_error(char	*str)
-{
-	print_err(strerror(errno), str);
-	exit(1);
-}
-
-int	create_temp_file(int *old_fd)
-{
-	int	fd1;
-	char	*str;
-
-	str = get_name_heredoc();
-	fd1 = open(str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	*old_fd = open(str, O_RDONLY);
-	unlink(str);
-	if (fd1 == -1 || *old_fd == -1)
-		handle_error(str);
-	return (fd1);
-}
-
-void	print_err1(char *err, char *str)
-{
-	char	*buffer;
-	char	*tmp;
-
-	buffer = ft_strjoin("\nMysh: ", err);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, str);
-	ft_free(tmp);
-	tmp = buffer;
-	buffer = ft_strjoin(tmp, "')\n");
-	ft_free(tmp);
-	ft_putstr_fd(buffer, 2);
-	ft_free(buffer);
-}
-
-int	is_delemeter(char *line, char *delemeter)
-{
-	if (!ft_strcmp(line, delemeter))
-		return (1);
-	return (0);
-}
-
-void	process_input(int fd1, char *delemeter)
-{
-	char	*line;
-	char	*tmp;
-
-	line = NULL;
-	while (1)
-	{
-		if (line && is_delemeter(line, delemeter))
-			break ;
-		if (line)
-		{
-			tmp = ft_strjoin(line, "\n");
-			ft_free(line);
-			write(fd1, tmp, ft_strlen(tmp));
-			ft_free(tmp);
-		}
-		line = readline("> ");
-		if (!line)
-			break ;
-	}
-	if (!line)
-		print_err1("warning: here-document delimited by end-of-file (wanted `",
-			delemeter);
-	ft_free(line);
-	ft_close(fd1);
-	exit(0);
-}
-
-
-void	read_from_herdoc(char *delemeter, int *old_fd)
-{
-	int	fd1;
-	pid_t	pid;
-	static int		exit;
-	int		status;
-
-	if (exit == 130)
-	{
-		return ;
-	}
-	fd1 = create_temp_file(old_fd);
-	pid = fork();
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		process_input(fd1, delemeter);
-	}
-	status = 0;
-	signal(SIGINT, SIG_IGN);
-	waitpid(pid, &status, 0);
-	signal(SIGINT, handler);
-	if (WIFEXITED(status))
-		exit = WEXITSTATUS(status);
-	else if (WIFSTOPPED(status))
-		exit = WSTOPSIG(status) + 128;
-	else if (WIFSIGNALED(status))
-		exit = WTERMSIG(status) + 128;
-	if (exit == 130 || exit == 131)
-		write(1, "\n", 1);
-	ft_close(fd1);
-}
-
-int	handle_herdoc(char *delimiter)
-{
-	int	fd;
-
-	fd = -1;
-	if (!delimiter)
-		return (0);
-	read_from_herdoc(delimiter, &fd);
-	return (fd);
-}
-
-void	append_redirect_arg(t_token **head, t_token **tail, char c, char *next)
-{
-	if (c == '>')
-		append_token(head, tail, create_token(next, TOKEN_REDIRECT_OUT));
-	else if (c == 'a')
-		append_token(head, tail, create_token(next, TOKEN_APPEND));
-	else
-		append_token(head, tail, create_token(next, TOKEN_REDIRECT_IN));
-}
 
 void	append_empty_redirect(t_token **head, t_token **tail, char c)
 {
@@ -296,89 +42,20 @@ int	handle_redirection(t_token **head, t_token **tail, char c, char *next)
 	return (0);
 }
 
-int		check_for_q(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' || str[i] == '"')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-int	handle_heredoc_case(t_token **head, t_token **tail, char *next)
-{
-	t_token	*new_token;
-	int		fd;
-	int		qouts;
-
-	qouts = 0;
-	if (next && check_for_operations(next, 0) == '\0')
-	{
-		if (check_for_q(next))
-		{
-			qouts = 1;
-			next = removes_qouts_heredoc(next);
-		}
-		fd = handle_herdoc(next);
-		new_token = create_token(next, TOKEN_HEREDOC);
-		new_token->value.fd_value = fd;
-		if (qouts)
-			new_token->value.theres_qouts = 1;
-		append_token(head, tail, new_token);
-		return (1);
-	}
-	append_token(head, tail, create_token(NULL, TOKEN_HEREDOC));
-	return (0);
-}
-
-void	ft_close_all_files(t_token **head)
-{
-	t_token *tmp;
-	
-	tmp = *head;
-	while (tmp)
-	{
-		if (tmp->value.fd_value > -1)
-			ft_close(tmp->value.fd_value);
-		tmp = tmp->next;
-	}
-}
-
-int		handle_heredoc(t_token **head, t_token **tail, char *next, int *heredoc)
-{
-	int		index;
-
-	index = 0;
-	(*heredoc)++;
-	if (*heredoc > 16)
-	{
-		print_str_fd("bash: maximum here-document count exceeded\n", 2);
-		*heredoc = 0;
-		ft_close_all_files(head);
-		exit(2);
-	}
-	index = handle_heredoc_case(head, tail, next);
-	return (index);
-}
 int	help_handle_redirection(t_token **head, t_token **tail, char *next, char c)
 {
-	int		index;
+	int	index;
 
 	index = 0;
 	if (c == '>' || c == '<' || c == 'a')
 		index = handle_redirection(head, tail, c, next);
 	return (index);
 }
-void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
+
+void	check_the_string(t_token **head, t_token **tail, char **s, int *index)
 {
 	int		i;
 	char	c;
-	static int heredoc;
 
 	i = -1;
 	while (s[*index][++i])
@@ -389,9 +66,9 @@ void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 		if (c)
 		{
 			if (c == '|' || c == '(')
-				heredoc = 0;
+				g_herdoc.nbr_heredoc = 0;
 			if (c == 'h')
-				*index += handle_heredoc(head, tail, s[*index + 1], &heredoc);
+				*index += handle_heredoc(head, tail, s[*index + 1]);
 			else
 			{
 				i += handle_operator(head, tail, c);
@@ -403,24 +80,14 @@ void  check_the_string(t_token **head, t_token **tail, char **s, int *index)
 	create_simple_token(head, tail, s[*index]);
 }
 
-//int	counter(char **s)
-//{
-//	int	i;
-
-//	i = 0;
-//	while (s[i])
-//		i++;
-//	return (i);
-//}
-
 t_token	**create_tokens(char **str)
 {
 	int		i;
 	t_token	**tokens;
-	t_token	*head;
+	t_token	**head;
 	t_token	*tail;
 
-	head = NULL;
+	head = get_token();
 	tail = NULL;
 	if (!str)
 		return (NULL);
@@ -428,11 +95,14 @@ t_token	**create_tokens(char **str)
 	i = 0;
 	while (str[i])
 	{
-		check_the_string(&head, &tail, str, &i);
+		check_the_string(head, &tail, str, &i);
 		i++;
 	}
-	append_token(&head, &tail, create_token(NULL, TOKEN_EOF));
-	tokens[0] = head;
+	append_token(head, &tail, create_token(NULL, TOKEN_EOF));
+	tokens[0] = *head;
 	tokens[1] = NULL;
+	*(get_token()) = NULL;
+	if (g_herdoc.exit_sign == 130)
+		return (NULL);
 	return (tokens);
 }
