@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:43:01 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/16 21:45:20 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 16:03:57 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_env	*default_envp(int shlvl)
 	head->next = shlvl_node;
 	shlvl_node->key = ft_strdup("SHLVL");
 	shlvl_node->value = ft_itoa(shlvl);
+	shlvl_node->value_set = true;
 	shlvl_node->next = NULL;
 	return (head);
 }
