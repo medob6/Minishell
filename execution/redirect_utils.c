@@ -6,11 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:00:15 by mbousset          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/05/17 14:28:21 by mbousset         ###   ########.fr       */
-=======
-/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
->>>>>>> c063fba (i pull)
+/*   Updated: 2026/11/07 16:38:47 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +63,13 @@ bool	is_ambiguous_redirect(t_str *token)
 
 bool	open_output_redirect(t_data *data, t_str *token, int *last_idx, int idx)
 {
-
 	data->out_fd = open_file(token);
 	if (data->out_fd < 0)
 	{
 		print_err(strerror(errno), token->value[0]);
 		return (false);
 	}
-
 	if (ft_strcmp(token->value[0], "/dev/stdout"))
-				*last_idx = idx;
+		*last_idx = idx;
 	return (true);
 }
