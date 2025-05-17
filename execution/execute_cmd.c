@@ -21,7 +21,7 @@ void	exit_status(t_data *prg_data, int status)
 
 void	print_new_line(t_cmd *cmd_list, int cmd_nbr)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (i < cmd_nbr)
@@ -76,7 +76,7 @@ int	exec_cmd(t_cmd cmd, char **envp, char *new_path)
 		print_err(strerror(21), cmd.path);
 	return (126);
 }
-//hello
+// hello
 void	execute_cmd(t_cmd cmd, t_data *prg_data)
 {
 	char	*new_path;

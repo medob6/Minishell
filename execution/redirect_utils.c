@@ -19,8 +19,7 @@ int	open_file(t_str *file_token)
 	if (file_token->type == TOKEN_REDIRECT_IN)
 		return (open(file_token->value[0], O_RDONLY));
 	else if (file_token->type == TOKEN_REDIRECT_OUT)
-		return (open(file_token->value[0], O_WRONLY | O_CREAT | O_TRUNC,
-				0644));
+		return (open(file_token->value[0], O_WRONLY | O_CREAT | O_TRUNC, 0644));
 	else if (file_token->type == TOKEN_APPEND)
 		return (open(file_token->value[0], O_WRONLY | O_CREAT | O_APPEND,
 				0644));
@@ -62,8 +61,7 @@ bool	is_ambiguous_redirect(t_str *token)
 	return (false);
 }
 
-bool	open_output_redirect(t_data *data, t_str *token, int *last_idx,
-		int idx)
+bool	open_output_redirect(t_data *data, t_str *token, int *last_idx, int idx)
 {
 	data->out_fd = open_file(token);
 	if (data->out_fd < 0)

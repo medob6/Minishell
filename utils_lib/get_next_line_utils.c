@@ -12,42 +12,41 @@
 
 #include "get_next_line.h"
 
+char	*ft_str(char const *s1, char const *s2)
+{
+	size_t	len1;
+	size_t	len2;
+	char	*new_str;
+	size_t	i;
+	size_t	j;
 
- char	*ft_str(char const *s1, char const *s2)
- {
- 	size_t	len1;
- 	size_t	len2;
- 	char	*new_str;
- 	size_t	i;
- 	size_t	j;
-
- 	i = 0;
- 	j = 0;
- 	len1 = 0;
- 	len2 = 0;
- 	if (s1)
- 		len1 = ft_strlen(s1);
- 	if (s2)
- 		len2 = ft_strlen(s2);
- 	new_str = malloc(len1 + len2 + 1);
- 	if (!new_str)
- 		return (NULL);
- 	if (s1)
- 		while (j < len1)
- 			new_str[i++] = s1[j++];
- 	j = 0;
- 	if (s2)
- 		while (j < len2)
- 			new_str[i++] = s2[j++];
- 	return ((new_str[i] = '\0'), new_str);
- }
+	i = 0;
+	j = 0;
+	len1 = 0;
+	len2 = 0;
+	if (s1)
+		len1 = ft_strlen(s1);
+	if (s2)
+		len2 = ft_strlen(s2);
+	new_str = malloc(len1 + len2 + 1);
+	if (!new_str)
+		return (NULL);
+	if (s1)
+		while (j < len1)
+			new_str[i++] = s1[j++];
+	j = 0;
+	if (s2)
+		while (j < len2)
+			new_str[i++] = s2[j++];
+	return ((new_str[i] = '\0'), new_str);
+}
 
 char	*jbad_line(char **res, size_t len, int new_line)
 {
-	char	*line;
-	char	*new_res;
-	size_t	res_len;
-	size_t	i;
+	char *line;
+	char *new_res;
+	size_t res_len;
+	size_t i;
 
 	if (!res || !*res)
 		return (NULL);

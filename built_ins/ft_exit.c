@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-bool overflow(int n, char* number)
+bool	overflow(int n, char *number)
 {
 	if (ft_strlen(number) != 2 && n == -1)
 		return (true);
