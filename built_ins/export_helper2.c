@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_helper2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 21:59:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 22:06:24 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:31:14 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,10 @@ void	swap_env_nodes(t_env *a, t_env *b)
 	tmp_value_set = a->value_set;
 	a->value_set = b->value_set;
 	b->value_set = tmp_value_set;
+}
+
+void ft_close(int fd)
+{
+	if (fd >= 0)
+		close(fd);
 }
