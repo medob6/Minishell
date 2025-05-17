@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 13:07:19 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/13 09:26:20 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:32:12 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,7 +344,7 @@ char    *check_string_get(char **field, char *get)
 //        help_expand_wild(file, path, get, &new_str, *field);
 //        file = readdir(dir);
 //    }
-//    closedir(dir);
+//    ft_closedir(dir);
 //    return (new_str);
 //}
 

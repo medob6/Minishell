@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   subshell.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:58:22 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/16 20:07:08 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 11:30:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,22 @@ bool	paranteses_symetric(t_token **token)
 {
 	t_token	*temp_head;
 	int		count_open;
-	int		count_close;
+	int		count_ft_close;
 
 	count_open = 0;
-	count_close = 0;
+	count_ft_close = 0;
 	temp_head = *token;
 	while (temp_head->type != TOKEN_EOF)
 	{
 		if (temp_head->type == TOKEN_PARENTESIS_OPEN)
 			count_open++;
-		if (temp_head->type == TOKEN_PARENTESIS_CLOSE)
-			count_close++;
-		if (count_close > count_open)
+		if (temp_head->type == TOKEN_PARENTESIS_ft_close)
+			count_ft_close++;
+		if (count_ft_close > count_open)
 			return (false);
 		temp_head = (temp_head)->next;
 	}
-	if (count_close == count_open)
+	if (count_ft_close == count_open)
 		return (true);
 	return (false);
 }
@@ -80,7 +80,7 @@ t_ast_node	*subshell(t_token **token)
 		return (NULL);
 	advance_token(token);
 	compouned = compound_cmd(token, AST_SUBSHELL);
-	if ((*token)->type != TOKEN_PARENTESIS_CLOSE)
+	if ((*token)->type != TOKEN_PARENTESIS_ft_close)
 		return (NULL);
 	advance_token(token);
 	while (true)
