@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:12:17 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 15:02:14 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 19:10:49 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,8 @@ typedef struct s_heredoc
 }					t_herdoc;
 
 extern t_herdoc		g_herdoc;
+
+t_env **get_env_head_addres(t_env **address);
 
 int					print_str_fd(char *s, int fd);
 t_ast_node			*subshell(t_token **token);

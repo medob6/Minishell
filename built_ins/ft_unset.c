@@ -6,7 +6,7 @@
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 17:24:25 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/17 19:11:14 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,15 @@ int	ft_unset(char **args, t_env **env)
 	t_env	*tmp;
 	t_env	*prev;
 
-	i = 0;
+	env = get_env_head_addres(NULL);
+	i = 1;
 	while (args && args[i])
 	{
 		tmp = *env;
 		prev = NULL;
 		while (tmp)
 		{
-			if (ft_strncmp(tmp->key, args[i], ft_strlen(args[i])) == 0)
+			if (!ft_strcmp(tmp->key, args[i]))
 			{
 				remove_from_the_list(env, tmp, prev);
 				return (0);
