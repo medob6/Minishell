@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 19:10:40 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/18 11:57:50 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,11 @@ void	process_command(char *cmd_line, t_env *env)
 		ast = parse_tokens(*h);
 	if (!ast)
 	{
-		print_str_fd("minishell: syntax error near unexpected token\n", 2);
-		// if (*get_last_status() != 130) // TODO : fix exit status in ctl+c
+		if (g_herdoc.exit_sign != 130)
+		{
+			print_str_fd("minishell: syntax error near unexpected token\n", 2);
 			*get_last_status() = 2;
+		}
 	}
 	else
 		execution(ast, env);
@@ -80,7 +82,8 @@ void	process_command(char *cmd_line, t_env *env)
 
 t_env	**get_env_head_addres(t_env **address)
 {
-	static t_env **head;
+	static t_env	**head;
+
 	if (address)
 		head = address;
 	return (head);

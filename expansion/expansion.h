@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/11 15:05:10 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 14:44:41 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/18 11:56:26 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	**applicate_splitting(char *str, char *field);
 char	**create_field_red(t_ast_node *node);
 char	*expand_the_value(char *str, t_env **env);
 int		match_pattern(char *field, char *pattern, char *name);
-char	*help_check_string_get(char **field, char **new, char *get, int *i);
+char	*help_check_string_get(char *get, int *i);
 char	*help_expand_wild(struct dirent *dir, char *path, char *get,
 			char *field);
 void	get_pattern_and_path(char *str, char **path, char **pattern);
