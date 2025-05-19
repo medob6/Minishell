@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 14:41:15 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 12:19:11 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 10:08:56 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,7 @@ char	**lexer(char *cmd_line)
 	int		total;
 
 	if (!check_quotes(cmd_line))
-	{
-		print_str_fd("ERROR:\nbalanced brakets.\n", 2);
 		return (NULL);
-	}
 	total = count_words(cmd_line);
 	str = ft_malloc(sizeof(char *), (total + 1));
 	return (help_lexer(str, cmd_line));
