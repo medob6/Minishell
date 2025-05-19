@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 14:12:59 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 14:46:42 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/18 11:56:37 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*check_string_is_not_null(char *get)
 	return (tmp);
 }
 
-char	*help_check_string_get(char **field, char **new, char *get, int *i)
+char	*help_check_string_get(char *get, int *i)
 {
 	char	c;
 	char	*tmp;
@@ -103,7 +103,6 @@ char	*help_check_string_get(char **field, char **new, char *get, int *i)
 	c = get[(*i)++];
 	while (get[*i] && get[*i] != c)
 	{
-		*new = append_char(*new, field[0][*i]);
 		tmp = append_char(tmp, get[(*i)++]);
 	}
 	if (get[*i] == c)
