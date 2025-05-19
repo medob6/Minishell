@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:18:33 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/19 09:16:32 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:18:55 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,15 @@ void	init_global_var(void)
 	g_herdoc.nbr_heredoc = 0;
 	g_herdoc.no_file_name = 0;
 	g_herdoc.old_fd = -1;
+}
+
+t_env	**get_env_head_addres(t_env **address)
+{
+	static t_env	**head;
+
+	if (address)
+		head = address;
+	return (head);
 }
 
 int	is_operator(const char *c, int i)
