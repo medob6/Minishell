@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 14:15:26 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 14:15:39 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/18 11:56:19 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,22 @@ int	find_last_slash_before_star(char *str)
 	return (last_slash);
 }
 
-char	*check_string_get(char **field, char *get)
+char	*check_string_get(char *get)
 {
 	int		i;
 	char	*tmp;
-	char	*new;
 
 	i = 0;
 	tmp = NULL;
-	new = NULL;
 	while (get[i])
 	{
 		if (get[i] == '"' || get[i] == '\'')
-			tmp = ft_strjoin(tmp, help_check_string_get(field, &new, get, &i));
+			tmp = ft_strjoin(tmp, help_check_string_get(get, &i));
 		else
 		{
-			new = append_char(new, field[0][i]);
 			tmp = append_char(tmp, get[i++]);
 		}
 	}
-	*field = new;
 	return (tmp);
 }
 
@@ -69,7 +65,7 @@ char	*expand_wild(char **field, char *path, char *get)
 	new_str = NULL;
 	file = readdir(dir);
 	if (check_string_is_not_null(get))
-		get = check_string_get(field, get);
+		get = check_string_get(get);
 	while (file)
 	{
 		add = help_expand_wild(file, path, get, *field);

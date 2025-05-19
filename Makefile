@@ -1,4 +1,4 @@
-FLAGS= -Wall -Wextra -Werror -lreadline -g
+FLAGS= -Wall -Wextra -Werror -lreadline -g #-fsanitize=address
 
 SRC=  garbage_collector.c main.c \
       built_ins/create_the_main_list.c built_ins/env_helpers.c built_ins/export_helper1.c \
