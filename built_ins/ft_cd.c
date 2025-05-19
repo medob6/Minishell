@@ -1,68 +1,62 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_cd_pwd.c                                        :+:      :+:    :+:   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 14:40:08 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 16:18:42 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/19 08:39:22 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_pwd(t_env **env_list, int fd)
+int	update_pwd_value(t_env **env_list, char *cwd, char **old_pwd)
 {
-	char	*cwd;
 	t_env	*cur;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		print_str_fd(ft_strjoin(expand_the_value("$PWD", env_list), "\n"), fd);
-		return (0);
-	}
 	cur = *env_list;
-	if (!print_str_fd(ft_strjoin(cwd, "\n"), fd))
-		return (1);
 	while (cur)
 	{
 		if (!ft_strcmp(cur->key, "PWD"))
 		{
+			*old_pwd = cur->value;
 			cur->value = ft_strdup(cwd);
-			break ;
+			return (1);
 		}
 		cur = cur->next;
 	}
-	free(cwd);
+	return (0);
+}
+
+int	update_oldpwd_value(t_env **env_list, char *old_pwd)
+{
+	t_env	*cur;
+
+	cur = *env_list;
+	while (cur)
+	{
+		if (!ft_strcmp(cur->key, "OLDPWD"))
+		{
+			cur->value = old_pwd;
+			return (1);
+		}
+		cur = cur->next;
+	}
 	return (0);
 }
 
 int	update_pwd(t_env **env_list, char *cwd)
 {
-	t_env	*cur;
-	char	*old;
-	int		i;
+	char	*old_pwd;
+	int		status;
 
-	cur = *env_list;
-	i = 0;
-	while (cur)
-	{
-		if (!ft_strcmp(cur->key, "PWD"))
-		{
-			i = 1;
-			old = cur->value;
-			cur->value = ft_strdup(cwd);
-		}
-		else if (!ft_strcmp(cur->key, "OLDPWD"))
-		{
-			i = 1;
-			cur->value = old;
-		}
-		cur = cur->next;
-	}
-	return (i);
+	old_pwd = NULL;
+	status = update_pwd_value(env_list, cwd, &old_pwd);
+	if (status && old_pwd)
+		status += update_oldpwd_value(env_list, old_pwd);
+	return (status);
 }
 
 void	print_error_cd(char *message, char *path)

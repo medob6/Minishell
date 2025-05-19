@@ -2,7 +2,7 @@ FLAGS= -Wall -Wextra -Werror -lreadline -g
 
 SRC=  garbage_collector.c main.c \
       built_ins/create_the_main_list.c built_ins/env_helpers.c built_ins/export_helper1.c \
-      built_ins/export_helper2.c built_ins/ft_cd_pwd.c built_ins/ft_echo.c \
+      built_ins/export_helper2.c built_ins/ft_cd.c built_ins/ft_pwd.c built_ins/ft_echo.c \
       built_ins/ft_env.c built_ins/ft_exit.c built_ins/ft_export.c built_ins/ft_unset.c \
       execution/cmd_builder.c execution/cmd_utils.c execution/execute_cmd.c \
       execution/execution_flow.c execution/execution_main.c execution/garbeg_handlers.c \
