@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_flow.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 17:06:20 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/17 19:05:39 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:08:27 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_builtin(t_data *prg_data, int index, int exit_in_subshell)
 	if (!ft_strcmp(cmd.args[0], "exit") && prg_data->cmd_nbr == 1)
 	{
 		if (!exit_in_subshell)
-			printf("exit\n");
+			print_str_fd("exit\n", 2);
 		if (prg_data->lst_cmd[index].exit_status != -1)
 			exit_status(prg_data, prg_data->lst_cmd[index].exit_status);
 		prg_data->lst_cmd[index].exit_status = update_status_sp_case();
