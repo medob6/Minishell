@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/18 11:57:50 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:11:11 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,15 @@ t_env	**get_env_head_addres(t_env **address)
 	return (head);
 }
 
+void	init_global_var(void)
+{
+	g_herdoc.exit_sign = 0;
+	g_herdoc.fd_heredoc = -1;
+	g_herdoc.nbr_heredoc = 0;
+	g_herdoc.no_file_name = 0;
+	g_herdoc.old_fd = -1;
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char		*cmd_line;
@@ -102,7 +111,7 @@ int	main(int ac, char **av, char **envp)
 	initialize_shell(&env, envp, &shlvl);
 	while (1)
 	{
-		ft_bzero(&g_herdoc, sizeof(t_herdoc));
+		init_global_var();
 		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
 		if (!cmd_line)
