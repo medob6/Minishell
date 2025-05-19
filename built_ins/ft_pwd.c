@@ -1,45 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_unset.c                                         :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/12 14:44:05 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/19 08:41:31 by mbousset         ###   ########.fr       */
+/*   Created: 2025/05/19 08:38:42 by mbousset          #+#    #+#             */
+/*   Updated: 2025/05/19 08:39:00 by mbousset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	remove_from_the_list(t_env **head, t_env *tmp, t_env *prev)
+int	ft_pwd(t_env **env_list, int fd)
 {
-	if (prev == NULL)
-		*head = tmp->next;
-	else
-		prev->next = tmp->next;
-}
+	char	*cwd;
+	t_env	*cur;
 
-int	ft_unset(char **args, t_env **env)
-{
-	int		i;
-	t_env	*tmp;
-	t_env	*prev;
-
-	env = get_env_head_addres(NULL);
-	i = 1;
-	while (args && args[i])
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
 	{
-		tmp = *env;
-		prev = NULL;
-		while (tmp)
-		{
-			if (!ft_strcmp(tmp->key, args[i]))
-				remove_from_the_list(env, tmp, prev);
-			prev = tmp;
-			tmp = tmp->next;
-		}
-		i++;
+		print_str_fd(ft_strjoin(expand_the_value("$PWD", env_list), "\n"), fd);
+		return (0);
 	}
+	cur = *env_list;
+	if (!print_str_fd(ft_strjoin(cwd, "\n"), fd))
+		return (1);
+	while (cur)
+	{
+		if (!ft_strcmp(cur->key, "PWD"))
+		{
+			cur->value = ft_strdup(cwd);
+			break ;
+		}
+		cur = cur->next;
+	}
+	free(cwd);
 	return (0);
 }
