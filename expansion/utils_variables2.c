@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 14:37:37 by salahian          #+#    #+#             */
-/*   Updated: 2025/05/17 14:39:15 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:59:33 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,6 @@ void	application_expansion(t_expansion *expand, char *tmp, size_t i,
 			str = (t_token *)expand->node->redirect_list->items[i];
 			tmp = str->value.str_value;
 		}
-		if (!check_is_valid_split(tmp))
-			split = 0;
 	}
 	check_the_word(expand, i, split, flag);
 }
