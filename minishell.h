@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbousset <mbousset@student.42.fr>          +#+  +:+       +#+        */
+/*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:12:17 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/19 08:44:16 by mbousset         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:16:59 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,6 @@ t_ast_node			*compound_cmd(t_token **token, t_ast_type token_type);
 
 // debuging functions
 
-int					expand_ast(t_ast_node *node, t_env **env);
 int					is_valid_identifier(char *s);
 int					ft_export(char **args, t_env **env, int fd);
 size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
@@ -192,5 +191,6 @@ t_env				*update_existing_env(t_env *env, char *arg, int sep);
 void				add_the_new(t_env **env, t_env *new);
 void				ft_close(int fd);
 int					ft_pwd(t_env **env_list, int fd);
+void				init_global_var(void);
 
 #endif
