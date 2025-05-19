@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/19 09:17:08 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:19:13 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,6 @@ void	process_command(char *cmd_line, t_env *env)
 	}
 	else
 		execution(ast, env);
-}
-
-t_env	**get_env_head_addres(t_env **address)
-{
-	static t_env	**head;
-
-	if (address)
-		head = address;
-	return (head);
 }
 
 int	main(int ac, char **av, char **envp)

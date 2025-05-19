@@ -6,7 +6,7 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:12:17 by mbousset          #+#    #+#             */
-/*   Updated: 2025/05/19 09:16:59 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/19 09:19:07 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,5 +192,6 @@ void				add_the_new(t_env **env, t_env *new);
 void				ft_close(int fd);
 int					ft_pwd(t_env **env_list, int fd);
 void				init_global_var(void);
+t_env				**get_env_head_addres(t_env **address);
 
 #endif
