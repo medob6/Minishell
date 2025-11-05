@@ -1,6 +1,6 @@
 # MiniShell
 
-A small POSIX‑like command-line shell implemented as a learning project. Mini Shell is intended for education and experimentation and demonstrates core shell concepts: parsing, job control, pipelines, I/O redirection, builtins, process creation, and basic signal handling. The codebase is kept compact and readable so you can study and extend it.
+A POSIX‑like command-line shell implemented as a learning project. Mini Shell is intended for education and experimentation and demonstrates core shell concepts: parsing, job control, pipelines, I/O redirection, builtins, process creation, and basic signal handling. The codebase is kept compact and readable so you can study and extend it.
 
 Table of contents
 - Project overview
@@ -19,7 +19,7 @@ Table of contents
 
 Project overview
 ----------------
-Mini Shell is a simplified reimplementation of a Unix shell suitable for learning. It focuses on predictable behavior, clarity, and correctness for common shell operations.
+Mini Shell is a reimplementation of a Unix shell suitable for learning. It focuses on predictable behavior, clarity, and correctness for common shell operations.
 
 Goals
 - Implement the shell loop: read → parse → execute → wait → repeat
