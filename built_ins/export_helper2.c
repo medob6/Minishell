@@ -82,7 +82,7 @@ void	swap_env_nodes(t_env *a, t_env *b)
 	b->value_set = tmp_value_set;
 }
 
-void ft_close(int fd)
+void	ft_close(int fd)
 {
 	if (fd >= 0)
 		close(fd);

@@ -6,11 +6,13 @@
 /*   By: salahian <salahian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 22:28:26 by mbousset          #+#    #+#             */
-/*   Updated: 2026/11/07 16:39:38 by salahian         ###   ########.fr       */
+/*   Updated: 2025/05/21 17:47:52 by salahian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution/execution.h"
+
+t_herdoc	g_herdoc;
 
 char	*costruct_prompt(t_env *env)
 {
@@ -40,7 +42,7 @@ char	*costruct_prompt(t_env *env)
 void	handler(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	print_str_fd("\n", 2);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -69,8 +71,11 @@ void	process_command(char *cmd_line, t_env *env)
 		ast = parse_tokens(*h);
 	if (!ast)
 	{
-		print_str_fd("minishell: syntax error near unexpected token\n", 2);
-		*get_last_status() = 2;
+		if (g_herdoc.exit_sign != 130)
+		{
+			print_str_fd("minishell: syntax error near unexpected token\n", 2);
+			*get_last_status() = 2;
+		}
 	}
 	else
 		execution(ast, env);
@@ -83,18 +88,19 @@ int	main(int ac, char **av, char **envp)
 	static int	shlvl;
 	t_env		*env;
 
+	get_env_head_addres(&env);
 	(void)ac;
 	(void)av;
 	initialize_shell(&env, envp, &shlvl);
 	while (1)
 	{
+		init_global_var();
 		prompt = costruct_prompt(env);
 		cmd_line = readline(prompt);
 		if (!cmd_line)
 			break ;
 		process_command(cmd_line, env);
 		free(cmd_line);
-		rl_on_new_line();
 	}
 	ft_putendl_fd("exit", 1);
 	ft_lstclear(garbage_list());

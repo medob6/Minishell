@@ -15,8 +15,8 @@
 
 # include "../minishell.h"
 
-void		array_extend(t_array *arr);
-void		array_push(t_array **list, void *new_item);
-t_array		*creat_array(void);
+void	array_extend(t_array *arr);
+void	array_push(t_array **list, void *new_item);
+t_array	*creat_array(void);
 
 #endif
